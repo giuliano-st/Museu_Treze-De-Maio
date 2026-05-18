@@ -2,6 +2,10 @@
 
 Repositório do sistema web de gerenciamento de acervo do Museu Treze de Maio, desenvolvido como projeto da disciplina de Projeto de Software.
 
+## Protótipo
+
+![Protótipo do Sistema](https://github.com/user-attachments/assets/34480a41-91f9-4def-a49a-ef9cf945944e)
+
 ## Sobre o projeto
 
 O sistema permite a catalogação, pesquisa e visualização das obras do acervo do museu, incluindo livros, jornais e revistas. Conta com autenticação de usuários e área restrita para cadastro de novos itens.
