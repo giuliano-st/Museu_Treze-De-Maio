@@ -1,0 +1,15 @@
+target/
+frontend/node_modules/
+frontend/dist/
+.idea/
+*.iml
+*.iws
+*.ipr
+src/main/resources/application.properties
+.DS_Store
+Thumbs.db
+acervo-museu/target/
+acervo-museu/frontend/node_modules/
+acervo-museu/frontend/dist/
+acervo-museu/src/main/resources/application.properties
+*.tsbuildinfo
