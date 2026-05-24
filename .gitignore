@@ -1,15 +1,47 @@
-target/
+# Dependencias
+node_modules/
 frontend/node_modules/
+acervo-museu/frontend/node_modules/
+.pnpm-store/
+
+# Build
+target/
+acervo-museu/target/
+dist/
+dist-ssr/
+build/
 frontend/dist/
+acervo-museu/frontend/dist/
+*.tsbuildinfo
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ambiente
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+src/main/resources/application.properties
+acervo-museu/src/main/resources/application.properties
+
+# Editor
+.vscode/
 .idea/
 *.iml
 *.iws
 *.ipr
-src/main/resources/application.properties
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# SO
 .DS_Store
 Thumbs.db
-acervo-museu/target/
-acervo-museu/frontend/node_modules/
-acervo-museu/frontend/dist/
-acervo-museu/src/main/resources/application.properties
-*.tsbuildinfo
