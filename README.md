@@ -1,78 +1,77 @@
-# Museu Treze de Maio — Sistema de Acervo
+# Museu Treze de Maio - Sistema de Acervo
 
-Repositório do sistema web de gerenciamento de acervo do Museu Treze de Maio, desenvolvido como projeto da disciplina de Projeto de Software.
+Repositorio do sistema web de gerenciamento de acervo do Museu Treze de Maio.
 
-## Protótipo
+## Estrutura do repositorio
 
-![Protótipo do Sistema](https://github.com/user-attachments/assets/34480a41-91f9-4def-a49a-ef9cf945944e)
+```text
+acervo-museu/
+  pom.xml                         # Projeto Spring Boot
+  src/main/java/                  # Backend Java
+  src/main/resources/             # Configuracoes e arquivos estaticos
+  frontend/                       # Frontend principal em React + Vite
 
-## Sobre o projeto
+Protótipo_Figma_Maker/            # Prototipo visual exportado do Figma Maker
+Diagramas/                        # Diagramas do projeto
+```
 
-O sistema permite a catalogação, pesquisa e visualização das obras do acervo do museu, incluindo livros, jornais e revistas. Conta com autenticação de usuários e área restrita para cadastro de novos itens.
+## Frontend principal
 
-## Funcionalidades
+O frontend que deve ser alterado para evoluir o sistema fica em:
 
-- Página inicial com apresentação do acervo
-- Pesquisa de obras por título, autor e tipo
-- Visualização de detalhes de cada obra
-- Cadastro de livros, jornais e revistas (requer autenticação)
-- Autenticação com login, cadastro e perfil de usuário
+```text
+acervo-museu/frontend/
+```
 
-## Tecnologias
+Dentro dele, os principais pontos sao:
 
-- [React 18](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
-- [Vite](https://vitejs.dev/) — build e servidor de desenvolvimento
-- [Tailwind CSS v4](https://tailwindcss.com/) — estilização
-- [shadcn/ui](https://ui.shadcn.com/) + [Radix UI](https://www.radix-ui.com/) — componentes de interface
-- [React Router v7](https://reactrouter.com/) — roteamento
-- [pnpm](https://pnpm.io/) — gerenciamento de pacotes
+- `src/main.tsx`: entrada do React.
+- `src/app/App.tsx`: componente principal.
+- `src/app/routes.tsx`: rotas da aplicacao.
+- `src/app/components/`: telas e componentes.
+- `src/app/contexts/`: estados compartilhados, como autenticacao.
+- `src/app/services/`: comunicacao com o backend.
+- `src/styles/`: estilos globais.
 
-## Como executar
+Mais detalhes estao em `acervo-museu/frontend/README.md`.
 
-**Pré-requisitos:** Node.js 18+ e pnpm instalados.
+## Prototipo
+
+O prototipo visual fica em:
+
+```text
+Protótipo_Figma_Maker/
+```
+
+Ele serve como referencia visual e nao deve ser confundido com o frontend principal.
+
+## Configuracao do backend
+
+Copie o arquivo de exemplo:
+
+```text
+acervo-museu/src/main/resources/application.example.properties
+```
+
+para:
+
+```text
+acervo-museu/src/main/resources/application.properties
+```
+
+Depois ajuste usuario, senha e banco de dados local.
+
+## Como rodar o frontend principal
 
 ```bash
-# Instalar dependências
-pnpm install
-
-# Iniciar servidor de desenvolvimento
-pnpm dev
+cd acervo-museu/frontend
+npm install
+npm run dev
 ```
 
-A aplicação estará disponível em `http://localhost:5173`.
+## Como rodar o backend
 
-## Estrutura do projeto
-
+```bash
+cd acervo-museu
+mvn spring-boot:run
 ```
-src/
-├── app/
-│   ├── components/
-│   │   ├── ui/          # Componentes base (shadcn/ui)
-│   │   ├── figma/       # Utilitários de imagem
-│   │   ├── Layout.tsx
-│   │   ├── Home.tsx
-│   │   ├── Login.tsx
-│   │   ├── Register.tsx
-│   │   ├── Perfil.tsx
-│   │   ├── PesquisaObras.tsx
-│   │   ├── DetalhesObra.tsx
-│   │   ├── CadastroObras.tsx
-│   │   ├── CadastroLivro.tsx
-│   │   ├── CadastroJornal.tsx
-│   │   └── CadastroRevista.tsx
-│   ├── contexts/
-│   │   └── AuthContext.tsx
-│   ├── App.tsx
-│   └── routes.tsx
-├── styles/
-└── main.tsx
-```
-
-## Protótipo
-
-Protótipo do projeto disponível no Figma Maker:
-- Link: https://www.figma.com/make/FglaasT5AO66AHufDd2Rgd/Site-Acervo?p=f&t=ir8UYNKt8mIriPJ5-0
-
-## Diagramas
-
-Os diagramas de caso de uso e modelo de domínio estão disponíveis na pasta [`Diagramas/`](./Diagramas/).
