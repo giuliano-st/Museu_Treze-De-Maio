@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Perfil — Museu Treze de Maio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+<nav th:replace="~{fragmentos :: navbar}"></nav>
+
+<main class="max-w-lg mx-auto px-4 py-12 flex-1">
+    <div class="bg-white border-2 border-[#2E5B37] rounded-xl shadow-xl p-8 text-center">
+        <div class="bg-[#2E5B37] text-white w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl font-bold shadow-md"
+             th:text="${#strings.substring(usuario.nome, 0, 1).toUpperCase()}"></div>
+        <h2 class="text-[#2E5B37] text-2xl font-bold mb-1" th:text="${usuario.nome}"></h2>
+        <p class="text-gray-500 mb-1" th:text="${usuario.email}"></p>
+        <span class="inline-block bg-[#2E5B37] text-white text-xs px-3 py-1 rounded-full mb-6" th:text="${usuario.papel}"></span>
+
+        <div class="flex gap-4 justify-center">
+            <a href="/pesquisa" class="bg-[#2E5B37] text-white px-6 py-2.5 rounded-lg font-medium hover:bg-[#1f4026]">Ver Acervo</a>
+            <a href="/logout" class="border-2 border-[#2E5B37] text-[#2E5B37] px-6 py-2.5 rounded-lg font-medium hover:bg-gray-50">Sair</a>
+        </div>
+    </div>
+</main>
+
+<footer class="bg-[#2E5B37] text-white text-center py-4 text-sm mt-8">
+    Museu Treze de Maio — Sistema de Acervo Digital
+</footer>
+</body>
+</html>

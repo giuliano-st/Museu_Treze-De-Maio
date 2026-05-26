@@ -13,7 +13,7 @@ public class AcessoService {
     @Autowired
     private RegistroAcessoRepository registroAcessoRepository;
 
-
+    // Chamado pelo frontend ao carregar qualquer página
     public void registrar(String ip, String pagina, String emailUsuario) {
         RegistroAcesso acesso = new RegistroAcesso();
         acesso.setIp(ip);

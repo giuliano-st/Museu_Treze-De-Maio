@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Museu Treze de Maio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+
+<nav th:replace="~{fragmentos :: navbar}"></nav>
+
+<!-- HERO -->
+<div class="bg-[#2E5B37] py-16 text-center">
+    <img src="https://clubessociaisnegros.com/wp-content/uploads/2023/02/LOGO.webp"
+         alt="Logo" class="mx-auto mb-6 h-32 object-contain drop-shadow-lg"/>
+    <h1 class="text-white text-3xl md:text-4xl font-bold mb-3">Bem-vindo ao Museu Treze de Maio</h1>
+    <p class="text-white/90 text-lg max-w-2xl mx-auto">
+        Espaço dedicado à preservação e difusão da história e cultura afro-brasileira,
+        mantido pela Sociedade Cultural Ferroviária Treze de Maio.
+    </p>
+</div>
+
+<main class="max-w-7xl mx-auto px-4 py-12 flex-1">
+
+    <!-- Cards -->
+    <div class="grid md:grid-cols-2 gap-8 mb-16"
+         th:classappend="${session.usuario != null and session.usuario.papel == 'ADMINISTRADOR'} ? 'md:grid-cols-3' : 'md:grid-cols-2'">
+
+        <!-- Acervo — sempre visível -->
+        <div class="bg-white border-2 border-[#2E5B37] rounded-xl p-6 text-center hover:shadow-xl transition-shadow">
+            <div class="bg-[#2E5B37] text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-md">📚</div>
+            <h3 class="text-[#2E5B37] font-bold text-lg mb-2">Acervo Digital</h3>
+            <p class="text-gray-500 text-sm mb-5">Explore nossa coleção de obras, livros e documentos históricos.</p>
+            <a href="/pesquisa" class="inline-block bg-[#2E5B37] text-white px-6 py-2.5 rounded-lg font-medium hover:bg-[#1f4026]">Explorar Acervo</a>
+        </div>
+
+        <!-- Cadastrar — só admin -->
+        <div th:if="${session.usuario != null and session.usuario.papel == 'ADMINISTRADOR'}"
+             class="bg-white border-2 border-[#2E5B37] rounded-xl p-6 text-center hover:shadow-xl transition-shadow">
+            <div class="bg-[#2E5B37] text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-md">➕</div>
+            <h3 class="text-[#2E5B37] font-bold text-lg mb-2">Cadastrar Obra</h3>
+            <p class="text-gray-500 text-sm mb-5">Adicione novas obras ao acervo digital do museu.</p>
+            <a href="/cadastro" class="inline-block bg-[#2E5B37] text-white px-6 py-2.5 rounded-lg font-medium hover:bg-[#1f4026]">Cadastrar</a>
+        </div>
+
+        <!-- Painel — só admin -->
+        <div th:if="${session.usuario != null and session.usuario.papel == 'ADMINISTRADOR'}"
+             class="bg-white border-2 border-[#2E5B37] rounded-xl p-6 text-center hover:shadow-xl transition-shadow">
+            <div class="bg-[#2E5B37] text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-md">📊</div>
+            <h3 class="text-[#2E5B37] font-bold text-lg mb-2">Painel Admin</h3>
+            <p class="text-gray-500 text-sm mb-5">Histórico de acessos, log de ações e obras mais buscadas.</p>
+            <a href="/admin" class="inline-block bg-[#2E5B37] text-white px-6 py-2.5 rounded-lg font-medium hover:bg-[#1f4026]">Acessar Painel</a>
+        </div>
+    </div>
+
+    <!-- Sobre -->
+    <div class="bg-white rounded-xl p-8 border border-gray-200">
+        <h2 class="text-[#2E5B37] text-center text-2xl font-bold mb-6">Sobre o Museu</h2>
+        <div class="grid md:grid-cols-2 gap-8">
+            <div>
+                <h3 class="text-[#2E5B37] font-semibold mb-3">Nossa História</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    A Sociedade Cultural Ferroviária Treze de Maio foi fundada com o objetivo de valorizar
+                    e preservar a memória cultural afro-brasileira, especialmente ligada aos trabalhadores
+                    ferroviários e suas contribuições para a sociedade.
+                </p>
+            </div>
+            <div>
+                <h3 class="text-[#2E5B37] font-semibold mb-3">Nossa Missão</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Promover o conhecimento, a pesquisa e a valorização da cultura afro-brasileira através
+                    da preservação de documentos, livros e objetos históricos, tornando-os acessíveis
+                    a pesquisadores, estudantes e ao público em geral.
+                </p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="bg-[#2E5B37] text-white text-center py-4 text-sm mt-auto">
+    Museu Treze de Maio — Sistema de Acervo Digital
+</footer>
+</body>
+</html>

@@ -22,7 +22,7 @@ public class ObraService {
     public Obra salvar(Obra obra, String emailAdmin) {
         Obra salva = obraRepository.save(obra);
 
-
+        // Registra no log quem cadastrou ou editou
         LogAcao log = new LogAcao();
         log.setEmailUsuario(emailAdmin);
         log.setAcao(obra.getId() == null ? "CADASTROU_OBRA" : "EDITOU_OBRA");
@@ -41,7 +41,7 @@ public class ObraService {
                 (dataFim != null && !dataFim.isBlank()) ? dataFim : null
         );
 
-
+        // Incrementa o contador de buscas de cada obra encontrada
         for (Obra o : resultados) {
             o.setContadorBuscas(o.getContadorBuscas() + 1);
             obraRepository.save(o);
@@ -70,7 +70,7 @@ public class ObraService {
         });
     }
 
-
+    // Registra saída (empréstimo) de uma obra
     public Obra registrarSaida(Long id, String emailAdmin) {
         Obra obra = obraRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Obra não encontrada"));
@@ -88,7 +88,7 @@ public class ObraService {
         return obra;
     }
 
-
+    // Registra devolução de uma obra
     public Obra registrarDevolucao(Long id, String emailAdmin) {
         Obra obra = obraRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Obra não encontrada"));

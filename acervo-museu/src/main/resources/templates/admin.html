@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Painel Admin — Museu Treze de Maio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+<nav th:replace="~{fragmentos :: navbar}"></nav>
+
+<main class="max-w-6xl mx-auto px-4 py-10 flex-1">
+    <div class="flex items-center gap-3 mb-8">
+        <div class="bg-[#2E5B37] text-white w-10 h-10 rounded-full flex items-center justify-center text-lg">📊</div>
+        <div>
+            <h1 class="text-2xl font-bold text-[#2E5B37]">Painel Administrativo</h1>
+            <p class="text-gray-500 text-sm">Visível apenas para administradores</p>
+        </div>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-8">
+
+        <!-- Histórico de acessos -->
+        <div>
+            <h2 class="text-[#2E5B37] font-bold text-lg mb-4">👥 Histórico de Acessos</h2>
+            <div class="bg-white border-2 border-gray-200 rounded-xl overflow-hidden">
+                <table class="w-full text-sm">
+                    <thead class="bg-[#2E5B37] text-white">
+                        <tr>
+                            <th class="px-4 py-3 text-left">Data/Hora</th>
+                            <th class="px-4 py-3 text-left">Página</th>
+                            <th class="px-4 py-3 text-left">Usuário</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${acessos.empty}">
+                            <td colspan="3" class="px-4 py-6 text-center text-gray-400">Nenhum acesso registrado</td>
+                        </tr>
+                        <tr th:each="a : ${acessos}" class="border-t hover:bg-gray-50">
+                            <td class="px-4 py-3 text-gray-600 text-xs" th:text="${#temporals.format(a.dataHora, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td class="px-4 py-3 text-[#2E5B37] font-medium" th:text="${a.pagina}"></td>
+                            <td class="px-4 py-3 text-gray-600">
+                                <span th:if="${a.emailUsuario}" th:text="${a.emailUsuario}"></span>
+                                <span th:if="${a.emailUsuario == null}" class="text-gray-400 italic">Não logado</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Top obras mais buscadas -->
+        <div>
+            <h2 class="text-[#2E5B37] font-bold text-lg mb-4">🔥 Obras Mais Buscadas</h2>
+            <div class="space-y-3">
+                <p th:if="${top.empty}" class="text-gray-400 text-center py-10">Nenhuma busca registrada ainda</p>
+                <div th:each="obra, i : ${top}"
+                     class="bg-white border-2 border-[#2E5B37] rounded-xl p-4 flex gap-4 items-center shadow-sm">
+                    <div class="bg-[#2E5B37] text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg shrink-0"
+                         th:text="${i.index + 1}"></div>
+                    <div>
+                        <p class="font-bold text-[#2E5B37]" th:text="${obra.titulo}"></p>
+                        <p class="text-sm text-gray-500" th:text="${obra.autor}"></p>
+                        <p class="text-xs text-gray-400 mt-1" th:text="${obra.contadorBuscas} + ' busca(s)'"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Log de ações -->
+    <div class="mt-10">
+        <h2 class="text-[#2E5B37] font-bold text-lg mb-4">📋 Log de Ações</h2>
+        <div class="bg-white border-2 border-gray-200 rounded-xl overflow-hidden">
+            <table class="w-full text-sm">
+                <thead class="bg-[#2E5B37] text-white">
+                    <tr>
+                        <th class="px-4 py-3 text-left">Data/Hora</th>
+                        <th class="px-4 py-3 text-left">Usuário</th>
+                        <th class="px-4 py-3 text-left">Ação</th>
+                        <th class="px-4 py-3 text-left">Detalhes</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaLogs">
+                    <tr>
+                        <td colspan="4" class="px-4 py-6 text-center text-gray-400">Carregando...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<footer class="bg-[#2E5B37] text-white text-center py-4 text-sm mt-8">
+    Museu Treze de Maio — Sistema de Acervo Digital
+</footer>
+
+<!-- Carrega os logs via JS para não pesar a página -->
+<script>
+    fetch('/log/acoes')
+        .then(r => r.json())
+        .then(logs => {
+            const tbody = document.getElementById('tabelaLogs');
+            if (logs.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="px-4 py-6 text-center text-gray-400">Nenhuma ação registrada</td></tr>';
+                return;
+            }
+            tbody.innerHTML = logs.map(l => `
+                <tr class="border-t hover:bg-gray-50">
+                    <td class="px-4 py-3 text-gray-600 text-xs">${new Date(l.dataHora).toLocaleString('pt-BR')}</td>
+                    <td class="px-4 py-3 text-[#2E5B37]">${l.emailUsuario || ''}</td>
+                    <td class="px-4 py-3"><span class="bg-[#2E5B37]/10 text-[#2E5B37] px-2 py-0.5 rounded text-xs font-mono font-bold">${l.acao}</span></td>
+                    <td class="px-4 py-3 text-gray-600">${l.detalhes || ''}</td>
+                </tr>
+            `).join('');
+        });
+</script>
+</body>
+</html>
