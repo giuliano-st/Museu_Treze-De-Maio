@@ -21,7 +21,7 @@ public class Usuario {
     @Column(nullable = false)
     private String senha;
 
-    // "ADMINISTRADOR" ou "VISITANTE"
+
     @Column(nullable = false)
     private String papel;
 }

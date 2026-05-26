@@ -25,7 +25,7 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
-    // Valida e-mail e senha, retorna o usuário se correto
+
     public Optional<Usuario> login(String email, String senha) {
         Optional<Usuario> usuario = usuarioRepository.findByEmail(email);
         if (usuario.isPresent() && usuario.get().getSenha().equals(senha)) {

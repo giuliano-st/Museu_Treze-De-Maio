@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-// Cria o usuário admin padrão na primeira vez que o sistema inicia
+
 @Component
 public class CargaInicial implements CommandLineRunner {
 

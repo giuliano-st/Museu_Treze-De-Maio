@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ObraRepository extends JpaRepository<Obra, Long> {
 
-    // Busca geral por título, autor, assuntos ou ano — usado na pesquisa
+
     @Query("SELECT o FROM Obra o WHERE " +
            "(:termo IS NULL OR LOWER(o.titulo) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
            "LOWER(o.autor) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
@@ -26,6 +26,6 @@ public interface ObraRepository extends JpaRepository<Obra, Long> {
             @Param("dataFim") String dataFim
     );
 
-    // Top 5 obras mais buscadas — usado no painel admin
+
     List<Obra> findTop5ByOrderByContadorBuscasDesc();
 }
