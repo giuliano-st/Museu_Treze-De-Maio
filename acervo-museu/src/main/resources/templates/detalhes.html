@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Detalhes — Museu Treze de Maio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+<nav th:replace="~{fragmentos :: navbar}"></nav>
+
+<main class="max-w-5xl mx-auto px-4 py-8 flex-1">
+    <a href="/pesquisa" class="inline-flex items-center gap-2 text-[#2E5B37] hover:underline text-sm mb-6">
+        ← Voltar para o Acervo
+    </a>
+
+    <!-- Barra admin -->
+    <div th:if="${isAdmin}" class="bg-[#2E5B37] text-white rounded-xl p-4 mb-6 flex flex-wrap gap-3 justify-between items-center shadow-md">
+        <span class="font-semibold">🔒 Painel Administrativo</span>
+        <div class="flex flex-wrap gap-2">
+            <a th:href="@{/cadastro/{tipo}(tipo=${obra.tipo.toLowerCase()}, editar=${obra.id})}"
+               class="bg-white text-[#2E5B37] px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-100">✏️ Editar</a>
+
+            <!-- Saída / Devolução -->
+            <form th:if="${obra.status == 'DISPONIVEL'}" th:action="@{/obra/saida/{id}(id=${obra.id})}" method="post" class="inline">
+                <button type="submit" class="bg-amber-500 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-amber-600">📤 Registrar Saída</button>
+            </form>
+            <form th:if="${obra.status != 'DISPONIVEL'}" th:action="@{/obra/devolucao/{id}(id=${obra.id})}" method="post" class="inline">
+                <button type="submit" class="bg-emerald-500 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-emerald-600">📥 Registrar Devolução</button>
+            </form>
+
+            <form th:action="@{/obra/excluir/{id}(id=${obra.id})}" method="post" class="inline"
+                  onsubmit="return confirm('Excluir esta obra?')">
+                <button type="submit" class="bg-red-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-red-700">🗑️ Excluir</button>
+            </form>
+        </div>
+    </div>
+
+    <div th:if="${obra != null}" class="bg-white border-2 border-[#2E5B37] rounded-xl shadow-xl overflow-hidden">
+        <div class="grid md:grid-cols-2 gap-8 p-8">
+
+            <!-- Capa -->
+            <div>
+                <div class="border-4 border-[#2E5B37] rounded-xl overflow-hidden shadow-lg">
+                    <img th:src="${obra.capa != null and !obra.capa.isEmpty()} ? ${obra.capa} : 'https://via.placeholder.com/400x600?text=Sem+Capa'"
+                         th:alt="${obra.titulo}" class="w-full object-cover"/>
+                </div>
+                <div class="flex items-center gap-2 mt-4 flex-wrap">
+                    <span class="px-3 py-1 rounded-full border-2 text-sm font-semibold bg-blue-100 text-blue-700 border-blue-300"
+                          th:text="${obra.tipo}"></span>
+                    <span class="px-3 py-1 rounded-full text-sm font-medium"
+                          th:classappend="${obra.status == 'DISPONIVEL'} ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'"
+                          th:text="${obra.status}"></span>
+                </div>
+            </div>
+
+            <!-- Informações -->
+            <div class="space-y-4">
+                <h1 class="text-[#2E5B37] text-2xl font-bold" th:text="${obra.titulo}"></h1>
+
+                <div class="space-y-3 text-sm">
+                    <div th:if="${obra.autor}" class="flex items-start gap-3">
+                        <span class="text-[#2E5B37]">👤</span>
+                        <div><p class="text-gray-400 text-xs">Autor</p><p class="font-medium" th:text="${obra.autor}"></p></div>
+                    </div>
+                    <div th:if="${obra.dataPublicacao}" class="flex items-start gap-3">
+                        <span class="text-[#2E5B37]">📅</span>
+                        <div><p class="text-gray-400 text-xs">Data de Publicação</p><p class="font-medium" th:text="${obra.dataPublicacao}"></p></div>
+                    </div>
+                    <div th:if="${obra.categoria}" class="flex items-start gap-3">
+                        <span class="text-[#2E5B37]">🏷️</span>
+                        <div><p class="text-gray-400 text-xs">Categoria</p><p class="font-medium" th:text="${obra.categoria}"></p></div>
+                    </div>
+                    <div th:if="${obra.editora}" class="flex items-start gap-3">
+                        <span class="text-[#2E5B37]">🏢</span>
+                        <div><p class="text-gray-400 text-xs">Editora</p><p class="font-medium" th:text="${obra.editora}"></p></div>
+                    </div>
+                    <div th:if="${obra.assuntos}" class="flex items-start gap-3">
+                        <span class="text-[#2E5B37]">📋</span>
+                        <div><p class="text-gray-400 text-xs">Assuntos</p><p class="font-medium" th:text="${obra.assuntos}"></p></div>
+                    </div>
+                    <div th:if="${obra.doador}" class="flex items-start gap-3">
+                        <span class="text-[#2E5B37]">🎁</span>
+                        <div><p class="text-gray-400 text-xs">Doador</p><p class="font-medium" th:text="${obra.doador}"></p></div>
+                    </div>
+                </div>
+
+                <!-- Campos admin -->
+                <div th:if="${isAdmin}" class="border-t-2 border-[#2E5B37] pt-4 mt-4 space-y-3">
+                    <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-amber-800 text-sm">🔒 Informações Administrativas</div>
+                    <div th:if="${obra.localizacaoFisica}" class="flex items-start gap-3 text-sm">
+                        <span class="text-[#2E5B37]">📍</span>
+                        <div><p class="text-gray-400 text-xs">Localização</p><p class="font-medium" th:text="${obra.localizacaoFisica}"></p></div>
+                    </div>
+                    <div th:if="${obra.isbn}" class="flex items-start gap-3 text-sm">
+                        <span class="text-[#2E5B37]">#</span>
+                        <div><p class="text-gray-400 text-xs">ISBN</p><p class="font-medium" th:text="${obra.isbn}"></p></div>
+                    </div>
+                    <div class="flex items-start gap-3 text-sm">
+                        <span class="text-[#2E5B37]">📤</span>
+                        <div><p class="text-gray-400 text-xs">Total de Saídas</p>
+                            <p class="font-medium" th:text="${obra.quantidadeSaidas} + ' vez(es)'"></p></div>
+                    </div>
+                    <div th:if="${obra.notasInternas}" class="flex items-start gap-3 text-sm">
+                        <span class="text-[#2E5B37]">📝</span>
+                        <div><p class="text-gray-400 text-xs">Notas Internas</p><p class="font-medium" th:text="${obra.notasInternas}"></p></div>
+                    </div>
+                </div>
+
+                <div th:if="${session.usuario == null}"
+                     class="bg-blue-50 border border-blue-200 rounded-lg p-3 text-blue-700 text-sm">
+                    Faça login como administrador para ver informações adicionais.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${obra == null}" class="text-center py-20 text-gray-400">Obra não encontrada.</div>
+</main>
+
+<footer class="bg-[#2E5B37] text-white text-center py-4 text-sm mt-8">
+    Museu Treze de Maio — Sistema de Acervo Digital
+</footer>
+</body>
+</html>

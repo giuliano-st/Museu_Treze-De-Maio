@@ -13,10 +13,13 @@ public class LogAcao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Quem fez a ação
     private String emailUsuario;
 
+    // Ex: "CADASTROU_OBRA", "EDITOU_OBRA", "EXCLUIU_OBRA", "LOGIN", "SAIDA_OBRA"
     private String acao;
 
+    // Detalhes livres, ex: "Obra: Título X (id=5)"
     private String detalhes;
 
     private LocalDateTime dataHora = LocalDateTime.now();
