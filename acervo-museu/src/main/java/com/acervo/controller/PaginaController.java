@@ -1,41 +1,40 @@
 package com.acervo.controller;
 
-import com.acervo.model.Obra;
-import com.acervo.model.Usuario;
-import com.acervo.service.AcessoService;
-import com.acervo.service.ObraService;
-import com.acervo.service.UsuarioService;
-import jakarta.servlet.http.HttpServletRequest;
+import com.acervo.model.*;
+import com.acervo.service.*;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @Controller
 public class PaginaController {
 
     @Autowired
-    private ObraService obraService;
-
-    @Autowired
     private UsuarioService usuarioService;
 
     @Autowired
-    private AcessoService acessoService;
+    private ObraService obraService;
 
-    // ─── HOME ───────────────────────────────────────────────
+    @Autowired
+    private ExemplarService exemplarService;
+
+    @Autowired
+    private HistoricoService historicoService;
+
+    @Autowired
+    private AutorEditoraAssuntoService auxService;
+
+    // HOME
     @GetMapping("/")
-    public String home(HttpSession session, HttpServletRequest request) {
-        Usuario u = (Usuario) session.getAttribute("usuario");
-        registrar(request, "/", u);
+    public String home() {
         return "home";
     }
 
-    // ─── LOGIN ──────────────────────────────────────────────
+    // LOGIN
     @GetMapping("/login")
     public String loginForm() {
         return "login";
@@ -60,191 +59,237 @@ public class PaginaController {
         return "redirect:/";
     }
 
-    // ─── CADASTRO DE USUÁRIO ────────────────────────────────
-    @GetMapping("/register")
-    public String registerForm() {
-        return "register";
-    }
-
-    @PostMapping("/register")
-    public String register(@ModelAttribute Usuario usuario, Model model) {
-        try {
-            usuarioService.cadastrar(usuario);
-            return "redirect:/login";
-        } catch (RuntimeException e) {
-            model.addAttribute("erro", e.getMessage());
-            return "register";
-        }
-    }
-
-    // ─── PESQUISA ───────────────────────────────────────────
+    // PESQUISA
     @GetMapping("/pesquisa")
     public String pesquisa(@RequestParam(required = false) String termo,
                            @RequestParam(required = false) String tipo,
-                           @RequestParam(required = false) String categoria,
-                           @RequestParam(required = false) String dataInicio,
-                           @RequestParam(required = false) String dataFim,
-                           Model model, HttpSession session, HttpServletRequest request) {
-        Usuario u = (Usuario) session.getAttribute("usuario");
-        registrar(request, "/pesquisa", u);
-
-        List<Obra> obras = obraService.buscar(termo, tipo, categoria, dataInicio, dataFim);
-        model.addAttribute("obras", obras);
+                           Model model) {
+        model.addAttribute("obras", obraService.buscar(termo, tipo));
         model.addAttribute("termo", termo);
         model.addAttribute("tipo", tipo);
-        model.addAttribute("categoria", categoria);
-        model.addAttribute("dataInicio", dataInicio);
-        model.addAttribute("dataFim", dataFim);
         return "pesquisa";
     }
 
-    // ─── DETALHES ───────────────────────────────────────────
+    // VISUALIZAR OBRA
     @GetMapping("/obra/{id}")
-    public String detalhes(@PathVariable Long id, Model model,
-                           HttpSession session, HttpServletRequest request) {
+    public String visualizar(@PathVariable Long id, Model model, HttpSession session) {
+        Optional<Obra> obra = obraService.buscarPorId(id);
+        if (obra.isEmpty()) return "redirect:/pesquisa";
+        model.addAttribute("obra", obra.get());
+        model.addAttribute("exemplares", exemplarService.listarPorObra(id));
         Usuario u = (Usuario) session.getAttribute("usuario");
-        registrar(request, "/obra/" + id, u);
-
-        obraService.buscarPorId(id).ifPresent(o -> model.addAttribute("obra", o));
-        model.addAttribute("isAdmin", u != null && "ADMINISTRADOR".equals(u.getPapel()));
+        model.addAttribute("isBibliotecario", u != null && "BIBLIOTECARIO".equals(u.getRole()));
+        model.addAttribute("isAdmin", u != null && "ADMIN".equals(u.getRole()));
         return "detalhes";
     }
 
-    // ─── CADASTRO OBRAS (escolha de tipo) ───────────────────
+    // CADASTRAR OBRA
     @GetMapping("/cadastro")
     public String cadastroEscolha(HttpSession session) {
-        if (!isAdmin(session)) return "redirect:/login";
+        if (!isBibliotecario(session)) return "redirect:/login";
         return "cadastro-escolha";
     }
 
-    // ─── CADASTRO LIVRO ─────────────────────────────────────
     @GetMapping("/cadastro/livro")
-    public String livroForm(HttpSession session, Model model,
-                            @RequestParam(required = false) Long editar) {
-        if (!isAdmin(session)) return "redirect:/login";
-        if (editar != null) {
-            obraService.buscarPorId(editar).ifPresent(o -> model.addAttribute("obra", o));
-        } else {
-            model.addAttribute("obra", new Obra());
-        }
+    public String livroForm(@RequestParam(required = false) Long editar,
+                            HttpSession session, Model model) {
+        if (!isBibliotecario(session)) return "redirect:/login";
+        carregarAuxiliares(model);
+        model.addAttribute("obra", editar != null
+                ? obraService.buscarPorId(editar).orElse(new Obra()) : new Obra());
         return "cadastro-livro";
     }
 
     @PostMapping("/cadastro/livro")
-    public String livroSalvar(@ModelAttribute Obra obra, HttpSession session) {
-        if (!isAdmin(session)) return "redirect:/login";
+    public String livroSalvar(@ModelAttribute Obra obra,
+                              @RequestParam(required = false) Long autorId,
+                              @RequestParam(required = false) Long editoraId,
+                              HttpSession session) {
+        if (!isBibliotecario(session)) return "redirect:/login";
         Usuario u = (Usuario) session.getAttribute("usuario");
-        obra.setTipo("LIVRO");
-        if (obra.getQuantidadeSaidas() == null) obra.setQuantidadeSaidas(0);
-        if (obra.getContadorBuscas() == null) obra.setContadorBuscas(0);
-        if (obra.getStatus() == null || obra.getStatus().isBlank()) obra.setStatus("DISPONIVEL");
-        obraService.salvar(obra, u.getEmail());
+        obra.setObraTipo("LIVRO");
+        vincularAuxiliares(obra, autorId, editoraId);
+        obraService.salvar(obra, u);
         return "redirect:/cadastro";
     }
 
-    // ─── CADASTRO JORNAL ────────────────────────────────────
     @GetMapping("/cadastro/jornal")
-    public String jornalForm(HttpSession session, Model model,
-                             @RequestParam(required = false) Long editar) {
-        if (!isAdmin(session)) return "redirect:/login";
-        if (editar != null) {
-            obraService.buscarPorId(editar).ifPresent(o -> model.addAttribute("obra", o));
-        } else {
-            model.addAttribute("obra", new Obra());
-        }
+    public String jornalForm(@RequestParam(required = false) Long editar,
+                             HttpSession session, Model model) {
+        if (!isBibliotecario(session)) return "redirect:/login";
+        carregarAuxiliares(model);
+        model.addAttribute("obra", editar != null
+                ? obraService.buscarPorId(editar).orElse(new Obra()) : new Obra());
         return "cadastro-jornal";
     }
 
     @PostMapping("/cadastro/jornal")
-    public String jornalSalvar(@ModelAttribute Obra obra, HttpSession session) {
-        if (!isAdmin(session)) return "redirect:/login";
+    public String jornalSalvar(@ModelAttribute Obra obra,
+                               @RequestParam(required = false) Long autorId,
+                               @RequestParam(required = false) Long editoraId,
+                               HttpSession session) {
+        if (!isBibliotecario(session)) return "redirect:/login";
         Usuario u = (Usuario) session.getAttribute("usuario");
-        obra.setTipo("JORNAL");
-        if (obra.getQuantidadeSaidas() == null) obra.setQuantidadeSaidas(0);
-        if (obra.getContadorBuscas() == null) obra.setContadorBuscas(0);
-        if (obra.getStatus() == null || obra.getStatus().isBlank()) obra.setStatus("DISPONIVEL");
-        obraService.salvar(obra, u.getEmail());
+        obra.setObraTipo("JORNAL");
+        vincularAuxiliares(obra, autorId, editoraId);
+        obraService.salvar(obra, u);
         return "redirect:/cadastro";
     }
 
-    // ─── CADASTRO REVISTA ───────────────────────────────────
     @GetMapping("/cadastro/revista")
-    public String revistaForm(HttpSession session, Model model,
-                              @RequestParam(required = false) Long editar) {
-        if (!isAdmin(session)) return "redirect:/login";
-        if (editar != null) {
-            obraService.buscarPorId(editar).ifPresent(o -> model.addAttribute("obra", o));
-        } else {
-            model.addAttribute("obra", new Obra());
-        }
+    public String revistaForm(@RequestParam(required = false) Long editar,
+                              HttpSession session, Model model) {
+        if (!isBibliotecario(session)) return "redirect:/login";
+        carregarAuxiliares(model);
+        model.addAttribute("obra", editar != null
+                ? obraService.buscarPorId(editar).orElse(new Obra()) : new Obra());
         return "cadastro-revista";
     }
 
     @PostMapping("/cadastro/revista")
-    public String revistaSalvar(@ModelAttribute Obra obra, HttpSession session) {
-        if (!isAdmin(session)) return "redirect:/login";
+    public String revistaSalvar(@ModelAttribute Obra obra,
+                                @RequestParam(required = false) Long autorId,
+                                @RequestParam(required = false) Long editoraId,
+                                HttpSession session) {
+        if (!isBibliotecario(session)) return "redirect:/login";
         Usuario u = (Usuario) session.getAttribute("usuario");
-        obra.setTipo("REVISTA");
-        if (obra.getQuantidadeSaidas() == null) obra.setQuantidadeSaidas(0);
-        if (obra.getContadorBuscas() == null) obra.setContadorBuscas(0);
-        if (obra.getStatus() == null || obra.getStatus().isBlank()) obra.setStatus("DISPONIVEL");
-        obraService.salvar(obra, u.getEmail());
+        obra.setObraTipo("REVISTA");
+        vincularAuxiliares(obra, autorId, editoraId);
+        obraService.salvar(obra, u);
         return "redirect:/cadastro";
     }
 
-    // ─── EXCLUIR ────────────────────────────────────────────
+    // EXCLUIR OBRA
     @PostMapping("/obra/excluir/{id}")
-    public String excluir(@PathVariable Long id, HttpSession session) {
-        if (!isAdmin(session)) return "redirect:/login";
+    public String excluirObra(@PathVariable Long id, HttpSession session) {
+        if (!isBibliotecario(session)) return "redirect:/login";
         Usuario u = (Usuario) session.getAttribute("usuario");
-        obraService.excluir(id, u.getEmail());
+        obraService.excluir(id, u);
         return "redirect:/pesquisa";
     }
 
-    // ─── SAÍDA / DEVOLUÇÃO ──────────────────────────────────
-    @PostMapping("/obra/saida/{id}")
-    public String saida(@PathVariable Long id, HttpSession session) {
+    // EXEMPLARES
+    @GetMapping("/obra/{obraId}/exemplares")
+    public String exemplares(@PathVariable Long obraId, HttpSession session, Model model) {
+        if (!isBibliotecario(session)) return "redirect:/login";
+        model.addAttribute("obra", obraService.buscarPorId(obraId).orElse(null));
+        model.addAttribute("exemplares", exemplarService.listarPorObra(obraId));
+        model.addAttribute("exemplar", new Exemplar());
+        return "exemplares";
+    }
+
+    @PostMapping("/obra/{obraId}/exemplares/salvar")
+    public String salvarExemplar(@PathVariable Long obraId,
+                                 @ModelAttribute Exemplar exemplar,
+                                 HttpSession session) {
+        if (!isBibliotecario(session)) return "redirect:/login";
+        obraService.buscarPorId(obraId).ifPresent(exemplar::setObra);
+        if (exemplar.getDisponibilidade() == null) exemplar.setDisponibilidade(true);
+        exemplarService.salvar(exemplar);
+        return "redirect:/obra/" + obraId + "/exemplares";
+    }
+
+    @PostMapping("/exemplar/excluir/{id}")
+    public String excluirExemplar(@PathVariable Long id, HttpSession session) {
+        if (!isBibliotecario(session)) return "redirect:/login";
+        Exemplar e = exemplarService.buscarPorId(id).orElse(null);
+        Long obraId = e != null ? e.getObra().getId() : null;
+        exemplarService.excluir(id);
+        return obraId != null ? "redirect:/obra/" + obraId + "/exemplares" : "redirect:/pesquisa";
+    }
+
+    // HISTÓRICO
+    @GetMapping("/historico")
+    public String historico(HttpSession session, Model model) {
+        if (!isBibliotecario(session)) return "redirect:/login";
+        model.addAttribute("registros", historicoService.listarTodos());
+        return "historico";
+    }
+
+    // USUÁRIOS (só admin)
+    @GetMapping("/usuarios")
+    public String usuarios(HttpSession session, Model model) {
         if (!isAdmin(session)) return "redirect:/login";
-        Usuario u = (Usuario) session.getAttribute("usuario");
-        obraService.registrarSaida(id, u.getEmail());
-        return "redirect:/obra/" + id;
+        model.addAttribute("usuarios", usuarioService.listarTodos());
+        model.addAttribute("usuario", new Usuario());
+        return "usuarios";
     }
 
-    @PostMapping("/obra/devolucao/{id}")
-    public String devolucao(@PathVariable Long id, HttpSession session) {
+    @PostMapping("/usuarios/salvar")
+    public String salvarUsuario(@ModelAttribute Usuario usuario,
+                                HttpSession session, Model model) {
         if (!isAdmin(session)) return "redirect:/login";
-        Usuario u = (Usuario) session.getAttribute("usuario");
-        obraService.registrarDevolucao(id, u.getEmail());
-        return "redirect:/obra/" + id;
+        try {
+            usuarioService.salvar(usuario);
+        } catch (RuntimeException e) {
+            model.addAttribute("erro", e.getMessage());
+            model.addAttribute("usuarios", usuarioService.listarTodos());
+            model.addAttribute("usuario", usuario);
+            return "usuarios";
+        }
+        return "redirect:/usuarios";
     }
 
-    // ─── PAINEL ADMIN ───────────────────────────────────────
-    @GetMapping("/admin")
-    public String admin(HttpSession session, Model model) {
+    @PostMapping("/usuarios/excluir/{id}")
+    public String excluirUsuario(@PathVariable Long id, HttpSession session) {
         if (!isAdmin(session)) return "redirect:/login";
-        model.addAttribute("acessos", acessoService.listarTodos());
-        model.addAttribute("top", obraService.maisAcessadas());
-        return "admin";
+        usuarioService.excluir(id);
+        return "redirect:/usuarios";
     }
 
-    // ─── PERFIL ─────────────────────────────────────────────
-    @GetMapping("/perfil")
-    public String perfil(HttpSession session, Model model) {
+    // DADOS AUXILIARES
+    @GetMapping("/dados")
+    public String dados(HttpSession session, Model model) {
+        if (!isBibliotecario(session)) return "redirect:/login";
+        model.addAttribute("autores", auxService.listarAutores());
+        model.addAttribute("editoras", auxService.listarEditoras());
+        model.addAttribute("assuntos", auxService.listarAssuntos());
+        model.addAttribute("autor", new Autor());
+        model.addAttribute("editora", new Editora());
+        model.addAttribute("assunto", new Assunto());
+        return "dados";
+    }
+
+    @PostMapping("/dados/autor/salvar")
+    public String salvarAutor(@ModelAttribute Autor autor, HttpSession session) {
+        if (!isBibliotecario(session)) return "redirect:/login";
+        auxService.salvarAutor(autor);
+        return "redirect:/dados";
+    }
+
+    @PostMapping("/dados/editora/salvar")
+    public String salvarEditora(@ModelAttribute Editora editora, HttpSession session) {
+        if (!isBibliotecario(session)) return "redirect:/login";
+        auxService.salvarEditora(editora);
+        return "redirect:/dados";
+    }
+
+    @PostMapping("/dados/assunto/salvar")
+    public String salvarAssunto(@ModelAttribute Assunto assunto, HttpSession session) {
+        if (!isBibliotecario(session)) return "redirect:/login";
+        auxService.salvarAssunto(assunto);
+        return "redirect:/dados";
+    }
+
+    // HELPERS
+    private boolean isBibliotecario(HttpSession session) {
         Usuario u = (Usuario) session.getAttribute("usuario");
-        if (u == null) return "redirect:/login";
-        model.addAttribute("usuario", u);
-        return "perfil";
+        return u != null && ("BIBLIOTECARIO".equals(u.getRole()) || "ADMIN".equals(u.getRole()));
     }
 
-    // ─── HELPERS ────────────────────────────────────────────
     private boolean isAdmin(HttpSession session) {
         Usuario u = (Usuario) session.getAttribute("usuario");
-        return u != null && "ADMINISTRADOR".equals(u.getPapel());
+        return u != null && "ADMIN".equals(u.getRole());
     }
 
-    private void registrar(HttpServletRequest request, String pagina, Usuario u) {
-        String ip = request.getHeader("X-Forwarded-For");
-        if (ip == null) ip = request.getRemoteAddr();
-        acessoService.registrar(ip, pagina, u != null ? u.getEmail() : null);
+    private void carregarAuxiliares(Model model) {
+        model.addAttribute("autores", auxService.listarAutores());
+        model.addAttribute("editoras", auxService.listarEditoras());
+        model.addAttribute("assuntos", auxService.listarAssuntos());
+    }
+
+    private void vincularAuxiliares(Obra obra, Long autorId, Long editoraId) {
+        if (autorId != null) { Autor a = new Autor(); a.setId(autorId); obra.setAutor(a); }
+        if (editoraId != null) { Editora e = new Editora(); e.setId(editoraId); obra.setEditora(e); }
     }
 }
