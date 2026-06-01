@@ -1,4 +1,4 @@
-package com.acervo.model;
+package inf.laboratorio.museutreze.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -16,7 +16,6 @@ public class Exemplar {
 
     private Integer numero;
 
-    // Cada exemplar pertence a uma obra
     @ManyToOne
     @JoinColumn(name = "obra_id", nullable = false)
     private Obra obra;

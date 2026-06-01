@@ -1,7 +1,10 @@
-package com.acervo.model;
+package inf.laboratorio.museutreze.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -13,16 +16,16 @@ public class Obra {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // "LIVRO", "JORNAL", "REVISTA"
     @Column(nullable = false)
-    private String obraTipo;
+    private String obra_tipo;
 
     @Column(nullable = false)
-    private String tituloPrincipal;
+    private String titulo_Principal;
 
     private String capa;
     private String local;
-    private String data;
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    private Date data;
     private String descFisica;
     private String nome;
     private String numeroChamada;
@@ -37,22 +40,19 @@ public class Obra {
     private Integer volume;
     private String periodicidade;
 
-    // Autor — muitos para um (uma obra tem um autor principal)
     @ManyToOne
     @JoinColumn(name = "autor_id")
     private Autor autor;
 
-    // Editora — muitos para um
     @ManyToOne
     @JoinColumn(name = "editora_id")
     private Editora editora;
 
-    // Assuntos — muitos para muitos
     @ManyToMany
     @JoinTable(
-        name = "obra_assunto",
-        joinColumns = @JoinColumn(name = "obra_id"),
-        inverseJoinColumns = @JoinColumn(name = "assunto_id")
+            name = "obra_assunto",
+            joinColumns = @JoinColumn(name = "obra_id"),
+            inverseJoinColumns = @JoinColumn(name = "assunto_id")
     )
     private List<Assunto> assuntos;
 }

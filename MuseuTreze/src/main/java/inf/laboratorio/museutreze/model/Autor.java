@@ -1,4 +1,4 @@
-package com.acervo.model;
+package inf.laboratorio.museutreze.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -15,5 +15,6 @@ public class Autor {
     @Column(nullable = false)
     private String nome;
 
+    @Column(nullable = false)
     private String nacionalidade;
 }
