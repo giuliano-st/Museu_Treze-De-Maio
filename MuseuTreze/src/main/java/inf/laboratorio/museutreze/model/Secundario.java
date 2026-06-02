@@ -5,17 +5,18 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "autores")
-public class Autor {
-
+public class Secundario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "autorId")
     private Long id;
 
-    @Column(nullable = false)
-    private String nome;
+    @ManyToOne
+    @JoinColumn(name = "obraId")
+    private Obra obraId;
 
-    @Column(nullable = false)
-    private String nacionalidade;
+    @ManyToOne
+    @JoinColumn(name = "autorId")
+    private Autor autorId;
+
+
 }

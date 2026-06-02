@@ -14,6 +14,7 @@ public class Obra {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "obraId")
     private Long id;
 
     @Column(nullable = false)
