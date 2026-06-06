@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 public interface ObraHistoricoRepository extends JpaRepository<ObraHistorico, Long> {
+    ObraHistorico findById(long id);
     ObraHistorico findByObraId(Long obraId);
 
     List<ObraHistorico> findByDataContains( Date date);
