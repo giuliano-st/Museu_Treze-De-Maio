@@ -4,6 +4,7 @@ import inf.laboratorio.museutreze.dto.ExemplarDTOResponse;
 import inf.laboratorio.museutreze.model.Exemplar;
 import inf.laboratorio.museutreze.model.Obra;
 import inf.laboratorio.museutreze.repository.ExemplarRepository;
+import inf.laboratorio.museutreze.repository.ObraRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,47 +12,66 @@ import java.util.List;
 @Service
 public class ExemplarService {
     private final ExemplarRepository exemplarRepository;
+    private final ObraRepository obraRepository;
 
-    public ExemplarService(ExemplarRepository exemplarRepository) {
+    public ExemplarService(ExemplarRepository exemplarRepository, ObraRepository obraRepository) {
         this.exemplarRepository = exemplarRepository;
+        this.obraRepository = obraRepository;
     }
 
     public ExemplarDTOResponse salvar(ExemplarDTOResponse exemplarDTO) {
         Exemplar exemplar = new Exemplar();
-        Obra obra = new Obra();
-        obra.setId(exemplarDTO.obraId());
+        Obra obra = obraRepository.findById(exemplarDTO.obraId())
+                .orElseThrow(() -> new RuntimeException("Obra não encontrada!"));
 
         exemplar.setDisponibilidade(exemplarDTO.disponibilidade());
         exemplar.setNumero(exemplarDTO.numero());
         exemplar.setObra(obra);
         exemplarRepository.save(exemplar);
-        /* Ver com o Gustavo
-        Obra obra = new Obra();
-        obra.setId(exemplarDTO.obraId());
-        Exemplar exemplar = mapper.toEntity(exemplarDTO, obra);
-        exemplarRepository.save(exemplar);*/
-        return new ExemplarDTOResponse(exemplar.getId(), exemplar.getDisponibilidade(), exemplar.getNumero(),exemplar.getObra().getId(), exemplar.getObra().getTitulo_Principal());
+
+        return new ExemplarDTOResponse(
+                exemplar.getId(),
+                exemplar.getDisponibilidade(),
+                exemplar.getNumero(),
+                exemplar.getObra().getId(),
+                exemplar.getObra().getTitulo_Principal()
+        );
     }
 
     public List<ExemplarDTOResponse> listar() {
         List<Exemplar> exemplares = exemplarRepository.findAll();
-        return exemplares.stream().map(exemplar -> new ExemplarDTOResponse(exemplar.getId(), exemplar.getDisponibilidade(), exemplar.getNumero(), exemplar.getObra().getId(), exemplar.getObra().getTitulo_Principal())).toList();
+        return exemplares.stream().map(exemplar -> new ExemplarDTOResponse(
+                exemplar.getId(),
+                exemplar.getDisponibilidade(),
+                exemplar.getNumero(),
+                exemplar.getObra().getId(),
+                exemplar.getObra().getTitulo_Principal()
+        )).toList();
     }
 
     public ExemplarDTOResponse atualizar(Long id, ExemplarDTOResponse exemplarDTO) {
-        Exemplar exemplar = exemplarRepository.findById(id).orElseThrow(() -> new RuntimeException("Exemplar não encontrado!"));
-        Obra obra = new Obra();
-        obra.setId(exemplarDTO.obraId());
+        Exemplar exemplar = exemplarRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Exemplar não encontrado!"));
+        Obra obra = obraRepository.findById(exemplarDTO.obraId())
+                .orElseThrow(() -> new RuntimeException("Obra não encontrada!"));
 
         exemplar.setDisponibilidade(exemplarDTO.disponibilidade());
         exemplar.setNumero(exemplarDTO.numero());
         exemplar.setObra(obra);
         exemplarRepository.save(exemplar);
-        return new ExemplarDTOResponse(exemplar.getId(), exemplar.getDisponibilidade(), exemplar.getNumero(),exemplar.getObra().getId(), exemplar.getObra().getTitulo_Principal());
+
+        return new ExemplarDTOResponse(
+                exemplar.getId(),
+                exemplar.getDisponibilidade(),
+                exemplar.getNumero(),
+                exemplar.getObra().getId(),
+                exemplar.getObra().getTitulo_Principal()
+        );
     }
 
     public void deletar(Long id) {
-        Exemplar exemplar = exemplarRepository.findById(id).orElseThrow(() -> new RuntimeException("Exemplar não encontrado!"));
+        Exemplar exemplar = exemplarRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Exemplar não encontrado!"));
         exemplarRepository.delete(exemplar);
     }
 }

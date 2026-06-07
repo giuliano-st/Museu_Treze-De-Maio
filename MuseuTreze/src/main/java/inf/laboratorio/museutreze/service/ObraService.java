@@ -15,6 +15,7 @@ import inf.laboratorio.museutreze.repository.EditoraRepository;
 import inf.laboratorio.museutreze.repository.ObraRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -36,7 +37,10 @@ public class ObraService {
     public ObraDTOResponse salvar(ObraDTORequest obraDTO) {
         Autor autor = obraDTO.autorId() != null ? autorRepository.findById(obraDTO.autorId()).orElse(null) : null;
         Editora editora = obraDTO.editoraId() != null ? editoraRepository.findById(obraDTO.editoraId()).orElse(null) : null;
-        List<Assunto> assuntos = obraDTO.assuntosIds() != null ? assuntoRepository.findAllById(obraDTO.assuntosIds()) : List.of();
+
+        List<Assunto> assuntos = obraDTO.assuntosIds() != null
+                ? new ArrayList<>(assuntoRepository.findAllById(obraDTO.assuntosIds()))
+                : new ArrayList<>();
 
         Obra obra = new Obra();
         obra.setObra_tipo(obraDTO.obra_tipo());
@@ -78,7 +82,10 @@ public class ObraService {
         Obra obra = obraRepository.findById(id).orElseThrow(() -> new RuntimeException("Obra não encontrada!"));
         Autor autor = obraDTO.autorId() != null ? autorRepository.findById(obraDTO.autorId()).orElse(null) : null;
         Editora editora = obraDTO.editoraId() != null ? editoraRepository.findById(obraDTO.editoraId()).orElse(null) : null;
-        List<Assunto> assuntos = obraDTO.assuntosIds() != null ? assuntoRepository.findAllById(obraDTO.assuntosIds()) : List.of();
+
+        List<Assunto> assuntos = obraDTO.assuntosIds() != null
+                ? new ArrayList<>(assuntoRepository.findAllById(obraDTO.assuntosIds()))
+                : new ArrayList<>();
 
         obra.setObra_tipo(obraDTO.obra_tipo());
         obra.setTitulo_Principal(obraDTO.titulo_Principal());
