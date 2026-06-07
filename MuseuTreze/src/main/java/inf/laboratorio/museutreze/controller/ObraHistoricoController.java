@@ -1,5 +1,6 @@
 package inf.laboratorio.museutreze.controller;
 
+import inf.laboratorio.museutreze.dto.ObraHistoricoDTORequest;
 import inf.laboratorio.museutreze.dto.ObraHistoricoDTOResponse;
 import inf.laboratorio.museutreze.service.ObraHistoricoService;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class ObraHistoricoController {
     }
 
     @PostMapping
-    public ResponseEntity<ObraHistoricoDTOResponse> salvar(@RequestBody ObraHistoricoDTOResponse obraHistoricoDTO) {
+    public ResponseEntity<ObraHistoricoDTOResponse> salvar(@RequestBody ObraHistoricoDTORequest obraHistoricoDTO) {
         return ResponseEntity.ok(obraHistoricoService.salvar(obraHistoricoDTO));
     }
 
@@ -28,7 +29,7 @@ public class ObraHistoricoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ObraHistoricoDTOResponse> atualizar(@PathVariable Long id, @RequestBody ObraHistoricoDTOResponse obraHistoricoDTO) {
+    public ResponseEntity<ObraHistoricoDTOResponse> atualizar(@PathVariable Long id, @RequestBody ObraHistoricoDTORequest obraHistoricoDTO) {
         return ResponseEntity.ok(obraHistoricoService.atualizar(id, obraHistoricoDTO));
     }
 

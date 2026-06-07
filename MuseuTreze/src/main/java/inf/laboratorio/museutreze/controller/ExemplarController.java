@@ -1,5 +1,6 @@
 package inf.laboratorio.museutreze.controller;
 
+import inf.laboratorio.museutreze.dto.ExemplarDTORequest;
 import inf.laboratorio.museutreze.dto.ExemplarDTOResponse;
 import inf.laboratorio.museutreze.service.ExemplarService;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class ExemplarController {
     }
 
     @PostMapping
-    public ResponseEntity<ExemplarDTOResponse> salvar(@RequestBody ExemplarDTOResponse exemplarDTO) {
+    public ResponseEntity<ExemplarDTOResponse> salvar(@RequestBody ExemplarDTORequest exemplarDTO) {
         return ResponseEntity.ok(exemplarService.salvar(exemplarDTO));
     }
 
@@ -28,7 +29,7 @@ public class ExemplarController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ExemplarDTOResponse> atualizar(@PathVariable Long id, @RequestBody ExemplarDTOResponse exemplarDTO) {
+    public ResponseEntity<ExemplarDTOResponse> atualizar(@PathVariable Long id, @RequestBody ExemplarDTORequest exemplarDTO) {
         return ResponseEntity.ok(exemplarService.atualizar(id, exemplarDTO));
     }
 

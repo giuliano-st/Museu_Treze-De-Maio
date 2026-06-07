@@ -1,5 +1,6 @@
 package inf.laboratorio.museutreze.service;
 
+import inf.laboratorio.museutreze.dto.ExemplarDTORequest;
 import inf.laboratorio.museutreze.dto.ExemplarDTOResponse;
 import inf.laboratorio.museutreze.model.Exemplar;
 import inf.laboratorio.museutreze.model.Obra;
@@ -19,7 +20,7 @@ public class ExemplarService {
         this.obraRepository = obraRepository;
     }
 
-    public ExemplarDTOResponse salvar(ExemplarDTOResponse exemplarDTO) {
+    public ExemplarDTOResponse salvar(ExemplarDTORequest exemplarDTO) {
         Exemplar exemplar = new Exemplar();
         Obra obra = obraRepository.findById(exemplarDTO.obraId())
                 .orElseThrow(() -> new RuntimeException("Obra não encontrada!"));
@@ -44,12 +45,12 @@ public class ExemplarService {
                 exemplar.getId(),
                 exemplar.getDisponibilidade(),
                 exemplar.getNumero(),
-                exemplar.getObra().getId(),
-                exemplar.getObra().getTitulo_Principal()
+                exemplar.getObra() != null ? exemplar.getObra().getId() : null,
+                exemplar.getObra() != null ? exemplar.getObra().getTitulo_Principal() : "Obra não vinculada"
         )).toList();
     }
 
-    public ExemplarDTOResponse atualizar(Long id, ExemplarDTOResponse exemplarDTO) {
+    public ExemplarDTOResponse atualizar(Long id, ExemplarDTORequest exemplarDTO) {
         Exemplar exemplar = exemplarRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Exemplar não encontrado!"));
         Obra obra = obraRepository.findById(exemplarDTO.obraId())
