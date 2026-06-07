@@ -53,6 +53,21 @@ public class ObraHistoricoService {
         );
     }
 
+    public ObraHistoricoDTOResponse buscarPorId(Long id) {
+        ObraHistorico obraHistorico = obraHistoricoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Histórico não encontrado!"));
+
+        return new ObraHistoricoDTOResponse(
+                obraHistorico.getId(),
+                obraHistorico.getOperacao(),
+                obraHistorico.getData(),
+                obraHistorico.getUsuario().getId(),
+                obraHistorico.getUsuario().getNomeUsuario(),
+                obraHistorico.getObra().getId(),
+                obraHistorico.getObra().getTitulo_Principal()
+        );
+    }
+
     public List<ObraHistoricoDTOResponse> listar() {
         List<ObraHistorico> historicos = obraHistoricoRepository.findAll();
         return historicos.stream().map(obraHistorico -> new ObraHistoricoDTOResponse(

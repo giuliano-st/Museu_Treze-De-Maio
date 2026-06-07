@@ -26,6 +26,14 @@ public class AssuntoService {
         );
     }
 
+    public AssuntoDTOResponse buscarPorId(Long id){
+        Assunto assunto = assuntoRepository.findById(id).orElseThrow(() -> new RuntimeException("Assunto não encontrado!"));
+        return new AssuntoDTOResponse(
+                assunto.getId(),
+                assunto.getDescricao()
+        );
+    }
+
     public List<AssuntoDTOResponse> listar(){
         List<Assunto> assuntos = assuntoRepository.findAll();
         return assuntos.stream().map(assunto -> new AssuntoDTOResponse(assunto.getId(), assunto.getDescricao())).toList();

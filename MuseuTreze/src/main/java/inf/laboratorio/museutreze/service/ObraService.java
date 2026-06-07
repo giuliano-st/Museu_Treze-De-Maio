@@ -5,6 +5,7 @@ import inf.laboratorio.museutreze.dto.ObraDTOResponse;
 import inf.laboratorio.museutreze.dto.AutorDTOResponse;
 import inf.laboratorio.museutreze.dto.EditoraDTOResponse;
 import inf.laboratorio.museutreze.dto.AssuntoDTOResponse;
+import inf.laboratorio.museutreze.mapper.ObraMapper;
 import inf.laboratorio.museutreze.model.Assunto;
 import inf.laboratorio.museutreze.model.Autor;
 import inf.laboratorio.museutreze.model.Editora;
@@ -25,13 +26,15 @@ public class ObraService {
     private final AutorRepository autorRepository;
     private final EditoraRepository editoraRepository;
     private final AssuntoRepository assuntoRepository;
+    private final ObraMapper obraMapper;
 
     public ObraService(ObraRepository obraRepository, AutorRepository autorRepository,
-                       EditoraRepository editoraRepository, AssuntoRepository assuntoRepository) {
+                       EditoraRepository editoraRepository, AssuntoRepository assuntoRepository, ObraMapper obraMapper) {
         this.obraRepository = obraRepository;
         this.autorRepository = autorRepository;
         this.editoraRepository = editoraRepository;
         this.assuntoRepository = assuntoRepository;
+        this.obraMapper = obraMapper;
     }
 
     public ObraDTOResponse salvar(ObraDTORequest obraDTO) {
@@ -66,16 +69,16 @@ public class ObraService {
         obra.setAssuntos(assuntos);
         obraRepository.save(obra);
 
-        return toResponse(obra);
+        return obraMapper.toResponse(obra);
     }
 
     public List<ObraDTOResponse> listar() {
-        return obraRepository.findAll().stream().map(this::toResponse).toList();
+        return obraRepository.findAll().stream().map(obraMapper::toResponse).toList();
     }
 
     public ObraDTOResponse buscarPorId(Long id) {
         Obra obra = obraRepository.findById(id).orElseThrow(() -> new RuntimeException("Obra não encontrada!"));
-        return toResponse(obra);
+        return obraMapper.toResponse(obra);
     }
 
     public ObraDTOResponse atualizar(Long id, ObraDTORequest obraDTO) {
@@ -110,50 +113,11 @@ public class ObraService {
         obra.setAssuntos(assuntos);
         obraRepository.save(obra);
 
-        return toResponse(obra);
+        return obraMapper.toResponse(obra);
     }
 
     public void deletar(Long id) {
         Obra obra = obraRepository.findById(id).orElseThrow(() -> new RuntimeException("Obra não encontrada!"));
         obraRepository.delete(obra);
-    }
-
-    private ObraDTOResponse toResponse(Obra obra) {
-        AutorDTOResponse autorResponse = obra.getAutor() != null
-                ? new AutorDTOResponse(obra.getAutor().getId(), obra.getAutor().getNome(), obra.getAutor().getNacionalidade())
-                : null;
-
-        EditoraDTOResponse editoraResponse = obra.getEditora() != null
-                ? new EditoraDTOResponse(obra.getEditora().getId(), obra.getEditora().getNome())
-                : null;
-
-        List<AssuntoDTOResponse> assuntosResponse = obra.getAssuntos() != null
-                ? obra.getAssuntos().stream().map(a -> new AssuntoDTOResponse(a.getId(), a.getDescricao())).toList()
-                : List.of();
-
-        return new ObraDTOResponse(
-                obra.getId(),
-                obra.getObra_tipo(),
-                obra.getTitulo_Principal(),
-                obra.getCapa(),
-                obra.getLocal(),
-                obra.getData(),
-                obra.getDescFisica(),
-                obra.getNome(),
-                obra.getNumeroChamada(),
-                obra.getChamadaLocal(),
-                obra.getTituloUniforme(),
-                obra.getIsbn(),
-                obra.getSerie(),
-                obra.getEdicao(),
-                obra.getColecao(),
-                obra.getNotasGerais(),
-                obra.getIssn(),
-                obra.getVolume(),
-                obra.getPeriodicidade(),
-                autorResponse,
-                editoraResponse,
-                assuntosResponse
-        );
     }
 }

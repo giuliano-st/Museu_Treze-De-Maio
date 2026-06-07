@@ -23,6 +23,11 @@ public class EditoraService {
         return new EditoraDTOResponse(editora.getId(),  editora.getNome());
     }
 
+    public EditoraDTOResponse buscarPorId(Long id) {
+        Editora editora = editoraRepository.findById(id).orElseThrow(() -> new RuntimeException("Editora inexistente!"));
+        return new EditoraDTOResponse(editora.getId(),  editora.getNome());
+    }
+
     public List<EditoraDTOResponse> listar() {
         List<Editora> editoras = editoraRepository.findAll();
         return editoras.stream().map(editora -> new EditoraDTOResponse(editora.getId(), editora.getNome())).toList();

@@ -39,6 +39,19 @@ public class ExemplarService {
         );
     }
 
+    public ExemplarDTOResponse buscarPorId(Long id) {
+        Exemplar exemplar = exemplarRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Exemplar não encontrado!"));
+
+        return new ExemplarDTOResponse(
+                exemplar.getId(),
+                exemplar.getDisponibilidade(),
+                exemplar.getNumero(),
+                exemplar.getObra().getId(),
+                exemplar.getObra().getTitulo_Principal()
+        );
+    }
+
     public List<ExemplarDTOResponse> listar() {
         List<Exemplar> exemplares = exemplarRepository.findAll();
         return exemplares.stream().map(exemplar -> new ExemplarDTOResponse(

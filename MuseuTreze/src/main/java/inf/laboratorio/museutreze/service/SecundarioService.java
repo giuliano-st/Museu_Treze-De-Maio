@@ -47,6 +47,18 @@ public class SecundarioService {
         );
     }
 
+    public SecundarioDTOResponse buscarPorId(Long id) {
+        Secundario secundario = secundarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Registro secundário não encontrado!"));
+        return new SecundarioDTOResponse(
+                secundario.getId(),
+                secundario.getObraId().getId(),
+                secundario.getObraId().getTitulo_Principal(),
+                secundario.getAutorId().getId(),
+                secundario.getAutorId().getNome()
+        );
+    }
+
     public List<SecundarioDTOResponse> listar() {
         List<Secundario> secundarios = secundarioRepository.findAll();
         return secundarios.stream().map(secundario -> new SecundarioDTOResponse(

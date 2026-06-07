@@ -28,6 +28,15 @@ public class AutorService {
         );
     }
 
+    public AutorDTOResponse buscarPorId(Long id){
+        Autor autor = autorRepository.findById(id).orElseThrow(() -> new RuntimeException("Autor inexistente!"));
+        return new AutorDTOResponse(
+                autor.getId(),
+                autor.getNome(),
+                autor.getNacionalidade()
+        );
+    }
+
     public List<AutorDTOResponse> listar(){
         List<Autor> autores = autorRepository.findAll();
         return autores.stream().map(autor -> new AutorDTOResponse(autor.getId(), autor.getNome(), autor.getNacionalidade())).toList();
