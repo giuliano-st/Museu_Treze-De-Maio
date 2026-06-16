@@ -2,9 +2,6 @@ package inf.laboratorio.museutreze.service;
 
 import inf.laboratorio.museutreze.dto.ObraDTORequest;
 import inf.laboratorio.museutreze.dto.ObraDTOResponse;
-import inf.laboratorio.museutreze.dto.AutorDTOResponse;
-import inf.laboratorio.museutreze.dto.EditoraDTOResponse;
-import inf.laboratorio.museutreze.dto.AssuntoDTOResponse;
 import inf.laboratorio.museutreze.mapper.ObraMapper;
 import inf.laboratorio.museutreze.model.Assunto;
 import inf.laboratorio.museutreze.model.Autor;
@@ -29,7 +26,8 @@ public class ObraService {
     private final ObraMapper obraMapper;
 
     public ObraService(ObraRepository obraRepository, AutorRepository autorRepository,
-                       EditoraRepository editoraRepository, AssuntoRepository assuntoRepository, ObraMapper obraMapper) {
+                       EditoraRepository editoraRepository, AssuntoRepository assuntoRepository,
+                       ObraMapper obraMapper) {
         this.obraRepository = obraRepository;
         this.autorRepository = autorRepository;
         this.editoraRepository = editoraRepository;
@@ -38,58 +36,38 @@ public class ObraService {
     }
 
     public ObraDTOResponse salvar(ObraDTORequest obraDTO) {
-        Autor autor = obraDTO.autorId() != null ? autorRepository.findById(obraDTO.autorId()).orElse(null) : null;
-        Editora editora = obraDTO.editoraId() != null ? editoraRepository.findById(obraDTO.editoraId()).orElse(null) : null;
+        Autor autor = resolverAutor(obraDTO.autorId());
+        Editora editora = resolverEditora(obraDTO.editoraId());
+        List<Assunto> assuntos = resolverAssuntos(obraDTO.assuntosIds());
 
-        List<Assunto> assuntos = obraDTO.assuntosIds() != null
-                ? new ArrayList<>(assuntoRepository.findAllById(obraDTO.assuntosIds()))
-                : new ArrayList<>();
-
-        Obra obra = new Obra();
-        obra.setObra_tipo(obraDTO.obra_tipo());
-        obra.setTitulo_Principal(obraDTO.titulo_Principal());
-        obra.setCapa(obraDTO.capa());
-        obra.setLocal(obraDTO.local());
-        obra.setData(obraDTO.data());
-        obra.setDescFisica(obraDTO.descFisica());
-        obra.setNome(obraDTO.nome());
-        obra.setNumeroChamada(obraDTO.numeroChamada());
-        obra.setChamadaLocal(obraDTO.chamadaLocal());
-        obra.setTituloUniforme(obraDTO.tituloUniforme());
-        obra.setIsbn(obraDTO.isbn());
-        obra.setSerie(obraDTO.serie());
-        obra.setEdicao(obraDTO.edicao());
-        obra.setColecao(obraDTO.colecao());
-        obra.setNotasGerais(obraDTO.notasGerais());
-        obra.setIssn(obraDTO.issn());
-        obra.setVolume(obraDTO.volume());
-        obra.setPeriodicidade(obraDTO.periodicidade());
-        obra.setAutor(autor);
-        obra.setEditora(editora);
-        obra.setAssuntos(assuntos);
+        // Usa o mapper — sem duplicação de mapeamento manual
+        Obra obra = obraMapper.toEntity(obraDTO, autor, editora, assuntos);
         obraRepository.save(obra);
 
         return obraMapper.toResponse(obra);
     }
 
     public List<ObraDTOResponse> listar() {
-        return obraRepository.findAll().stream().map(obraMapper::toResponse).toList();
+        return obraRepository.findAll().stream()
+                .map(obraMapper::toResponse)
+                .toList();
     }
 
     public ObraDTOResponse buscarPorId(Long id) {
-        Obra obra = obraRepository.findById(id).orElseThrow(() -> new RuntimeException("Obra não encontrada!"));
+        Obra obra = obraRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Obra não encontrada!"));
         return obraMapper.toResponse(obra);
     }
 
     public ObraDTOResponse atualizar(Long id, ObraDTORequest obraDTO) {
-        Obra obra = obraRepository.findById(id).orElseThrow(() -> new RuntimeException("Obra não encontrada!"));
-        Autor autor = obraDTO.autorId() != null ? autorRepository.findById(obraDTO.autorId()).orElse(null) : null;
-        Editora editora = obraDTO.editoraId() != null ? editoraRepository.findById(obraDTO.editoraId()).orElse(null) : null;
+        Obra obra = obraRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Obra não encontrada!"));
 
-        List<Assunto> assuntos = obraDTO.assuntosIds() != null
-                ? new ArrayList<>(assuntoRepository.findAllById(obraDTO.assuntosIds()))
-                : new ArrayList<>();
+        Autor autor = resolverAutor(obraDTO.autorId());
+        Editora editora = resolverEditora(obraDTO.editoraId());
+        List<Assunto> assuntos = resolverAssuntos(obraDTO.assuntosIds());
 
+        // Atualiza os campos usando o mapper como referência, mas preservando o ID
         obra.setObra_tipo(obraDTO.obra_tipo());
         obra.setTitulo_Principal(obraDTO.titulo_Principal());
         obra.setCapa(obraDTO.capa());
@@ -117,7 +95,28 @@ public class ObraService {
     }
 
     public void deletar(Long id) {
-        Obra obra = obraRepository.findById(id).orElseThrow(() -> new RuntimeException("Obra não encontrada!"));
+        Obra obra = obraRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Obra não encontrada!"));
         obraRepository.delete(obra);
+    }
+
+    // ── Helpers privados ──────────────────────────────────────────────────────
+
+    private Autor resolverAutor(Long autorId) {
+        return autorId != null
+                ? autorRepository.findById(autorId).orElse(null)
+                : null;
+    }
+
+    private Editora resolverEditora(Long editoraId) {
+        return editoraId != null
+                ? editoraRepository.findById(editoraId).orElse(null)
+                : null;
+    }
+
+    private List<Assunto> resolverAssuntos(List<Long> ids) {
+        return ids != null
+                ? new ArrayList<>(assuntoRepository.findAllById(ids))
+                : new ArrayList<>();
     }
 }

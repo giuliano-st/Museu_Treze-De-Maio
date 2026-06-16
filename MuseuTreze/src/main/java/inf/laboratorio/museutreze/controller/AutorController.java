@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/autores")
+@RequestMapping("/api/autores")
 public class AutorController {
 
     private final AutorService autorService;
@@ -26,6 +26,11 @@ public class AutorController {
     @GetMapping
     public ResponseEntity<List<AutorDTOResponse>> listar() {
         return ResponseEntity.ok(autorService.listar());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<AutorDTOResponse> buscarPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(autorService.buscarPorId(id));
     }
 
     @PutMapping("/{id}")
