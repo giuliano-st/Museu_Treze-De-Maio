@@ -1,121 +1,215 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulário de Obra - Museu Treze de Maio</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
-    <style>
-        body { margin: 0; padding: 0; }
-        nav { margin-bottom: 2rem; }
-        nav ul { display: flex; list-style: none; gap: 1rem; margin: 0; padding: 1rem; background: var(--form-element-background-color); border-bottom: 1px solid var(--border-color); }
-        nav a { text-decoration: none; color: var(--link-color); font-weight: 500; }
-        .container { padding: 1rem; max-width: 800px; margin: 0 auto; }
-        .alert { padding: 1rem; border-radius: 0.25rem; margin-bottom: 1rem; }
-        .alert-danger { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        .form-group { margin-bottom: 1.5rem; }
-        label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
-        input, select, textarea { width: 100%; box-sizing: border-box; }
-        .btn-group { display: flex; gap: 1rem; margin-top: 2rem; }
-        .btn-group button { flex: 1; }
-    </style>
-</head>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head><title>Obra</title></head>
 <body>
-<nav>
-    <ul>
-        <li><strong>Museu Treze de Maio</strong></li>
-        <li><a href="/obras">Obras</a></li>
-        <li><a href="/autores">Autores</a></li>
-        <li><a href="/exemplares">Exemplares</a></li>
-    </ul>
-</nav>
+<div layout:fragment="content">
 
-<div class="container">
-    <h1 th:if="${obra == null}">Nova Obra</h1>
-    <h1 th:if="${obra != null && obra.id() != null}">Editar Obra</h1>
+    <!-- Título dinâmico: "Nova Obra" se não tem ID, "Editar Obra" se tem -->
+    <h2 class="mb-4">
+        <i class="bi bi-book me-2"></i>
+        <span th:if="${obra.id == null}">Nova Obra</span>
+        <span th:if="${obra.id != null}">Editar Obra</span>
+    </h2>
 
-    <form th:action="${obra != null && obra.id() != null} ? @{/obras/{id}(id=${obra.id()})} : @{/obras}"
-          method="POST">
+    <!--
+        Se obra.id existe → POST /obras/{id}  (atualizar)
+        Se obra.id é nulo → POST /obras        (salvar)
+    -->
+    <form th:action="${obra.id != null} ? @{/obras/{id}(id=${obra.id})} : @{/obras}"
+          method="post">
 
-        <div class="form-group">
-            <label for="obra_tipo">Tipo de Obra *</label>
-            <input type="text" id="obra_tipo" name="obra_tipo"
-                   th:value="${obra?.obra_tipo()}" required>
+        <div class="card shadow-sm mb-4">
+            <div class="card-header fw-bold">Informações Gerais</div>
+            <div class="card-body">
+                <div class="row g-3">
+
+                    <div class="col-md-4">
+                        <label class="form-label">Tipo <span class="text-danger">*</span></label>
+                        <select name="obra_tipo" class="form-select" required>
+                            <option value="">Selecione...</option>
+                            <option value="Livro"    th:selected="${obra.obra_tipo == 'Livro'}">Livro</option>
+                            <option value="Revista"  th:selected="${obra.obra_tipo == 'Revista'}">Revista</option>
+                            <option value="Jornal"   th:selected="${obra.obra_tipo == 'Jornal'}">Jornal</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-8">
+                        <label class="form-label">Título Principal <span class="text-danger">*</span></label>
+                        <input type="text" name="titulo_Principal" class="form-control"
+                               th:value="${obra.titulo_Principal}" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Nome</label>
+                        <input type="text" name="nome" class="form-control"
+                               th:value="${obra.nome}">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Título Uniforme</label>
+                        <input type="text" name="tituloUniforme" class="form-control"
+                               th:value="${obra.tituloUniforme}">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Local</label>
+                        <input type="text" name="local" class="form-control"
+                               th:value="${obra.local}">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Data (dd/MM/yyyy)</label>
+                        <input type="text" name="data" class="form-control"
+                               th:value="${#dates.format(obra.data, 'dd/MM/yyyy')}"
+                               placeholder="dd/MM/yyyy">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">URL da Capa</label>
+                        <input type="text" name="capa" class="form-control"
+                               th:value="${obra.capa}">
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label">Descrição Física</label>
+                        <input type="text" name="descFisica" class="form-control"
+                               th:value="${obra.descFisica}">
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label">Notas Gerais</label>
+                        <textarea name="notasGerais" class="form-control" rows="2"
+                                  th:text="${obra.notasGerais}"></textarea>
+                    </div>
+
+                </div>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label for="titulo_Principal">Título Principal *</label>
-            <input type="text" id="titulo_Principal" name="titulo_Principal"
-                   th:value="${obra?.titulo_Principal()}" required>
+        <div class="card shadow-sm mb-4">
+            <div class="card-header fw-bold">Catalogação</div>
+            <div class="card-body">
+                <div class="row g-3">
+
+                    <div class="col-md-4">
+                        <label class="form-label">Número de Chamada</label>
+                        <input type="text" name="numeroChamada" class="form-control"
+                               th:value="${obra.numeroChamada}">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Chamada Local</label>
+                        <input type="text" name="chamadaLocal" class="form-control"
+                               th:value="${obra.chamadaLocal}">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Coleção</label>
+                        <input type="text" name="colecao" class="form-control"
+                               th:value="${obra.colecao}">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Série</label>
+                        <input type="text" name="serie" class="form-control"
+                               th:value="${obra.serie}">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Edição</label>
+                        <input type="text" name="edicao" class="form-control"
+                               th:value="${obra.edicao}">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Volume</label>
+                        <input type="number" name="volume" class="form-control"
+                               th:value="${obra.volume}">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">ISBN</label>
+                        <input type="text" name="isbn" class="form-control"
+                               th:value="${obra.isbn}">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">ISSN</label>
+                        <input type="text" name="issn" class="form-control"
+                               th:value="${obra.issn}">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Periodicidade</label>
+                        <input type="text" name="periodicidade" class="form-control"
+                               th:value="${obra.periodicidade}">
+                    </div>
+
+                </div>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label for="autorId">Autor</label>
-            <select id="autorId" name="autorId">
-                <option value="">-- Selecione um autor --</option>
-                <option th:each="autor : ${autores}"
-                        th:value="${autor.id()}"
-                        th:text="${autor.nome()}"
-                        th:selected="${obra?.autorId() == autor.id()}"></option>
-            </select>
+        <div class="card shadow-sm mb-4">
+            <div class="card-header fw-bold">Vínculos</div>
+            <div class="card-body">
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label class="form-label">Autor Principal</label>
+                        <select name="autorId" class="form-select">
+                            <option value="">Nenhum</option>
+                            <option th:each="a : ${autores}"
+                                    th:value="${a.id}"
+                                    th:text="${a.nome}"
+                                    th:selected="${obra.autor != null && obra.autor.id == a.id}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Editora</label>
+                        <select name="editoraId" class="form-select">
+                            <option value="">Nenhuma</option>
+                            <option th:each="e : ${editoras}"
+                                    th:value="${e.id}"
+                                    th:text="${e.nome}"
+                                    th:selected="${obra.editora != null && obra.editora.id == e.id}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label">Assuntos</label>
+                        <div class="row g-2">
+                            <div class="col-md-3 col-sm-4" th:each="as : ${assuntos}">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox"
+                                           name="assuntosIds"
+                                           th:value="${as.id}"
+                                           th:checked="${obra.assuntos != null && obra.assuntos.![id].contains(as.id)}">
+                                    <label class="form-check-label" th:text="${as.descricao}"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label for="editoraId">Editora</label>
-            <select id="editoraId" name="editoraId">
-                <option value="">-- Selecione uma editora --</option>
-                <option th:each="editora : ${editoras}"
-                        th:value="${editora.id()}"
-                        th:text="${editora.nome()}"
-                        th:selected="${obra?.editoraId() == editora.id()}"></option>
-            </select>
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-floppy me-1"></i>Salvar
+            </button>
+            <a th:href="@{/obras}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Cancelar
+            </a>
         </div>
 
-        <div class="form-group">
-            <label for="assuntosIds">Assuntos</label>
-            <select id="assuntosIds" name="assuntosIds" multiple>
-                <option th:each="assunto : ${assuntos}"
-                        th:value="${assunto.id()}"
-                        th:text="${assunto.descricao()}"></option>
-            </select>
-            <small>Segure Ctrl (ou Cmd) para selecionar múltiplos</small>
-        </div>
-
-        <div class="form-group">
-            <label for="isbn">ISBN</label>
-            <input type="text" id="isbn" name="isbn" th:value="${obra?.isbn()}">
-        </div>
-
-        <div class="form-group">
-            <label for="issn">ISSN</label>
-            <input type="text" id="issn" name="issn" th:value="${obra?.issn()}">
-        </div>
-
-        <div class="form-group">
-            <label for="edicao">Edição</label>
-            <input type="text" id="edicao" name="edicao" th:value="${obra?.edicao()}">
-        </div>
-
-        <div class="form-group">
-            <label for="numeroChamada">Número de Chamada</label>
-            <input type="text" id="numeroChamada" name="numeroChamada" th:value="${obra?.numeroChamada()}">
-        </div>
-
-        <div class="form-group">
-            <label for="descFisica">Descrição Física</label>
-            <textarea id="descFisica" name="descFisica" rows="3" th:text="${obra?.descFisica()}"></textarea>
-        </div>
-
-        <div class="form-group">
-            <label for="notasGerais">Notas Gerais</label>
-            <textarea id="notasGerais" name="notasGerais" rows="3" th:text="${obra?.notasGerais()}"></textarea>
-        </div>
-
-        <div class="btn-group">
-            <button type="submit" role="button">Salvar</button>
-            <a href="/obras" role="button" class="secondary">Cancelar</a>
-        </div>
     </form>
+
 </div>
 </body>
 </html>

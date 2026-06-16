@@ -1,74 +1,68 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Obras - Museu Treze de Maio</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
-    <style>
-        body { margin: 0; padding: 0; }
-        nav { margin-bottom: 2rem; }
-        nav ul { display: flex; list-style: none; gap: 1rem; margin: 0; padding: 1rem; background: var(--form-element-background-color); border-bottom: 1px solid var(--border-color); }
-        nav a { text-decoration: none; color: var(--link-color); font-weight: 500; }
-        .container { padding: 1rem; max-width: 1200px; margin: 0 auto; }
-        .alert { padding: 1rem; border-radius: 0.25rem; margin-bottom: 1rem; }
-        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .alert-danger { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        .btn-novo { margin-bottom: 1rem; }
-        table { width: 100%; font-size: 0.9rem; }
-        td, th { padding: 0.75rem; }
-        .btn-group { display: flex; gap: 0.5rem; }
-        .btn-sm { padding: 0.25rem 0.5rem; font-size: 0.75rem; }
-    </style>
-</head>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head><title>Obras</title></head>
 <body>
-<nav>
-    <ul>
-        <li><strong>Museu Treze de Maio</strong></li>
-        <li><a href="/obras">Obras</a></li>
-        <li><a href="/autores">Autores</a></li>
-        <li><a href="/exemplares">Exemplares</a></li>
-    </ul>
-</nav>
+<div layout:fragment="content">
 
-<div class="container">
-    <div th:if="${mensagem}" class="alert alert-success" th:text="${mensagem}"></div>
-    <div th:if="${erro}" class="alert alert-danger" th:text="${erro}"></div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-book me-2"></i>Obras</h2>
+        <a th:href="@{/obras/nova}" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i>Nova Obra
+        </a>
+    </div>
 
-    <h1>Obras</h1>
-    <a href="/obras/nova" role="button" class="btn-novo">+ Nova Obra</a>
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>Tipo</th>
+                        <th>Título</th>
+                        <th>Autor</th>
+                        <th>Editora</th>
+                        <th>ISBN / ISSN</th>
+                        <th class="text-center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${#lists.isEmpty(obras)}">
+                        <td colspan="7" class="text-center text-muted py-4">Nenhuma obra cadastrada.</td>
+                    </tr>
+                    <tr th:each="obra : ${obras}">
+                        <td th:text="${obra.id}"></td>
+                        <td>
+                            <span class="badge"
+                                  th:classappend="${obra.obra_tipo == 'Livro'} ? 'bg-primary' : (${obra.obra_tipo == 'Revista'} ? 'bg-success' : 'bg-warning text-dark')"
+                                  th:text="${obra.obra_tipo}"></span>
+                        </td>
+                        <td th:text="${obra.titulo_Principal}"></td>
+                        <td th:text="${obra.autor != null ? obra.autor.nome : '-'}"></td>
+                        <td th:text="${obra.editora != null ? obra.editora.nome : '-'}"></td>
+                        <td>
+                            <span th:if="${obra.isbn != null}" th:text="${obra.isbn}"></span>
+                            <span th:if="${obra.issn != null}" th:text="${obra.issn}"></span>
+                            <span th:if="${obra.isbn == null && obra.issn == null}">-</span>
+                        </td>
+                        <td class="text-center">
+                            <a th:href="@{/obras/{id}/editar(id=${obra.id})}" class="btn btn-sm btn-outline-secondary me-1">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <form th:action="@{/obras/{id}/deletar(id=${obra.id})}" method="post" class="d-inline"
+                                  onsubmit="return confirm('Tem certeza que deseja deletar esta obra?')">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-    <table th:if="${!obras.isEmpty()}">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Título</th>
-            <th>Tipo</th>
-            <th>Autor</th>
-            <th>ISBN</th>
-            <th>Ações</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="obra : ${obras}">
-            <td th:text="${obra.id()}"></td>
-            <td th:text="${obra.titulo_Principal()}"></td>
-            <td th:text="${obra.obra_tipo()}"></td>
-            <td th:text="${obra.autorNome()} ?: '-'"></td>
-            <td th:text="${obra.isbn()} ?: '-'"></td>
-            <td>
-                <div class="btn-group">
-                    <a th:href="@{/obras/{id}/editar(id=${obra.id()})}" role="button" class="btn-sm">Editar</a>
-                    <form th:action="@{/obras/{id}/deletar(id=${obra.id()})}" method="POST" style="display: inline;">
-                        <button type="submit" class="btn-sm" onclick="return confirm('Tem certeza?')">Deletar</button>
-                    </form>
-                </div>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-
-    <p th:if="${obras.isEmpty()}"><em>Nenhuma obra cadastrada ainda.</em></p>
 </div>
 </body>
 </html>
