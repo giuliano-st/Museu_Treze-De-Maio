@@ -2,6 +2,7 @@ package inf.laboratorio.museutreze.controller.web;
 
 import inf.laboratorio.museutreze.dto.AutorDTORequest;
 import inf.laboratorio.museutreze.dto.AutorDTOResponse;
+import inf.laboratorio.museutreze.dto.web.AutorWebDTO;
 import inf.laboratorio.museutreze.service.AutorService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,7 +32,7 @@ public class AutorWeb {
     // GET /autores/novo → Formulário vazio
     @GetMapping("/novo")
     public String novo(Model model) {
-        model.addAttribute("autor", new AutorDTORequest(null, null));
+        model.addAttribute("autor", new AutorWebDTO());
         return "autores/form";
     }
 

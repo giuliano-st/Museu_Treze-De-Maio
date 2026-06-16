@@ -2,6 +2,8 @@ package inf.laboratorio.museutreze.controller.web;
 
 import inf.laboratorio.museutreze.dto.AssuntoDTORequest;
 import inf.laboratorio.museutreze.dto.AssuntoDTOResponse;
+import inf.laboratorio.museutreze.dto.web.AssuntoWebDTO;
+import inf.laboratorio.museutreze.dto.web.AutorWebDTO;
 import inf.laboratorio.museutreze.service.AssuntoService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,7 +31,7 @@ public class AssuntoWeb {
 
     @GetMapping("/novo")
     public String novo(Model model) {
-        model.addAttribute("assunto", new AssuntoDTORequest(null));
+        model.addAttribute("assunto", new AssuntoWebDTO());
         return "assuntos/form";
     }
 

@@ -6,17 +6,23 @@
 <body>
 <div layout:fragment="content">
 
-    <!-- Título dinâmico: "Nova Obra" se não tem ID, "Editar Obra" se tem -->
-    <h2 class="mb-4">
-        <i class="bi bi-book me-2"></i>
-        <span th:if="${obra.id == null}">Nova Obra</span>
-        <span th:if="${obra.id != null}">Editar Obra</span>
-    </h2>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>
+            <i class="bi bi-book me-2"></i>
+            <span th:if="${obra.id == null}">Nova Obra</span>
+            <span th:if="${obra.id != null}">Editar Obra</span>
+        </h2>
+    </div>
 
-    <!--
-        Se obra.id existe → POST /obras/{id}  (atualizar)
-        Se obra.id é nulo → POST /obras        (salvar)
-    -->
+    <div th:if="${mensagem}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${mensagem}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${erro}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${erro}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
     <form th:action="${obra.id != null} ? @{/obras/{id}(id=${obra.id})} : @{/obras}"
           method="post">
 
@@ -60,10 +66,9 @@
                     </div>
 
                     <div class="col-md-4">
-                        <label class="form-label">Data (dd/MM/yyyy)</label>
-                        <input type="text" name="data" class="form-control"
-                               th:value="${#dates.format(obra.data, 'dd/MM/yyyy')}"
-                               placeholder="dd/MM/yyyy">
+                        <label class="form-label">Data</label>
+                        <input type="date" name="data" class="form-control"
+                               th:value="${obra.data != null ? #dates.format(obra.data, 'yyyy-MM-dd') : ''}">
                     </div>
 
                     <div class="col-md-4">
@@ -163,7 +168,7 @@
                             <option th:each="a : ${autores}"
                                     th:value="${a.id}"
                                     th:text="${a.nome}"
-                                    th:selected="${obra.autor != null && obra.autor.id == a.id}">
+                                    th:selected="${obra.autor?.id == a.id}">
                             </option>
                         </select>
                     </div>
@@ -175,7 +180,7 @@
                             <option th:each="e : ${editoras}"
                                     th:value="${e.id}"
                                     th:text="${e.nome}"
-                                    th:selected="${obra.editora != null && obra.editora.id == e.id}">
+                                    th:selected="${obra.editora?.id == e.id}">
                             </option>
                         </select>
                     </div>
@@ -188,7 +193,7 @@
                                     <input class="form-check-input" type="checkbox"
                                            name="assuntosIds"
                                            th:value="${as.id}"
-                                           th:checked="${obra.assuntos != null && obra.assuntos.![id].contains(as.id)}">
+                                           th:checked="${obra.assuntos != null and #lists.contains(obra.assuntos.![id], as.id)}">
                                     <label class="form-check-label" th:text="${as.descricao}"></label>
                                 </div>
                             </div>

@@ -2,6 +2,7 @@ package inf.laboratorio.museutreze.controller.web;
 
 import inf.laboratorio.museutreze.dto.EditoraDTORequest;
 import inf.laboratorio.museutreze.dto.EditoraDTOResponse;
+import inf.laboratorio.museutreze.dto.web.EditoraWebDTO;
 import inf.laboratorio.museutreze.service.EditoraService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,8 +29,8 @@ public class EditoraWeb {
     }
 
     @GetMapping("/nova")
-    public String nova(Model model) {
-        model.addAttribute("editora", new EditoraDTORequest(null));
+    public String novo(Model model) {
+        model.addAttribute("editora", new EditoraWebDTO());
         return "editoras/form";
     }
 
