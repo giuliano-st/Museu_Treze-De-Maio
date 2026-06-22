@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/assuntos")
+@RequestMapping("/api/assuntos")
 public class AssuntoController {
 
     private final AssuntoService assuntoService;
@@ -26,6 +26,11 @@ public class AssuntoController {
     @GetMapping
     public ResponseEntity<List<AssuntoDTOResponse>> listar() {
         return ResponseEntity.ok(assuntoService.listar());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<AssuntoDTOResponse> buscarPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(assuntoService.buscarPorId(id));
     }
 
     @PutMapping("/{id}")

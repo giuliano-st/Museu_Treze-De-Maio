@@ -1,5 +1,7 @@
 package inf.laboratorio.museutreze.dto;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 import java.util.List;
 
@@ -8,7 +10,10 @@ public record ObraDTORequest(
         String titulo_Principal,
         String capa,
         String local,
+
+        @DateTimeFormat(pattern = "yyyy-MM-dd")
         Date data,
+
         String descFisica,
         String nome,
         String numeroChamada,

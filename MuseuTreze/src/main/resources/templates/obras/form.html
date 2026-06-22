@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head><title>Obra</title></head>
+<body>
+<div layout:fragment="content">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>
+            <i class="bi bi-book me-2"></i>
+            <span th:if="${obra.id == null}">Nova Obra</span>
+            <span th:if="${obra.id != null}">Editar Obra</span>
+        </h2>
+    </div>
+
+    <div th:if="${mensagem}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${mensagem}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${erro}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${erro}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <form th:action="${obra.id != null} ? @{/obras/{id}(id=${obra.id})} : @{/obras}"
+          method="post">
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header fw-bold">Informações Gerais</div>
+            <div class="card-body">
+                <div class="row g-3">
+
+                    <div class="col-md-4">
+                        <label class="form-label">Tipo <span class="text-danger">*</span></label>
+                        <select name="obra_tipo" class="form-select" required>
+                            <option value="">Selecione...</option>
+                            <option value="Livro"    th:selected="${obra.obra_tipo == 'Livro'}">Livro</option>
+                            <option value="Revista"  th:selected="${obra.obra_tipo == 'Revista'}">Revista</option>
+                            <option value="Jornal"   th:selected="${obra.obra_tipo == 'Jornal'}">Jornal</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-8">
+                        <label class="form-label">Título Principal <span class="text-danger">*</span></label>
+                        <input type="text" name="titulo_Principal" class="form-control"
+                               th:value="${obra.titulo_Principal}" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Nome</label>
+                        <input type="text" name="nome" class="form-control"
+                               th:value="${obra.nome}">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Título Uniforme</label>
+                        <input type="text" name="tituloUniforme" class="form-control"
+                               th:value="${obra.tituloUniforme}">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Local</label>
+                        <input type="text" name="local" class="form-control"
+                               th:value="${obra.local}">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Data</label>
+                        <input type="date" name="data" class="form-control"
+                               th:value="${obra.data != null ? #dates.format(obra.data, 'yyyy-MM-dd') : ''}">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">URL da Capa</label>
+                        <input type="text" name="capa" class="form-control"
+                               th:value="${obra.capa}">
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label">Descrição Física</label>
+                        <input type="text" name="descFisica" class="form-control"
+                               th:value="${obra.descFisica}">
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label">Notas Gerais</label>
+                        <textarea name="notasGerais" class="form-control" rows="2"
+                                  th:text="${obra.notasGerais}"></textarea>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header fw-bold">Catalogação</div>
+            <div class="card-body">
+                <div class="row g-3">
+
+                    <div class="col-md-4">
+                        <label class="form-label">Número de Chamada</label>
+                        <input type="text" name="numeroChamada" class="form-control"
+                               th:value="${obra.numeroChamada}">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Chamada Local</label>
+                        <input type="text" name="chamadaLocal" class="form-control"
+                               th:value="${obra.chamadaLocal}">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Coleção</label>
+                        <input type="text" name="colecao" class="form-control"
+                               th:value="${obra.colecao}">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Série</label>
+                        <input type="text" name="serie" class="form-control"
+                               th:value="${obra.serie}">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Edição</label>
+                        <input type="text" name="edicao" class="form-control"
+                               th:value="${obra.edicao}">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Volume</label>
+                        <input type="number" name="volume" class="form-control"
+                               th:value="${obra.volume}">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">ISBN</label>
+                        <input type="text" name="isbn" class="form-control"
+                               th:value="${obra.isbn}">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">ISSN</label>
+                        <input type="text" name="issn" class="form-control"
+                               th:value="${obra.issn}">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Periodicidade</label>
+                        <input type="text" name="periodicidade" class="form-control"
+                               th:value="${obra.periodicidade}">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header fw-bold">Vínculos</div>
+            <div class="card-body">
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label class="form-label">Autor Principal</label>
+                        <select name="autorId" class="form-select">
+                            <option value="">Nenhum</option>
+                            <option th:each="a : ${autores}"
+                                    th:value="${a.id}"
+                                    th:text="${a.nome}"
+                                    th:selected="${obra.autor?.id == a.id}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Editora</label>
+                        <select name="editoraId" class="form-select">
+                            <option value="">Nenhuma</option>
+                            <option th:each="e : ${editoras}"
+                                    th:value="${e.id}"
+                                    th:text="${e.nome}"
+                                    th:selected="${obra.editora?.id == e.id}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label">Assuntos</label>
+                        <div class="row g-2">
+                            <div class="col-md-3 col-sm-4" th:each="as : ${assuntos}">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox"
+                                           name="assuntosIds"
+                                           th:value="${as.id}"
+                                           th:checked="${obra.assuntos != null and #lists.contains(obra.assuntos.![id], as.id)}">
+                                    <label class="form-check-label" th:text="${as.descricao}"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-floppy me-1"></i>Salvar
+            </button>
+            <a th:href="@{/obras}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Cancelar
+            </a>
+        </div>
+
+    </form>
+
+</div>
+</body>
+</html>

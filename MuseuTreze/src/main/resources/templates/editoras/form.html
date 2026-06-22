@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head><title>Editora</title></head>
+<body>
+<div layout:fragment="content">
+
+    <h2 class="mb-4">
+        <i class="bi bi-building me-2"></i>
+        <span th:if="${editora.id == null}">Nova Editora</span>
+        <span th:if="${editora.id != null}">Editar Editora</span>
+    </h2>
+
+    <form th:action="${editora.id != null} ? @{/editoras/{id}(id=${editora.id})} : @{/editoras}"
+          method="post">
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Nome <span class="text-danger">*</span></label>
+                        <input type="text" name="nome" class="form-control"
+                               th:value="${editora.nome}" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-floppy me-1"></i>Salvar
+            </button>
+            <a th:href="@{/editoras}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Cancelar
+            </a>
+        </div>
+
+    </form>
+
+</div>
+</body>
+</html>
