@@ -23,6 +23,11 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioService.salvar(usuarioDTO));
     }
 
+    @PostMapping("/lista")
+    public ResponseEntity<List<UsuarioDTOResponse>> salvarLista(@RequestBody List<UsuarioDTORequest> usuariosDTO) {
+        return ResponseEntity.ok(usuarioService.salvarLista(usuariosDTO));
+    }
+
     @GetMapping
     public ResponseEntity<List<UsuarioDTOResponse>> listar() {
         return ResponseEntity.ok(usuarioService.listar());

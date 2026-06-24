@@ -23,6 +23,11 @@ public class AssuntoController {
         return ResponseEntity.ok(assuntoService.salvar(assuntoDTO));
     }
 
+    @PostMapping("/lista")
+    public ResponseEntity<List<AssuntoDTOResponse>> salvarLista(@RequestBody List<AssuntoDTORequest> assuntosDTO) {
+        return ResponseEntity.ok(assuntoService.salvarLista(assuntosDTO));
+    }
+
     @GetMapping
     public ResponseEntity<List<AssuntoDTOResponse>> listar() {
         return ResponseEntity.ok(assuntoService.listar());

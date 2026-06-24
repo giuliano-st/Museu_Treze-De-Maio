@@ -72,6 +72,14 @@ public class ObraService {
         return obraMapper.toResponse(obra);
     }
 
+    public List<ObraDTOResponse> salvarLista(List<ObraDTORequest> obrasDTO) {
+        List<ObraDTOResponse> responses = new ArrayList<>();
+        for (ObraDTORequest dto : obrasDTO) {
+            responses.add(salvar(dto));
+        }
+        return responses;
+    }
+
     public List<ObraDTOResponse> listar() {
         return obraRepository.findAll().stream().map(obraMapper::toResponse).toList();
     }

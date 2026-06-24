@@ -23,6 +23,11 @@ public class ObraController {
         return ResponseEntity.ok(obraService.salvar(obraDTO));
     }
 
+    @PostMapping("/lista")
+    public ResponseEntity<List<ObraDTOResponse>> salvarLista(@RequestBody List<ObraDTORequest> obrasDTO) {
+        return ResponseEntity.ok(obraService.salvarLista(obrasDTO));
+    }
+
     @GetMapping
     public ResponseEntity<List<ObraDTOResponse>> listar() {
         return ResponseEntity.ok(obraService.listar());

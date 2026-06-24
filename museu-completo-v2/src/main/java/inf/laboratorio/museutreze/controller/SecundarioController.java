@@ -23,6 +23,11 @@ public class SecundarioController {
         return ResponseEntity.ok(secundarioService.salvar(secundarioDTO));
     }
 
+    @PostMapping("/lista")
+    public ResponseEntity<List<SecundarioDTOResponse>> salvarLista(@RequestBody List<SecundarioDTORequest> secundariosDTO) {
+        return ResponseEntity.ok(secundarioService.salvarLista(secundariosDTO));
+    }
+
     @GetMapping
     public ResponseEntity<List<SecundarioDTOResponse>> listar() {
         return ResponseEntity.ok(secundarioService.listar());

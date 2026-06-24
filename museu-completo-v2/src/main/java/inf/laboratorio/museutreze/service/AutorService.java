@@ -6,6 +6,7 @@ import inf.laboratorio.museutreze.model.Autor;
 import inf.laboratorio.museutreze.repository.AutorRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -26,6 +27,14 @@ public class AutorService {
                 autor.getNome(),
                 autor.getNacionalidade()
         );
+    }
+
+    public List<AutorDTOResponse> salvarLista(List<AutorDTORequest> autoresDTO) {
+        List<AutorDTOResponse> responses = new ArrayList<>();
+        for (AutorDTORequest dto : autoresDTO) {
+            responses.add(salvar(dto));
+        }
+        return responses;
     }
 
     public AutorDTOResponse buscarPorId(Long id){

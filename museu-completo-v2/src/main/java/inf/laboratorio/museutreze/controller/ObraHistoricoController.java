@@ -23,6 +23,11 @@ public class ObraHistoricoController {
         return ResponseEntity.ok(obraHistoricoService.salvar(obraHistoricoDTO));
     }
 
+    @PostMapping("/lista")
+    public ResponseEntity<List<ObraHistoricoDTOResponse>> salvarLista(@RequestBody List<ObraHistoricoDTORequest> historicosDTO) {
+        return ResponseEntity.ok(obraHistoricoService.salvarLista(historicosDTO));
+    }
+
     @GetMapping
     public ResponseEntity<List<ObraHistoricoDTOResponse>> listar() {
         return ResponseEntity.ok(obraHistoricoService.listar());

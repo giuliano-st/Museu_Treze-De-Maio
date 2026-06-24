@@ -8,6 +8,7 @@ import inf.laboratorio.museutreze.repository.ExemplarRepository;
 import inf.laboratorio.museutreze.repository.ObraRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -37,6 +38,14 @@ public class ExemplarService {
                 exemplar.getObra().getId(),
                 exemplar.getObra().getTitulo_Principal()
         );
+    }
+
+    public List<ExemplarDTOResponse> salvarLista(List<ExemplarDTORequest> exemplaresDTO) {
+        List<ExemplarDTOResponse> responses = new ArrayList<>();
+        for (ExemplarDTORequest dto : exemplaresDTO) {
+            responses.add(salvar(dto));
+        }
+        return responses;
     }
 
     public ExemplarDTOResponse buscarPorId(Long id) {

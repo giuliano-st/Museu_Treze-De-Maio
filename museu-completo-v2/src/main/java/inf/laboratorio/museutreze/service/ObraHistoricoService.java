@@ -11,6 +11,7 @@ import inf.laboratorio.museutreze.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -51,6 +52,14 @@ public class ObraHistoricoService {
                 obraHistorico.getObra().getId(),
                 obraHistorico.getObra().getTitulo_Principal()
         );
+    }
+
+    public List<ObraHistoricoDTOResponse> salvarLista(List<ObraHistoricoDTORequest> historicosDTO) {
+        List<ObraHistoricoDTOResponse> responses = new ArrayList<>();
+        for (ObraHistoricoDTORequest dto : historicosDTO) {
+            responses.add(salvar(dto));
+        }
+        return responses;
     }
 
     public ObraHistoricoDTOResponse buscarPorId(Long id) {

@@ -6,6 +6,7 @@ import inf.laboratorio.museutreze.model.Usuario;
 import inf.laboratorio.museutreze.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -30,6 +31,14 @@ public class UsuarioService {
                 usuario.getRole(),
                 usuario.getEmail()
         );
+    }
+
+    public List<UsuarioDTOResponse> salvarLista(List<UsuarioDTORequest> usuariosDTO) {
+        List<UsuarioDTOResponse> responses = new ArrayList<>();
+        for (UsuarioDTORequest dto : usuariosDTO) {
+            responses.add(salvar(dto));
+        }
+        return responses;
     }
 
     public UsuarioDTOResponse buscarPorId(Long id){

@@ -6,6 +6,7 @@ import inf.laboratorio.museutreze.model.Editora;
 import inf.laboratorio.museutreze.repository.EditoraRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -21,6 +22,14 @@ public class EditoraService {
         editora.setNome(editoraDTO.nome());
         editoraRepository.save(editora);
         return new EditoraDTOResponse(editora.getId(),  editora.getNome());
+    }
+
+    public List<EditoraDTOResponse> salvarLista(List<EditoraDTORequest> editorasDTO) {
+        List<EditoraDTOResponse> responses = new ArrayList<>();
+        for (EditoraDTORequest dto : editorasDTO) {
+            responses.add(salvar(dto));
+        }
+        return responses;
     }
 
     public EditoraDTOResponse buscarPorId(Long id) {

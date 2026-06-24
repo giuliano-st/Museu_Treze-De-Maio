@@ -91,7 +91,7 @@
                             👤 <span th:text="${obra.autor.nome}"></span>
                         </p>
                         <p th:if="${obra.data != null}" class="text-sm text-gray-500 mb-3">
-                            📅 <span th:text="${#temporals.format(obra.data, 'dd/MM/yyyy')}"></span>
+                            📅 <span th:text="${#dates.format(obra.data, 'dd/MM/yyyy')}"></span>
                         </p>
                         <a th:href="@{/obra/{id}(id=${obra.id})}"
                            class="mt-auto w-full text-center bg-[#2E5B37] text-white py-2.5 rounded-lg hover:bg-[#1f4026] text-sm font-medium transition-colors">

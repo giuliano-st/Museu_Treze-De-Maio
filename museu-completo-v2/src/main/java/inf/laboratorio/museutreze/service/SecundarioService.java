@@ -10,6 +10,7 @@ import inf.laboratorio.museutreze.repository.ObraRepository;
 import inf.laboratorio.museutreze.repository.SecundarioRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -45,6 +46,14 @@ public class SecundarioService {
                 salvo.getAutorId().getId(),
                 salvo.getAutorId().getNome()
         );
+    }
+
+    public List<SecundarioDTOResponse> salvarLista(List<SecundarioDTORequest> secundariosDTO) {
+        List<SecundarioDTOResponse> responses = new ArrayList<>();
+        for (SecundarioDTORequest dto : secundariosDTO) {
+            responses.add(salvar(dto));
+        }
+        return responses;
     }
 
     public SecundarioDTOResponse buscarPorId(Long id) {

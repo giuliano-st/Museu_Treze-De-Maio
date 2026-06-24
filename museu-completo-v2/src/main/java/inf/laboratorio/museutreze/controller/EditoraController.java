@@ -23,6 +23,11 @@ public class EditoraController {
         return ResponseEntity.ok(editoraService.salvar(editoraDTO));
     }
 
+    @PostMapping("/lista")
+    public ResponseEntity<List<EditoraDTOResponse>> salvarLista(@RequestBody List<EditoraDTORequest> editorasDTO) {
+        return ResponseEntity.ok(editoraService.salvarLista(editorasDTO));
+    }
+
     @GetMapping
     public ResponseEntity<List<EditoraDTOResponse>> listar() {
         return ResponseEntity.ok(editoraService.listar());

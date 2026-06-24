@@ -23,6 +23,11 @@ public class AutorController {
         return ResponseEntity.ok(autorService.salvar(autorDTO));
     }
 
+    @PostMapping("/lista")
+    public ResponseEntity<List<AutorDTOResponse>> salvarLista(@RequestBody List<AutorDTORequest> autoresDTO) {
+        return ResponseEntity.ok(autorService.salvarLista(autoresDTO));
+    }
+
     @GetMapping
     public ResponseEntity<List<AutorDTOResponse>> listar() {
         return ResponseEntity.ok(autorService.listar());

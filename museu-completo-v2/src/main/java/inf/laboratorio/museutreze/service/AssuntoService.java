@@ -6,6 +6,7 @@ import inf.laboratorio.museutreze.model.Assunto;
 import inf.laboratorio.museutreze.repository.AssuntoRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,6 +25,14 @@ public class AssuntoService {
                 assunto.getId(),
                 assunto.getDescricao()
         );
+    }
+
+    public List<AssuntoDTOResponse> salvarLista(List<AssuntoDTORequest> assuntosDTO) {
+        List<AssuntoDTOResponse> responses = new ArrayList<>();
+        for (AssuntoDTORequest dto : assuntosDTO) {
+            responses.add(salvar(dto));
+        }
+        return responses;
     }
 
     public AssuntoDTOResponse buscarPorId(Long id){
