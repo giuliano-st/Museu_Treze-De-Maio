@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Detalhes — Museu Treze de Maio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+<nav th:replace="~{fragmentos :: navbar}"></nav>
+
+<main class="max-w-5xl mx-auto px-4 py-8 flex-1">
+    <nav class="text-sm text-gray-500 mb-6 flex items-center gap-2">
+        <a href="/" class="hover:text-[#2E5B37] transition-colors">Início</a>
+        <span>/</span>
+        <a href="/pesquisa" class="hover:text-[#2E5B37] transition-colors">Acervo</a>
+        <span>/</span>
+        <span class="text-[#2E5B37] font-medium" th:text="${obra.titulo_Principal}"></span>
+    </nav>
+
+    <div th:if="${isBibliotecario}" class="bg-[#2E5B37] text-white rounded-xl p-4 mb-6 flex flex-wrap gap-3 justify-between items-center shadow-sm">
+        <span class="font-semibold">Ações do Bibliotecário</span>
+        <div class="flex flex-wrap gap-2">
+            <a th:href="@{/cadastro/obra(editar=${obra.id})}"
+               class="bg-white text-[#2E5B37] px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors">Editar</a>
+            <a th:href="@{/obra/{id}/exemplares(id=${obra.id})}"
+               class="bg-white text-[#2E5B37] px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors">Exemplares</a>
+            <form th:action="@{/obra/excluir/{id}(id=${obra.id})}" method="post" class="inline"
+                  onsubmit="return confirm('Excluir esta obra?')">
+                <button type="submit" class="bg-red-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-red-700 transition-colors">Excluir</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-8">
+        <div class="grid md:grid-cols-2 gap-8">
+            <div>
+                <div class="border-2 border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                    <img th:src="${obra.capa != null and !obra.capa.isEmpty()} ? ${obra.capa} : 'https://via.placeholder.com/400x600?text=Sem+Capa'"
+                         th:alt="${obra.titulo_Principal}" class="w-full object-cover"/>
+                </div>
+                <span class="inline-block mt-4 px-3 py-1 rounded-full text-sm font-semibold"
+                      th:classappend="${obra.obra_tipo == 'LIVRO'} ? 'bg-blue-100 text-blue-700' : (${obra.obra_tipo == 'REVISTA'} ? 'bg-purple-100 text-purple-700' : 'bg-amber-100 text-amber-700')"
+                      th:text="${obra.obra_tipo}"></span>
+            </div>
+
+            <div class="space-y-4">
+                <h1 class="text-[#2E5B37] text-2xl font-bold leading-snug" th:text="${obra.titulo_Principal}"></h1>
+
+                <div class="space-y-3 text-sm">
+                    <div th:if="${obra.autor != null}">
+                        <p class="text-gray-400 text-xs uppercase tracking-wide">Autor</p>
+                        <p class="font-medium text-gray-800" th:text="${obra.autor.nome}"></p>
+                    </div>
+                    <div th:if="${obra.editora != null}">
+                        <p class="text-gray-400 text-xs uppercase tracking-wide">Editora</p>
+                        <p class="font-medium text-gray-800" th:text="${obra.editora.nome}"></p>
+                    </div>
+                    <div th:if="${obra.isbn}">
+                        <p class="text-gray-400 text-xs uppercase tracking-wide">ISBN</p>
+                        <p class="font-medium text-gray-800" th:text="${obra.isbn}"></p>
+                    </div>
+                    <div th:if="${obra.serie}">
+                        <p class="text-gray-400 text-xs uppercase tracking-wide">Série</p>
+                        <p class="font-medium text-gray-800" th:text="${obra.serie}"></p>
+                    </div>
+                    <div th:if="${obra.assuntos != null and !obra.assuntos.empty}">
+                        <p class="text-gray-400 text-xs uppercase tracking-wide mb-1.5">Assuntos</p>
+                        <div class="flex flex-wrap gap-1.5">
+                            <span th:each="a : ${obra.assuntos}"
+                                  class="bg-[#2E5B37]/10 text-[#2E5B37] px-2.5 py-1 rounded-full text-xs font-medium"
+                                  th:text="${a.descricao}"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${exemplares != null and !exemplares.empty}" class="border-t border-gray-100 pt-4 mt-4">
+                    <p class="text-[#2E5B37] font-semibold mb-3">Exemplares</p>
+                    <div class="space-y-2">
+                        <div th:each="ex : ${exemplares}" class="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2.5 text-sm">
+                            <span class="text-gray-700">Exemplar Nº <span class="font-medium" th:text="${ex.numero}"></span></span>
+                            <span th:text="${ex.disponibilidade ? 'Disponível' : 'Indisponível'}"
+                                  th:classappend="${ex.disponibilidade} ? 'text-green-700 bg-green-100' : 'text-red-700 bg-red-100'"
+                                  class="font-medium text-xs px-2 py-1 rounded-full"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragmentos :: rodape}"></footer>
+</body>
+</html>

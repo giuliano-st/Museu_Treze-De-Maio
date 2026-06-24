@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+<nav th:fragment="navbar" class="bg-[#2E5B37] shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 flex justify-between items-center h-16">
+        <a href="/" class="text-white font-semibold text-lg flex items-center gap-2 hover:opacity-90 transition-opacity">
+            <span class="text-xl">🏛️</span> Museu Treze de Maio
+        </a>
+        <div class="flex items-center gap-1">
+            <a href="/pesquisa" class="text-white px-3 py-2 rounded-lg hover:bg-white/15 text-sm transition-colors">Acervo</a>
+
+            <th:block th:if="${session.usuario != null}">
+                <a href="/cadastro" class="text-white px-3 py-2 rounded-lg hover:bg-white/15 text-sm transition-colors">Cadastrar</a>
+                <a href="/dados" class="text-white px-3 py-2 rounded-lg hover:bg-white/15 text-sm transition-colors">Dados</a>
+            </th:block>
+
+            <a th:if="${session.usuario != null and session.usuario.role == 'ADMIN'}"
+               href="/historico-acesso" class="text-white px-3 py-2 rounded-lg hover:bg-white/15 text-sm transition-colors">Histórico</a>
+
+            <th:block th:if="${session.usuario != null}">
+                <span class="text-white/70 text-sm ml-2 mr-1 hidden sm:inline" th:text="${session.usuario.nomeUsuario}"></span>
+                <a href="/logout" class="bg-white text-[#2E5B37] px-3 py-2 rounded-lg text-sm font-semibold hover:bg-gray-100 transition-colors ml-1">Sair</a>
+            </th:block>
+
+            <th:block th:if="${session.usuario == null}">
+                <a href="/login" class="bg-white text-[#2E5B37] px-4 py-2 rounded-lg text-sm font-semibold hover:bg-gray-100 transition-colors ml-2">Entrar</a>
+            </th:block>
+        </div>
+    </div>
+</nav>
+
+<footer th:fragment="rodape" class="bg-[#2E5B37] text-white mt-8">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p class="text-sm text-white/80">🏛️ Museu Treze de Maio — Sistema de Acervo Digital</p>
+            <div class="flex items-center gap-5">
+                <a href="https://www.instagram.com" target="_blank" rel="noopener"
+                   class="text-white/80 hover:text-white transition-colors text-sm flex items-center gap-1.5">
+                    Instagram
+                </a>
+                <a href="https://www.facebook.com" target="_blank" rel="noopener"
+                   class="text-white/80 hover:text-white transition-colors text-sm flex items-center gap-1.5">
+                    Facebook
+                </a>
+                <a href="https://wa.me/55" target="_blank" rel="noopener"
+                   class="text-white/80 hover:text-white transition-colors text-sm flex items-center gap-1.5">
+                    WhatsApp
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

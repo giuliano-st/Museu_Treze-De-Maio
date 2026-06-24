@@ -1,0 +1,29 @@
+services:
+  app:
+    build: .
+    image: museutreze:1.0
+    container_name: MuseuTreze
+    ports:
+      - "8080:8080"
+    environment:
+      # Sobrescreve o localhost pelo nome do container do banco ('db')
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/MuseuTreze?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=laboratorio
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:8.0
+    container_name: MuseuTrezeDB
+    environment:
+      - MYSQL_ROOT_PASSWORD=laboratorio
+      - MYSQL_DATABASE=MuseuTreze
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
