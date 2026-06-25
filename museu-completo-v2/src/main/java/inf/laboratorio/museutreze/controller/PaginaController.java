@@ -1,5 +1,6 @@
 package inf.laboratorio.museutreze.controller;
 
+import inf.laboratorio.museutreze.model.Role;
 import inf.laboratorio.museutreze.model.Usuario;
 import inf.laboratorio.museutreze.model.ObraHistorico;
 import inf.laboratorio.museutreze.repository.UsuarioRepository;
@@ -17,10 +18,12 @@ import inf.laboratorio.museutreze.service.AutorService;
 import inf.laboratorio.museutreze.service.EditoraService;
 import inf.laboratorio.museutreze.service.AssuntoService;
 import inf.laboratorio.museutreze.service.ExemplarService;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -37,10 +40,11 @@ public class PaginaController {
     private final EditoraService editoraService;
     private final AssuntoService assuntoService;
     private final ExemplarService exemplarService;
+    private final PasswordEncoder passwordEncoder;
 
     public PaginaController(UsuarioRepository usuarioRepository, ObraHistoricoRepository obraHistoricoRepository,
                             ObraRepository obraRepository, ObraService obraService, AutorService autorService,
-                            EditoraService editoraService, AssuntoService assuntoService, ExemplarService exemplarService) {
+                            EditoraService editoraService, AssuntoService assuntoService, ExemplarService exemplarService, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.obraHistoricoRepository = obraHistoricoRepository;
         this.obraRepository = obraRepository;
@@ -49,6 +53,13 @@ public class PaginaController {
         this.editoraService = editoraService;
         this.assuntoService = assuntoService;
         this.exemplarService = exemplarService;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    private Usuario getUsuarioLogado() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        assert auth != null;
+        return usuarioRepository.findByEmail(auth.getName()).orElse(null);
     }
 
     @GetMapping("/")
@@ -61,41 +72,33 @@ public class PaginaController {
         return "login";
     }
 
-    @PostMapping("/login")
-    public String login(@RequestParam String email, @RequestParam String senha,
-                        HttpSession session, Model model) {
-        Usuario usuario = usuarioRepository.findByEmail(email);
-        if (usuario != null && usuario.getSenha().equals(senha)) {
-            session.setAttribute("usuario", usuario);
-            return "redirect:/";
-        }
-        model.addAttribute("erro", "E-mail ou senha inválidos.");
-        return "login";
-    }
-
-    @GetMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
-        return "redirect:/";
-    }
-
     @GetMapping("/register")
     public String registerForm() {
         return "register";
     }
 
+    //verificar esse post aqui, pois pode ser uma falha de segurança
     @PostMapping("/register")
-    public String register(@RequestParam String nomeUsuario, @RequestParam String email,
-                           @RequestParam String senha, @RequestParam String role, Model model) {
-        if (usuarioRepository.findByEmail(email) != null) {
+    public String register(
+            @RequestParam String nomeUsuario,
+            @RequestParam String email,
+            @RequestParam String senha,
+            @RequestParam String role,
+            Model model
+    ) {
+
+        if (usuarioRepository.findByEmail(email).isPresent()) {
             model.addAttribute("erro", "E-mail já cadastrado.");
             return "register";
         }
+
         Usuario usuario = new Usuario();
+
         usuario.setNomeUsuario(nomeUsuario);
         usuario.setEmail(email);
-        usuario.setSenha(senha);
-        usuario.setRole(role);
+        usuario.setSenha(passwordEncoder.encode(senha));
+        usuario.setRole(Role.valueOf(role));
+
         usuarioRepository.save(usuario);
         return "redirect:/login";
     }
@@ -141,29 +144,35 @@ public class PaginaController {
     }
 
     @GetMapping("/obra/{id}")
-    public String detalhes(@PathVariable Long id, Model model, HttpSession session) {
+    public String detalhes(@PathVariable Long id, Model model) {
+
         model.addAttribute("obra", obraService.buscarPorId(id));
+
         model.addAttribute("exemplares", exemplarService.listar().stream()
                 .filter(e -> e.obraId() != null && e.obraId().equals(id))
                 .toList());
-        Usuario u = (Usuario) session.getAttribute("usuario");
-        model.addAttribute("isBibliotecario", u != null);
+
+        Usuario u = getUsuarioLogado();
+
+        model.addAttribute("isBibliotecario",
+                u != null && u.getRole() == Role.BIBLIOTECARIO);
+
         return "detalhes";
     }
 
     @GetMapping("/cadastro")
-    public String cadastroEscolha(HttpSession session) {
-        if (!logado(session)) return "redirect:/login";
+    public String cadastroEscolha() {
         return "cadastro-escolha";
     }
 
     @GetMapping("/cadastro/obra")
-    public String obraForm(@RequestParam(required = false) Long editar, HttpSession session, Model model) {
-        if (!logado(session)) return "redirect:/login";
+    public String obraForm(@RequestParam(required = false) Long editar, Model model) {
+
         model.addAttribute("autores", autorService.listar());
         model.addAttribute("editoras", editoraService.listar());
         model.addAttribute("assuntos", assuntoService.listar());
         model.addAttribute("obra", editar != null ? obraService.buscarPorId(editar) : null);
+
         return "cadastro-obra";
     }
 
@@ -188,18 +197,27 @@ public class PaginaController {
                              @RequestParam(required = false) String periodicidade,
                              @RequestParam(required = false) Long autorId,
                              @RequestParam(required = false) Long editoraId,
-                             @RequestParam(required = false) List<Long> assuntosIds,
-                             HttpSession session) {
-        if (!logado(session)) return "redirect:/login";
+                             @RequestParam(required = false) List<Long> assuntosIds
+                             ) {
+
 
         ObraDTORequest request = new ObraDTORequest(
                 obra_tipo, titulo_Principal, capa, local, null, descFisica, nome,
                 numeroChamada, chamadaLocal, tituloUniforme, isbn, serie, edicao,
-                colecao, notasGerais, issn, volume, periodicidade, autorId, editoraId, assuntosIds
+                colecao, notasGerais, issn, volume, periodicidade,
+                autorId, editoraId, assuntosIds
         );
 
-        Usuario usuarioLogado = (Usuario) session.getAttribute("usuario");
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        assert authentication != null;
+        Usuario usuarioLogado = usuarioRepository
+                .findByEmail(authentication.getName())
+                .orElse(null);
+
         ObraDTOResponse resultado;
+
         if (id != null) {
             resultado = obraService.atualizar(id, request);
             registrarHistorico("EDITOU", usuarioLogado, resultado.id());
@@ -207,21 +225,25 @@ public class PaginaController {
             resultado = obraService.salvar(request);
             registrarHistorico("CADASTROU", usuarioLogado, resultado.id());
         }
+
         return "redirect:/cadastro";
     }
 
     @PostMapping("/obra/excluir/{id}")
-    public String excluirObra(@PathVariable Long id, HttpSession session) {
-        if (!logado(session)) return "redirect:/login";
-        Usuario usuarioLogado = (Usuario) session.getAttribute("usuario");
+    public String excluirObra(@PathVariable Long id) {
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        assert authentication != null;
+        Usuario usuarioLogado = usuarioRepository
+                .findByEmail(authentication.getName())
+                .orElse(null);
         registrarHistorico("EXCLUIU", usuarioLogado, id);
         obraService.deletar(id);
         return "redirect:/pesquisa";
     }
 
     @GetMapping("/dados")
-    public String dados(HttpSession session, Model model) {
-        if (!logado(session)) return "redirect:/login";
+    public String dados(Model model) {
         model.addAttribute("autores", autorService.listar());
         model.addAttribute("editoras", editoraService.listar());
         model.addAttribute("assuntos", assuntoService.listar());
@@ -229,30 +251,26 @@ public class PaginaController {
     }
 
     @PostMapping("/dados/autor")
-    public String salvarAutor(@RequestParam String nome, @RequestParam(required = false) String nacionalidade,
-                              HttpSession session) {
-        if (!logado(session)) return "redirect:/login";
+    public String salvarAutor(@RequestParam String nome, @RequestParam(required = false) String nacionalidade
+                              ) {
         autorService.salvar(new AutorDTORequest(nome, nacionalidade));
         return "redirect:/dados";
     }
 
     @PostMapping("/dados/editora")
-    public String salvarEditora(@RequestParam String nome, HttpSession session) {
-        if (!logado(session)) return "redirect:/login";
+    public String salvarEditora(@RequestParam String nome) {
         editoraService.salvar(new EditoraDTORequest(nome));
         return "redirect:/dados";
     }
 
     @PostMapping("/dados/assunto")
-    public String salvarAssunto(@RequestParam String descricao, HttpSession session) {
-        if (!logado(session)) return "redirect:/login";
+    public String salvarAssunto(@RequestParam String descricao) {
         assuntoService.salvar(new AssuntoDTORequest(descricao));
         return "redirect:/dados";
     }
 
     @GetMapping("/obra/{obraId}/exemplares")
-    public String exemplares(@PathVariable Long obraId, HttpSession session, Model model) {
-        if (!logado(session)) return "redirect:/login";
+    public String exemplares(@PathVariable Long obraId , Model model) {
         model.addAttribute("obra", obraService.buscarPorId(obraId));
         model.addAttribute("exemplares", exemplarService.listar().stream()
                 .filter(e -> e.obraId() != null && e.obraId().equals(obraId))
@@ -262,9 +280,8 @@ public class PaginaController {
 
     @PostMapping("/obra/{obraId}/exemplares")
     public String salvarExemplar(@PathVariable Long obraId, @RequestParam Integer numero,
-                                 @RequestParam(required = false) Boolean disponibilidade,
-                                 HttpSession session) {
-        if (!logado(session)) return "redirect:/login";
+                                 @RequestParam(required = false) Boolean disponibilidade
+                                 ) {
         exemplarService.salvar(new ExemplarDTORequest(
                 disponibilidade != null ? disponibilidade : true, numero, obraId
         ));
@@ -272,30 +289,33 @@ public class PaginaController {
     }
 
     @PostMapping("/exemplar/excluir/{id}")
-    public String excluirExemplar(@PathVariable Long id, @RequestParam Long obraId, HttpSession session) {
-        if (!logado(session)) return "redirect:/login";
+    public String excluirExemplar(@PathVariable Long id, @RequestParam Long obraId) {
         exemplarService.deletar(id);
         return "redirect:/obra/" + obraId + "/exemplares";
     }
 
     @GetMapping("/historico-acesso")
-    public String historico(HttpSession session, Model model) {
-        Usuario u = (Usuario) session.getAttribute("usuario");
-        if (u == null || !"ADMIN".equals(u.getRole())) return "redirect:/login";
+    public String historico(Model model) {
+
+        Usuario u = getUsuarioLogado();
+
+        if (u == null || u.getRole() != Role.ADMIN) {
+            return "redirect:/login";
+        }
 
         List<ObraHistorico> registros = obraHistoricoRepository.findAll().stream()
                 .sorted(Comparator.comparing(ObraHistorico::getData).reversed())
                 .toList();
+
         model.addAttribute("registros", registros);
         return "historico";
     }
 
-    private boolean logado(HttpSession session) {
-        return session.getAttribute("usuario") != null;
-    }
-
-    private void registrarHistorico(String operacao, Usuario usuario, Long obraId) {
+    private void registrarHistorico(String operacao,
+                                    Usuario usuario,
+                                    Long obraId) {
         if (usuario == null) return;
+
         Obra obra = obraRepository.findById(obraId).orElse(null);
         if (obra == null) return;
 
@@ -304,6 +324,14 @@ public class PaginaController {
         registro.setData(LocalDateTime.now());
         registro.setUsuario(usuario);
         registro.setObra(obra);
+
         obraHistoricoRepository.save(registro);
     }
+
+    @GetMapping("/debug-user")
+    public String debug() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return auth.getName();
+    }
+
 }

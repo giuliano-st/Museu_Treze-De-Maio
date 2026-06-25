@@ -4,55 +4,154 @@
     <meta charset="UTF-8"/>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body>
-<nav th:fragment="navbar" class="bg-[#2E5B37] shadow-md sticky top-0 z-50">
+
+<nav th:fragment="navbar"
+     class="bg-[#2E5B37] shadow-md sticky top-0 z-50">
+
     <div class="max-w-7xl mx-auto px-4 flex justify-between items-center h-16">
-        <a href="/" class="text-white font-semibold text-lg flex items-center gap-2 hover:opacity-90 transition-opacity">
-            <span class="text-xl">🏛️</span> Museu Treze de Maio
+
+        <!-- Logo -->
+        <a href="/"
+           class="text-white font-semibold text-lg flex items-center gap-2 hover:opacity-90 transition-opacity">
+
+            <span class="text-xl">🏛️</span>
+            Museu Treze de Maio
         </a>
-        <div class="flex items-center gap-1">
-            <a href="/pesquisa" class="text-white px-3 py-2 rounded-lg hover:bg-white/15 text-sm transition-colors">Acervo</a>
 
-            <th:block th:if="${session.usuario != null}">
-                <a href="/cadastro" class="text-white px-3 py-2 rounded-lg hover:bg-white/15 text-sm transition-colors">Cadastrar</a>
-                <a href="/dados" class="text-white px-3 py-2 rounded-lg hover:bg-white/15 text-sm transition-colors">Dados</a>
+        <!-- Menu -->
+        <div class="flex items-center gap-2">
+
+            <a href="/pesquisa"
+               class="text-white px-3 py-2 rounded-lg hover:bg-white/15 text-sm transition-colors">
+                Acervo
+            </a>
+
+            <!-- Apenas logado -->
+            <th:block th:if="${#authorization.expression('isAuthenticated()')}">
+
+                <a href="/cadastro"
+                   class="text-white px-3 py-2 rounded-lg hover:bg-white/15 text-sm transition-colors">
+                    Cadastrar
+                </a>
+
+                <a href="/dados"
+                   class="text-white px-3 py-2 rounded-lg hover:bg-white/15 text-sm transition-colors">
+                    Dados
+                </a>
+
             </th:block>
 
-            <a th:if="${session.usuario != null and session.usuario.role == 'ADMIN'}"
-               href="/historico-acesso" class="text-white px-3 py-2 rounded-lg hover:bg-white/15 text-sm transition-colors">Histórico</a>
+            <!-- Apenas ADMIN -->
+            <th:block th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
 
-            <th:block th:if="${session.usuario != null}">
-                <span class="text-white/70 text-sm ml-2 mr-1 hidden sm:inline" th:text="${session.usuario.nomeUsuario}"></span>
-                <a href="/logout" class="bg-white text-[#2E5B37] px-3 py-2 rounded-lg text-sm font-semibold hover:bg-gray-100 transition-colors ml-1">Sair</a>
+                <a href="/historico-acesso"
+                   class="text-white px-3 py-2 rounded-lg hover:bg-white/15 text-sm transition-colors">
+                    Histórico
+                </a>
+
             </th:block>
 
-            <th:block th:if="${session.usuario == null}">
-                <a href="/login" class="bg-white text-[#2E5B37] px-4 py-2 rounded-lg text-sm font-semibold hover:bg-gray-100 transition-colors ml-2">Entrar</a>
+            <!-- USUÁRIO LOGADO -->
+            <th:block th:if="${#authorization.expression('isAuthenticated()')}">
+
+                <div class="relative group ml-2">
+
+                    <!-- Botão usuário -->
+                    <button class="flex items-center gap-2 bg-white/10 hover:bg-white/20 transition px-3 py-1.5 rounded-full">
+
+                        <!-- Avatar -->
+                        <div class="w-8 h-8 rounded-full bg-white text-[#2E5B37] flex items-center justify-center font-bold text-sm">
+
+                            <span th:text="${#strings.substring(#authentication.name,0,1)}">
+                                U
+                            </span>
+
+                        </div>
+
+                        <!-- Nome -->
+                        <span class="text-white text-sm hidden sm:inline"
+                              th:text="${#authentication.name}">
+                        </span>
+
+                        <span class="text-white text-xs">▼</span>
+
+                    </button>
+
+                    <!-- Dropdown -->
+                    <div class="absolute right-0 mt-2 w-44 bg-white rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none group-hover:pointer-events-auto">
+
+                        <div class="px-4 py-2 text-xs text-gray-500 border-b">
+                            Logado como
+                            <span class="font-semibold text-gray-700"
+                                  th:text="${#authentication.name}">
+                            </span>
+                        </div>
+
+                        <a href="/"
+                           class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 rounded-b-lg">
+                            Sair
+                        </a>
+
+                    </div>
+
+                </div>
+
             </th:block>
+
+            <!-- NÃO LOGADO -->
+            <th:block th:if="${#authorization.expression('isAnonymous()')}">
+
+                <a href="/login"
+                   class="bg-white text-[#2E5B37] px-4 py-2 rounded-lg text-sm font-semibold hover:bg-gray-100 transition ml-2">
+                    Entrar
+                </a>
+
+            </th:block>
+
         </div>
     </div>
 </nav>
 
-<footer th:fragment="rodape" class="bg-[#2E5B37] text-white mt-8">
+<!-- FOOTER -->
+<footer th:fragment="rodape"
+        class="bg-[#2E5B37] text-white mt-8">
+
     <div class="max-w-7xl mx-auto px-4 py-8">
+
         <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p class="text-sm text-white/80">🏛️ Museu Treze de Maio — Sistema de Acervo Digital</p>
+
+            <p class="text-sm text-white/80">
+                🏛️ Museu Treze de Maio — Sistema de Acervo Digital
+            </p>
+
             <div class="flex items-center gap-5">
-                <a href="https://www.instagram.com" target="_blank" rel="noopener"
-                   class="text-white/80 hover:text-white transition-colors text-sm flex items-center gap-1.5">
+
+                <a href="https://www.instagram.com"
+                   target="_blank"
+                   class="text-white/80 hover:text-white transition text-sm">
                     Instagram
                 </a>
-                <a href="https://www.facebook.com" target="_blank" rel="noopener"
-                   class="text-white/80 hover:text-white transition-colors text-sm flex items-center gap-1.5">
+
+                <a href="https://www.facebook.com"
+                   target="_blank"
+                   class="text-white/80 hover:text-white transition text-sm">
                     Facebook
                 </a>
-                <a href="https://wa.me/55" target="_blank" rel="noopener"
-                   class="text-white/80 hover:text-white transition-colors text-sm flex items-center gap-1.5">
+
+                <a href="https://wa.me/55"
+                   target="_blank"
+                   class="text-white/80 hover:text-white transition text-sm">
                     WhatsApp
                 </a>
+
             </div>
+
         </div>
+
     </div>
 </footer>
+
 </body>
 </html>

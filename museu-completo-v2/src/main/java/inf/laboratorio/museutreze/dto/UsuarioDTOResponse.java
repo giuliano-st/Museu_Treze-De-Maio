@@ -1,8 +1,10 @@
 package inf.laboratorio.museutreze.dto;
 
+import inf.laboratorio.museutreze.model.Role;
+
 public record UsuarioDTOResponse(
         Long id,
         String nomeUsuario,
-        String role,
+        Role role,
         String email
 ) {}
