@@ -3,119 +3,405 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
     <title>Cadastrar Obra — Museu Treze de Maio</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="bg-gray-50 min-h-screen flex flex-col">
+
 <nav th:replace="~{fragmentos :: navbar}"></nav>
 
-<main class="max-w-4xl mx-auto px-4 py-8 flex-1">
-    <a href="/cadastro" class="inline-flex items-center gap-2 text-[#2E5B37] hover:underline text-sm mb-6">← Voltar</a>
+<main class="max-w-5xl mx-auto px-4 py-8 flex-1">
 
-    <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-8">
-        <h1 class="text-[#2E5B37] text-2xl font-bold mb-8 text-center"
-            th:text="${obra != null} ? 'Editar Obra' : 'Cadastrar Obra'"></h1>
+    <a href="/cadastro"
+       class="inline-flex items-center gap-2 text-[#2E5B37] hover:underline text-sm mb-6">
+        ← Voltar
+    </a>
 
-        <form th:action="@{/cadastro/obra}" method="post" class="space-y-6">
-            <input type="hidden" name="id" th:value="${obra != null} ? ${obra.id} : null"/>
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
 
-            <div class="grid md:grid-cols-2 gap-5">
-                <div>
-                    <label class="block mb-1.5 text-[#2E5B37] font-medium text-sm">Tipo *</label>
-                    <select name="obra_tipo" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:border-[#2E5B37] focus:ring-2 focus:ring-[#2E5B37]/20 focus:outline-none text-sm bg-white transition-all">
-                        <option value="LIVRO" th:selected="${obra != null and obra.obra_tipo == 'LIVRO'}">Livro</option>
-                        <option value="JORNAL" th:selected="${obra != null and obra.obra_tipo == 'JORNAL'}">Jornal</option>
-                        <option value="REVISTA" th:selected="${obra != null and obra.obra_tipo == 'REVISTA'}">Revista</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block mb-1.5 text-[#2E5B37] font-medium text-sm">Título *</label>
-                    <input type="text" name="titulo_Principal" required
-                           th:value="${obra != null} ? ${obra.titulo_Principal} : null"
-                           class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:border-[#2E5B37] focus:ring-2 focus:ring-[#2E5B37]/20 focus:outline-none text-sm transition-all"/>
-                </div>
-                <div>
-                    <label class="block mb-1.5 text-[#2E5B37] font-medium text-sm">Autor</label>
-                    <select name="autorId" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:border-[#2E5B37] focus:ring-2 focus:ring-[#2E5B37]/20 focus:outline-none text-sm bg-white transition-all">
-                        <option value="">Selecione</option>
-                        <option th:each="a : ${autores}" th:value="${a.id}" th:text="${a.nome}"
-                                th:selected="${obra != null and obra.autor != null and obra.autor.id == a.id}"></option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block mb-1.5 text-[#2E5B37] font-medium text-sm">Editora</label>
-                    <select name="editoraId" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:border-[#2E5B37] focus:ring-2 focus:ring-[#2E5B37]/20 focus:outline-none text-sm bg-white transition-all">
-                        <option value="">Selecione</option>
-                        <option th:each="e : ${editoras}" th:value="${e.id}" th:text="${e.nome}"
-                                th:selected="${obra != null and obra.editora != null and obra.editora.id == e.id}"></option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block mb-1.5 text-[#2E5B37] font-medium text-sm">ISBN</label>
-                    <input type="text" name="isbn" th:value="${obra != null} ? ${obra.isbn} : null"
-                           class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:border-[#2E5B37] focus:ring-2 focus:ring-[#2E5B37]/20 focus:outline-none text-sm transition-all"/>
-                </div>
-                <div>
-                    <label class="block mb-1.5 text-[#2E5B37] font-medium text-sm">ISSN</label>
-                    <input type="text" name="issn" th:value="${obra != null} ? ${obra.issn} : null"
-                           class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:border-[#2E5B37] focus:ring-2 focus:ring-[#2E5B37]/20 focus:outline-none text-sm transition-all"/>
-                </div>
-                <div>
-                    <label class="block mb-1.5 text-[#2E5B37] font-medium text-sm">Série</label>
-                    <input type="text" name="serie" th:value="${obra != null} ? ${obra.serie} : null"
-                           class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:border-[#2E5B37] focus:ring-2 focus:ring-[#2E5B37]/20 focus:outline-none text-sm transition-all"/>
-                </div>
-                <div>
-                    <label class="block mb-1.5 text-[#2E5B37] font-medium text-sm">Edição</label>
-                    <input type="text" name="edicao" th:value="${obra != null} ? ${obra.edicao} : null"
-                           class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:border-[#2E5B37] focus:ring-2 focus:ring-[#2E5B37]/20 focus:outline-none text-sm transition-all"/>
-                </div>
-                <div>
-                    <label class="block mb-1.5 text-[#2E5B37] font-medium text-sm">Coleção</label>
-                    <input type="text" name="colecao" th:value="${obra != null} ? ${obra.colecao} : null"
-                           class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:border-[#2E5B37] focus:ring-2 focus:ring-[#2E5B37]/20 focus:outline-none text-sm transition-all"/>
-                </div>
-                <div>
-                    <label class="block mb-1.5 text-[#2E5B37] font-medium text-sm">Local</label>
-                    <input type="text" name="local" th:value="${obra != null} ? ${obra.local} : null"
-                           class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:border-[#2E5B37] focus:ring-2 focus:ring-[#2E5B37]/20 focus:outline-none text-sm transition-all"/>
-                </div>
-                <div>
-                    <label class="block mb-1.5 text-[#2E5B37] font-medium text-sm">Periodicidade</label>
-                    <input type="text" name="periodicidade" th:value="${obra != null} ? ${obra.periodicidade} : null"
-                           class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:border-[#2E5B37] focus:ring-2 focus:ring-[#2E5B37]/20 focus:outline-none text-sm transition-all"/>
-                </div>
-                <div>
-                    <label class="block mb-1.5 text-[#2E5B37] font-medium text-sm">URL da Capa</label>
-                    <input type="url" name="capa" th:value="${obra != null} ? ${obra.capa} : null"
-                           class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:border-[#2E5B37] focus:ring-2 focus:ring-[#2E5B37]/20 focus:outline-none text-sm transition-all"/>
-                </div>
-            </div>
+        <div class="bg-[#2E5B37] text-white p-6">
+            <h1 class="text-2xl font-bold"
+                th:text="${obra != null} ? 'Editar Obra' : 'Cadastrar Nova Obra'">
+            </h1>
 
-            <div>
-                <label class="block mb-1.5 text-[#2E5B37] font-medium text-sm">Assuntos</label>
-                <select name="assuntosIds" multiple class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:border-[#2E5B37] focus:ring-2 focus:ring-[#2E5B37]/20 focus:outline-none text-sm bg-white h-32 transition-all">
-                    <option th:each="a : ${assuntos}" th:value="${a.id}" th:text="${a.descricao}"
-                            th:selected="${obra != null and obra.assuntos != null and obra.assuntos.contains(a)}"></option>
+            <p class="text-white/80 text-sm mt-1">
+                Preencha os dados bibliográficos da obra.
+            </p>
+        </div>
+
+        <form th:action="@{/cadastro/obra}"
+              method="post"
+              class="p-8 space-y-8">
+
+            <input type="hidden"
+                   name="id"
+                   th:value="${obra != null ? obra.id : null}">
+
+            <!-- ================================================= -->
+            <!-- DADOS GERAIS -->
+            <!-- ================================================= -->
+
+            <section>
+
+                <h2 class="text-lg font-bold text-[#2E5B37] mb-4">
+                    Informações Gerais
+                </h2>
+
+                <div class="grid md:grid-cols-2 gap-5">
+
+                    <div>
+                        <label class="block mb-1 font-medium text-sm">
+                            Tipo *
+                        </label>
+
+                        <select id="obraTipo"
+                                name="obra_tipo"
+                                required
+                                class="w-full border rounded-lg px-4 py-3">
+
+                            <option value="LIVRO"
+                                    th:selected="${obra != null and obra.obra_tipo == 'LIVRO'}">
+                                Livro
+                            </option>
+
+                            <option value="REVISTA"
+                                    th:selected="${obra != null and obra.obra_tipo == 'REVISTA'}">
+                                Revista
+                            </option>
+
+                            <option value="JORNAL"
+                                    th:selected="${obra != null and obra.obra_tipo == 'JORNAL'}">
+                                Jornal
+                            </option>
+
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 font-medium text-sm">
+                            Título *
+                        </label>
+
+                        <input type="text"
+                               required
+                               name="titulo_Principal"
+                               th:value="${obra != null ? obra.titulo_Principal : ''}"
+                               class="w-full border rounded-lg px-4 py-3">
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 font-medium text-sm">
+                            Data de publicação
+                        </label>
+
+                        <input type="date"
+                               name="data"
+                               class="w-full border rounded-lg px-4 py-3">
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 font-medium text-sm">
+                            URL da capa
+                        </label>
+
+                        <input id="campoCapa"
+                               type="text"
+                               name="capa"
+                               th:value="${obra != null ? obra.capa : ''}"
+                               class="w-full border rounded-lg px-4 py-3">
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- Preview -->
+
+            <section>
+
+                <h2 class="text-lg font-bold text-[#2E5B37] mb-4">
+                    Pré-visualização da Capa
+                </h2>
+
+                <div class="flex justify-center">
+
+                    <img id="previewCapa"
+                         src="/imagens/capaLivro.png"
+                         class="w-48 h-72 object-cover rounded-xl border shadow-sm">
+
+                </div>
+
+            </section>
+
+            <!-- ================================================= -->
+            <!-- LIVRO -->
+            <!-- ================================================= -->
+
+            <section id="camposLivro">
+
+                <h2 class="text-lg font-bold text-[#2E5B37] mb-4">
+                    Dados do Livro
+                </h2>
+
+                <div class="grid md:grid-cols-2 gap-5">
+
+                    <div>
+                        <label class="block mb-1 text-sm">Autor</label>
+
+                        <select name="autorId"
+                                class="w-full border rounded-lg px-4 py-3">
+
+                            <option value="">Selecione</option>
+
+                            <option
+                                    th:each="a : ${autores}"
+                                    th:value="${a.id}"
+                                    th:text="${a.nome}">
+                            </option>
+
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 text-sm">Editora</label>
+
+                        <select name="editoraId"
+                                class="w-full border rounded-lg px-4 py-3">
+
+                            <option value="">Selecione</option>
+
+                            <option
+                                    th:each="e : ${editoras}"
+                                    th:value="${e.id}"
+                                    th:text="${e.nome}">
+                            </option>
+
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 text-sm">ISBN</label>
+
+                        <input type="text"
+                               name="isbn"
+                               class="w-full border rounded-lg px-4 py-3">
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 text-sm">Edição</label>
+
+                        <input type="text"
+                               name="edicao"
+                               class="w-full border rounded-lg px-4 py-3">
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 text-sm">Coleção</label>
+
+                        <input type="text"
+                               name="colecao"
+                               class="w-full border rounded-lg px-4 py-3">
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 text-sm">Série</label>
+
+                        <input type="text"
+                               name="serie"
+                               class="w-full border rounded-lg px-4 py-3">
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 text-sm">
+                            Número de Chamada
+                        </label>
+
+                        <input type="text"
+                               name="numeroChamada"
+                               class="w-full border rounded-lg px-4 py-3">
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 text-sm">
+                            Chamada Local
+                        </label>
+
+                        <input type="text"
+                               name="chamadaLocal"
+                               class="w-full border rounded-lg px-4 py-3">
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- ================================================= -->
+            <!-- PERIÓDICOS -->
+            <!-- ================================================= -->
+
+            <section id="camposPeriodicos">
+
+                <h2 class="text-lg font-bold text-[#2E5B37] mb-4">
+                    Dados do Periódico
+                </h2>
+
+                <div class="grid md:grid-cols-2 gap-5">
+
+                    <div>
+                        <label class="block mb-1 text-sm">ISSN</label>
+
+                        <input type="text"
+                               name="issn"
+                               class="w-full border rounded-lg px-4 py-3">
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 text-sm">Volume</label>
+
+                        <input type="number"
+                               name="volume"
+                               class="w-full border rounded-lg px-4 py-3">
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 text-sm">
+                            Periodicidade
+                        </label>
+
+                        <input type="text"
+                               name="periodicidade"
+                               class="w-full border rounded-lg px-4 py-3">
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 text-sm">Local</label>
+
+                        <input type="text"
+                               name="local"
+                               class="w-full border rounded-lg px-4 py-3">
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- ================================================= -->
+
+            <section>
+
+                <h2 class="text-lg font-bold text-[#2E5B37] mb-4">
+                    Assuntos
+                </h2>
+
+                <select multiple
+                        name="assuntosIds"
+                        class="w-full h-40 border rounded-lg p-3">
+
+                    <option
+                            th:each="a : ${assuntos}"
+                            th:value="${a.id}"
+                            th:text="${a.descricao}">
+                    </option>
+
                 </select>
-                <p class="text-xs text-gray-400 mt-1">Segure Ctrl para selecionar mais de um</p>
+
+            </section>
+
+            <section>
+
+                <h2 class="text-lg font-bold text-[#2E5B37] mb-4">
+                    Observações
+                </h2>
+
+                <textarea
+                        rows="4"
+                        name="notasGerais"
+                        class="w-full border rounded-lg p-3"></textarea>
+
+            </section>
+
+            <div class="flex gap-4">
+
+                <button type="submit"
+                        class="flex-1 bg-[#2E5B37] text-white py-3 rounded-lg font-bold hover:bg-[#214228] transition">
+                    Salvar Obra
+                </button>
+
+                <a href="/cadastro"
+                   class="px-8 py-3 border rounded-lg text-center hover:bg-gray-50">
+                    Cancelar
+                </a>
+
             </div>
 
-            <div>
-                <label class="block mb-1.5 text-[#2E5B37] font-medium text-sm">Notas Gerais</label>
-                <textarea rows="3" name="notasGerais" th:text="${obra != null} ? ${obra.notasGerais} : null"
-                          class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:border-[#2E5B37] focus:ring-2 focus:ring-[#2E5B37]/20 focus:outline-none text-sm transition-all"></textarea>
-            </div>
-
-            <div class="flex gap-4 pt-2">
-                <button type="submit" class="flex-1 bg-[#2E5B37] text-white py-3 rounded-lg font-bold hover:bg-[#1f4026] transition-colors shadow-sm"
-                        th:text="${obra != null} ? 'Salvar Alterações' : 'Cadastrar Obra'"></button>
-                <a href="/cadastro" class="px-8 py-3 border border-gray-300 text-[#2E5B37] rounded-lg hover:bg-gray-50 text-center transition-colors">Cancelar</a>
-            </div>
         </form>
+
     </div>
+
 </main>
 
 <footer th:replace="~{fragmentos :: rodape}"></footer>
+
+<script>
+
+    function atualizarFormulario() {
+
+        const tipo =
+            document.getElementById("obraTipo").value;
+
+        const livro =
+            document.getElementById("camposLivro");
+
+        const periodicos =
+            document.getElementById("camposPeriodicos");
+
+        if(tipo === "LIVRO") {
+
+            livro.style.display = "block";
+            periodicos.style.display = "none";
+
+        } else {
+
+            livro.style.display = "none";
+            periodicos.style.display = "block";
+
+        }
+    }
+
+    function atualizarPreview() {
+
+        const campo =
+            document.getElementById("campoCapa");
+
+        const preview =
+            document.getElementById("previewCapa");
+
+        if(campo.value.trim() !== "") {
+
+            preview.src = campo.value;
+
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+        atualizarFormulario();
+        atualizarPreview();
+
+        document
+            .getElementById("obraTipo")
+            .addEventListener("change", atualizarFormulario);
+
+        document
+            .getElementById("campoCapa")
+            .addEventListener("input", atualizarPreview);
+
+    });
+
+</script>
+
 </body>
 </html>

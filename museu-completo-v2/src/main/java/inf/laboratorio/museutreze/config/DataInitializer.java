@@ -13,13 +13,15 @@ public class DataInitializer implements CommandLineRunner {
 
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ObraDataLoader obraDataLoader;
 
     public DataInitializer(
             UsuarioRepository usuarioRepository,
-            PasswordEncoder passwordEncoder
+            PasswordEncoder passwordEncoder, ObraDataLoader obraDataLoader
     ) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
+        this.obraDataLoader = obraDataLoader;
     }
 
     @Override
@@ -72,5 +74,6 @@ public class DataInitializer implements CommandLineRunner {
                     bibliotecario
             );
         }
+        obraDataLoader.carregarObras();
     }
 }

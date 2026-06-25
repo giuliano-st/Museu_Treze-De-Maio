@@ -10,113 +10,151 @@
 <nav th:fragment="navbar"
      class="bg-[#2E5B37] shadow-md sticky top-0 z-50">
 
-    <div class="max-w-7xl mx-auto px-4 flex justify-between items-center h-16">
+    <div class="max-w-7xl mx-auto px-4">
 
-        <!-- Logo -->
-        <a href="/"
-           class="text-white font-semibold text-lg flex items-center gap-2 hover:opacity-90 transition-opacity">
+        <div class="flex justify-between items-center h-16">
 
-            <span class="text-xl">🏛️</span>
-            Museu Treze de Maio
-        </a>
+            <!-- Logo -->
+            <a href="/"
+               class="flex items-center gap-3 text-white font-bold text-lg hover:opacity-90 transition">
 
-        <!-- Menu -->
-        <div class="flex items-center gap-2">
+                <span class="text-2xl">🏛️</span>
 
-            <a href="/pesquisa"
-               class="text-white px-3 py-2 rounded-lg hover:bg-white/15 text-sm transition-colors">
-                Acervo
+                <span class="hidden sm:block">
+                    Museu Treze de Maio
+                </span>
+
             </a>
 
-            <!-- Apenas logado -->
-            <th:block th:if="${#authorization.expression('isAuthenticated()')}">
+            <!-- Menu -->
+            <div class="flex items-center gap-2">
 
-                <a href="/cadastro"
-                   class="text-white px-3 py-2 rounded-lg hover:bg-white/15 text-sm transition-colors">
-                    Cadastrar
+                <a href="/pesquisa"
+                   class="text-white px-3 py-2 rounded-lg hover:bg-white/10 transition">
+                    Acervo
                 </a>
 
-                <a href="/dados"
-                   class="text-white px-3 py-2 rounded-lg hover:bg-white/15 text-sm transition-colors">
-                    Dados
-                </a>
+                <th:block th:if="${#authorization.expression('isAuthenticated()')}">
 
-            </th:block>
+                    <a href="/cadastro"
+                       class="text-white px-3 py-2 rounded-lg hover:bg-white/10 transition">
+                        Cadastrar
+                    </a>
 
-            <!-- Apenas ADMIN -->
-            <th:block th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+                    <a href="/dados"
+                       class="text-white px-3 py-2 rounded-lg hover:bg-white/10 transition">
+                        Dados
+                    </a>
 
-                <a href="/historico-acesso"
-                   class="text-white px-3 py-2 rounded-lg hover:bg-white/15 text-sm transition-colors">
-                    Histórico
-                </a>
+                </th:block>
 
-            </th:block>
+                <th:block th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
 
-            <!-- USUÁRIO LOGADO -->
-            <th:block th:if="${#authorization.expression('isAuthenticated()')}">
+                    <a href="/historico-acesso"
+                       class="text-white px-3 py-2 rounded-lg hover:bg-white/10 transition">
+                        Histórico
+                    </a>
 
-                <div class="relative group ml-2">
+                </th:block>
 
-                    <!-- Botão usuário -->
-                    <button class="flex items-center gap-2 bg-white/10 hover:bg-white/20 transition px-3 py-1.5 rounded-full">
+                <!-- Usuário logado -->
+                <th:block th:if="${#authorization.expression('isAuthenticated()')}">
 
-                        <!-- Avatar -->
-                        <div class="w-8 h-8 rounded-full bg-white text-[#2E5B37] flex items-center justify-center font-bold text-sm">
+                    <div class="relative group ml-3">
 
-                            <span th:text="${#strings.substring(#authentication.name,0,1)}">
-                                U
+                        <button
+                                class="flex items-center gap-3 bg-white/10 hover:bg-white/20 rounded-full px-3 py-1.5 transition">
+
+                            <div class="w-9 h-9 rounded-full bg-white text-[#2E5B37]
+                                        flex items-center justify-center font-bold">
+
+                                <span th:text="${#strings.substring(#authentication.name,0,1).toUpperCase()}">
+                                    U
+                                </span>
+
+                            </div>
+
+                            <div class="hidden md:flex flex-col items-start leading-tight">
+
+                                <span class="text-white text-sm font-medium"
+                                      th:text="${#authentication.name}">
+                                </span>
+
+                                <span class="text-white/70 text-xs">
+                                    Usuário autenticado
+                                </span>
+
+                            </div>
+
+                            <span class="text-white text-xs">
+                                ▼
                             </span>
 
+                        </button>
+
+                        <!-- Dropdown -->
+                        <div class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100
+                                    opacity-0 invisible translate-y-2
+                                    group-hover:opacity-100
+                                    group-hover:visible
+                                    group-hover:translate-y-0
+                                    transition-all duration-200">
+
+                            <div class="px-4 py-3 border-b">
+
+                                <p class="text-xs text-gray-500">
+                                    Conectado como
+                                </p>
+
+                                <p class="font-medium text-gray-800 break-all"
+                                   th:text="${#authentication.name}">
+                                </p>
+
+                            </div>
+
+                            <form th:action="@{/logout}" method="post">
+
+                                <button type="submit"
+                                        class="w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 rounded-b-xl transition">
+
+                                    🚪 Sair
+
+                                </button>
+
+                            </form>
+
                         </div>
-
-                        <!-- Nome -->
-                        <span class="text-white text-sm hidden sm:inline"
-                              th:text="${#authentication.name}">
-                        </span>
-
-                        <span class="text-white text-xs">▼</span>
-
-                    </button>
-
-                    <!-- Dropdown -->
-                    <div class="absolute right-0 mt-2 w-44 bg-white rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none group-hover:pointer-events-auto">
-
-                        <div class="px-4 py-2 text-xs text-gray-500 border-b">
-                            Logado como
-                            <span class="font-semibold text-gray-700"
-                                  th:text="${#authentication.name}">
-                            </span>
-                        </div>
-
-                        <a href="/"
-                           class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 rounded-b-lg">
-                            Sair
-                        </a>
 
                     </div>
 
-                </div>
+                </th:block>
 
-            </th:block>
+                <!-- Não logado -->
+                <th:block th:if="${#authorization.expression('isAnonymous()')}">
 
-            <!-- NÃO LOGADO -->
-            <th:block th:if="${#authorization.expression('isAnonymous()')}">
+                    <a href="/login"
+                       class="bg-white text-[#2E5B37]
+                              px-4 py-2 rounded-lg
+                              font-semibold
+                              hover:bg-gray-100
+                              transition">
 
-                <a href="/login"
-                   class="bg-white text-[#2E5B37] px-4 py-2 rounded-lg text-sm font-semibold hover:bg-gray-100 transition ml-2">
-                    Entrar
-                </a>
+                        Entrar
 
-            </th:block>
+                    </a>
+
+                </th:block>
+
+            </div>
 
         </div>
+
     </div>
+
 </nav>
 
-<!-- FOOTER -->
 <footer th:fragment="rodape"
-        class="bg-[#2E5B37] text-white mt-8">
+        class="bg-[#2E5B37] text-white mt-12">
 
     <div class="max-w-7xl mx-auto px-4 py-8">
 
@@ -126,23 +164,23 @@
                 🏛️ Museu Treze de Maio — Sistema de Acervo Digital
             </p>
 
-            <div class="flex items-center gap-5">
+            <div class="flex items-center gap-6">
 
                 <a href="https://www.instagram.com"
                    target="_blank"
-                   class="text-white/80 hover:text-white transition text-sm">
+                   class="text-white/80 hover:text-white transition">
                     Instagram
                 </a>
 
                 <a href="https://www.facebook.com"
                    target="_blank"
-                   class="text-white/80 hover:text-white transition text-sm">
+                   class="text-white/80 hover:text-white transition">
                     Facebook
                 </a>
 
                 <a href="https://wa.me/55"
                    target="_blank"
-                   class="text-white/80 hover:text-white transition text-sm">
+                   class="text-white/80 hover:text-white transition">
                     WhatsApp
                 </a>
 
@@ -151,6 +189,7 @@
         </div>
 
     </div>
+
 </footer>
 
 </body>

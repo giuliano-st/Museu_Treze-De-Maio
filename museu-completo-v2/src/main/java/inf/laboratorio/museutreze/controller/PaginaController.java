@@ -18,6 +18,7 @@ import inf.laboratorio.museutreze.service.AutorService;
 import inf.laboratorio.museutreze.service.EditoraService;
 import inf.laboratorio.museutreze.service.AssuntoService;
 import inf.laboratorio.museutreze.service.ExemplarService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +28,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -180,6 +182,9 @@ public class PaginaController {
     public String obraSalvar(@RequestParam(required = false) Long id,
                              @RequestParam String obra_tipo,
                              @RequestParam String titulo_Principal,
+                             @RequestParam(required = false)
+                                 @DateTimeFormat(pattern = "yyyy-MM-dd")
+                                 Date data,
                              @RequestParam(required = false) String capa,
                              @RequestParam(required = false) String local,
                              @RequestParam(required = false) String descFisica,
@@ -201,8 +206,26 @@ public class PaginaController {
                              ) {
 
 
+        if (capa == null || capa.isBlank()) {
+
+            switch (obra_tipo) {
+
+                case "LIVRO":
+                    capa = "/imagens/capaLivro.png";
+                    break;
+
+                case "REVISTA":
+                    capa = "/imagens/capaRevista.png";
+                    break;
+
+                case "JORNAL":
+                    capa = "/imagens/capaJornal.png";
+                    break;
+            }
+        }
+
         ObraDTORequest request = new ObraDTORequest(
-                obra_tipo, titulo_Principal, capa, local, null, descFisica, nome,
+                obra_tipo, titulo_Principal, capa, local, data, descFisica, nome,
                 numeroChamada, chamadaLocal, tituloUniforme, isbn, serie, edicao,
                 colecao, notasGerais, issn, volume, periodicidade,
                 autorId, editoraId, assuntosIds

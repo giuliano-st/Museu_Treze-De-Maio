@@ -1,109 +1,218 @@
 <!DOCTYPE html>
-<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Acervo — Museu Treze de Maio</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0"/>
+
+    <title>Acervo Digital</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="bg-gray-50 min-h-screen flex flex-col">
+
 <nav th:replace="~{fragmentos :: navbar}"></nav>
 
 <main class="max-w-7xl mx-auto px-4 py-10 flex-1">
+
     <div class="text-center mb-10">
-        <h1 class="text-4xl font-bold text-[#2E5B37] mb-2">Acervo Digital</h1>
-        <p class="text-gray-500">Explore nossa coleção de livros, revistas e jornais</p>
+
+        <h1 class="text-4xl font-bold text-[#2E5B37] mb-2">
+            Acervo Digital
+        </h1>
+
+        <p class="text-gray-500">
+            Explore livros, jornais e revistas do museu
+        </p>
+
     </div>
 
     <div class="flex flex-col lg:flex-row gap-8">
 
+        <!-- FILTROS -->
         <aside class="lg:w-72 shrink-0">
-            <form method="get" action="/pesquisa" class="bg-white border border-gray-200 rounded-xl p-5 sticky top-20 space-y-5 shadow-sm">
+
+            <form method="get"
+                  action="/pesquisa"
+                  class="bg-white border border-gray-200 rounded-xl p-5 sticky top-20 shadow-sm space-y-5">
 
                 <div>
-                    <label class="block text-sm font-medium text-[#2E5B37] mb-1.5">Pesquisar por título, autor ou ano</label>
-                    <input type="text" name="termo" th:value="${termo}" placeholder="Buscar..."
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:border-[#2E5B37] focus:ring-2 focus:ring-[#2E5B37]/20 focus:outline-none transition-all"/>
+
+                    <label class="block text-sm font-medium text-[#2E5B37] mb-2">
+                        Buscar
+                    </label>
+
+                    <input type="text"
+                           name="termo"
+                           th:value="${termo}"
+                           placeholder="Título ou autor..."
+                           class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#2E5B37]/20 focus:border-[#2E5B37] outline-none">
+
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-[#2E5B37] mb-1.5">Tipo</label>
-                    <div class="space-y-1.5">
-                        <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer hover:text-[#2E5B37] transition-colors">
-                            <input type="radio" name="tipo" value="" th:checked="${tipo == null or tipo == ''}" class="accent-[#2E5B37]"/> Todos
+
+                    <label class="block text-sm font-medium text-[#2E5B37] mb-2">
+                        Tipo
+                    </label>
+
+                    <div class="space-y-2">
+
+                        <label class="block">
+                            <input type="radio"
+                                   name="tipo"
+                                   value=""
+                                   th:checked="${tipo == null or tipo == ''}">
+                            Todos
                         </label>
-                        <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer hover:text-[#2E5B37] transition-colors">
-                            <input type="radio" name="tipo" value="LIVRO" th:checked="${tipo == 'LIVRO'}" class="accent-[#2E5B37]"/> Livro
+
+                        <label class="block">
+                            <input type="radio"
+                                   name="tipo"
+                                   value="LIVRO"
+                                   th:checked="${tipo == 'LIVRO'}">
+                            Livro
                         </label>
-                        <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer hover:text-[#2E5B37] transition-colors">
-                            <input type="radio" name="tipo" value="REVISTA" th:checked="${tipo == 'REVISTA'}" class="accent-[#2E5B37]"/> Revista
+
+                        <label class="block">
+                            <input type="radio"
+                                   name="tipo"
+                                   value="REVISTA"
+                                   th:checked="${tipo == 'REVISTA'}">
+                            Revista
                         </label>
-                        <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer hover:text-[#2E5B37] transition-colors">
-                            <input type="radio" name="tipo" value="JORNAL" th:checked="${tipo == 'JORNAL'}" class="accent-[#2E5B37]"/> Jornal
+
+                        <label class="block">
+                            <input type="radio"
+                                   name="tipo"
+                                   value="JORNAL"
+                                   th:checked="${tipo == 'JORNAL'}">
+                            Jornal
                         </label>
+
                     </div>
+
                 </div>
 
-                <div class="border-t border-gray-100 pt-4">
-                    <label class="block text-sm font-medium text-[#2E5B37] mb-1.5">Período (data de publicação)</label>
-                    <p class="text-xs text-gray-400 mb-2">Útil para jornais e revistas</p>
-                    <label class="block text-xs text-gray-500 mb-1">De</label>
-                    <input type="date" name="dataInicio" th:value="${dataInicio}"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm mb-2 focus:border-[#2E5B37] focus:ring-2 focus:ring-[#2E5B37]/20 focus:outline-none transition-all"/>
-                    <label class="block text-xs text-gray-500 mb-1">Até</label>
-                    <input type="date" name="dataFim" th:value="${dataFim}"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:border-[#2E5B37] focus:ring-2 focus:ring-[#2E5B37]/20 focus:outline-none transition-all"/>
-                </div>
+                <button type="submit"
+                        class="w-full bg-[#2E5B37] text-white py-2.5 rounded-lg hover:bg-[#23452a] transition">
 
-                <button type="submit" class="w-full bg-[#2E5B37] text-white py-2.5 rounded-lg font-semibold hover:bg-[#1f4026] text-sm transition-colors shadow-sm">
                     Pesquisar
+
                 </button>
-                <a href="/pesquisa" class="block w-full text-center py-2 text-sm text-gray-500 hover:text-[#2E5B37] transition-colors">
+
+                <a href="/pesquisa"
+                   class="block text-center text-gray-500 hover:text-[#2E5B37] text-sm">
+
                     Limpar filtros
+
                 </a>
+
             </form>
+
         </aside>
 
-        <div class="flex-1">
-            <p class="text-gray-500 text-sm mb-5" th:text="${obras.size()} + ' obra(s) encontrada(s)'"></p>
+        <!-- RESULTADOS -->
+        <section class="flex-1">
 
-            <div th:if="${obras.empty}" class="text-center py-20 bg-white rounded-xl border border-gray-200">
-                <div class="text-5xl mb-4 opacity-40">📚</div>
-                <p class="text-gray-500 font-medium mb-1">Nenhuma obra encontrada</p>
-                <p class="text-gray-400 text-sm">Tente ajustar os filtros de busca</p>
+            <div class="mb-5 text-sm text-gray-500">
+
+                <span th:text="${#lists.size(obras)}">
+                    0
+                </span>
+
+                obra(s) encontrada(s)
+
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-                <div th:each="obra : ${obras}"
-                     class="bg-white border border-gray-200 rounded-xl overflow-hidden hover:border-[#2E5B37] hover:shadow-md transition-all duration-200 flex flex-col">
+            <div th:if="${#lists.isEmpty(obras)}"
+                 class="bg-white border rounded-xl p-12 text-center">
 
-                    <div class="h-56 bg-gray-100 overflow-hidden">
-                        <img th:src="${obra.capa != null and !obra.capa.isEmpty()} ? ${obra.capa} : 'https://via.placeholder.com/400x600?text=Sem+Capa'"
-                             th:alt="${obra.titulo_Principal}" class="w-full h-full object-cover"/>
-                    </div>
-
-                    <div class="p-4 flex flex-col flex-1">
-                        <span class="text-xs px-2 py-0.5 rounded-full self-start mb-2 font-medium"
-                              th:classappend="${obra.obra_tipo == 'LIVRO'} ? 'bg-blue-100 text-blue-700' : (${obra.obra_tipo == 'REVISTA'} ? 'bg-purple-100 text-purple-700' : 'bg-amber-100 text-amber-700')"
-                              th:text="${obra.obra_tipo}"></span>
-                        <h3 class="font-bold text-[#2E5B37] mb-2 leading-snug" th:text="${obra.titulo_Principal}"></h3>
-                        <p th:if="${obra.autor != null}" class="text-sm text-gray-500 mb-1">
-                            👤 <span th:text="${obra.autor.nome}"></span>
-                        </p>
-                        <p th:if="${obra.data != null}" class="text-sm text-gray-500 mb-3">
-                            📅 <span th:text="${#dates.format(obra.data, 'dd/MM/yyyy')}"></span>
-                        </p>
-                        <a th:href="@{/obra/{id}(id=${obra.id})}"
-                           class="mt-auto w-full text-center bg-[#2E5B37] text-white py-2.5 rounded-lg hover:bg-[#1f4026] text-sm font-medium transition-colors">
-                            Ver Detalhes
-                        </a>
-                    </div>
+                <div class="text-6xl mb-4">
+                    📚
                 </div>
+
+                <h3 class="text-lg font-semibold text-gray-700">
+                    Nenhuma obra encontrada
+                </h3>
+
             </div>
-        </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+
+                <div th:each="obra : ${obras}"
+                     class="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg hover:border-[#2E5B37] transition flex flex-col">
+
+                    <!-- CAPA -->
+                    <div class="h-72 bg-gray-100">
+
+                        <img th:src="${obra.capa}"
+                             th:alt="${obra.titulo_Principal}"
+                             class="w-full h-full object-cover"/>
+
+                    </div>
+
+                    <!-- CONTEÚDO -->
+                    <div class="p-5 flex flex-col flex-1">
+
+                        <span
+                                class="self-start text-xs px-3 py-1 rounded-full font-medium mb-3"
+
+                                th:classappend="
+                                ${obra.obra_tipo == 'LIVRO'}
+                                ? ' bg-blue-100 text-blue-700'
+                                : (${obra.obra_tipo == 'REVISTA'}
+                                ? ' bg-purple-100 text-purple-700'
+                                : ' bg-amber-100 text-amber-700')"
+
+                                th:text="${obra.obra_tipo}">
+                        </span>
+
+                        <h2 class="font-bold text-[#2E5B37] text-lg mb-2"
+                            th:text="${obra.titulo_Principal}">
+                        </h2>
+
+                        <p th:if="${obra.autor != null}"
+                           class="text-sm text-gray-500 mb-1">
+
+                            👤
+                            <span th:text="${obra.autor.nome}">
+                            </span>
+
+                        </p>
+
+                        <p th:if="${obra.data != null}"
+                           class="text-sm text-gray-500 mb-4">
+
+                            📅
+                            <span th:text="${#dates.format(obra.data,'dd/MM/yyyy')}">
+                            </span>
+
+                        </p>
+
+                        <a th:href="@{/obra/{id}(id=${obra.id})}"
+                           class="mt-auto bg-[#2E5B37] text-white text-center py-2.5 rounded-lg hover:bg-[#23452a] transition">
+
+                            Ver detalhes
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
     </div>
+
 </main>
 
 <footer th:replace="~{fragmentos :: rodape}"></footer>
+
 </body>
 </html>

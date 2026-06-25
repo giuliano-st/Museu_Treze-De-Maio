@@ -19,7 +19,10 @@ public class SecurityConfig {
                                 "/css/**",
                                 "/js/**",
                                 "/images/**",
-                                "/favicon.ico"
+                                "/favicon.ico",
+                                "/pesquisa",
+                                "/obra/**",
+                                "/imagens/**"
                         ).permitAll()
 
                         .requestMatchers("/admin/**", "/historico-acesso")
