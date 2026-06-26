@@ -37,7 +37,8 @@
 
             <form method="get"
                   action="/pesquisa"
-                  class="bg-white border border-gray-200 rounded-xl p-5 sticky top-20 shadow-sm space-y-5">
+                  class="bg-white rounded-xl p-5 sticky top-20 shadow-2xl space-y-5"
+                  style="box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.25);">
 
                 <div>
 
@@ -97,6 +98,30 @@
 
                 </div>
 
+                <div>
+                    <label class="block text-sm font-medium text-[#2E5B37] mb-2">
+                        Período
+                    </label>
+
+                    <div class="space-y-2">
+                        <input type="number"
+                               name="dataInicio"
+                               th:value="${dataInicio}"
+                               placeholder="Ano inicial"
+                               min="0000"
+                               max="2099"
+                               class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#2E5B37]/20 focus:border-[#2E5B37] outline-none">
+
+                        <input type="number"
+                               name="dataFim"
+                               th:value="${dataFim}"
+                               placeholder="Ano final"
+                               min="0000"
+                               max="2099"
+                               class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#2E5B37]/20 focus:border-[#2E5B37] outline-none">
+                    </div>
+                </div>
+
                 <button type="submit"
                         class="w-full bg-[#2E5B37] text-white py-2.5 rounded-lg hover:bg-[#23452a] transition">
 
@@ -142,10 +167,11 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-
                 <div th:each="obra : ${obras}"
-                     class="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg hover:border-[#2E5B37] transition flex flex-col">
-
+                     class="bg-white rounded-xl overflow-hidden shadow-2xl hover:shadow-2xl hover:scale-105 transition duration-300 flex flex-col cursor-pointer"
+                     style="box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);"
+                     onmouseover="this.style.boxShadow='0 25px 50px -12px rgba(0, 0, 0, 1)'"
+                     onmouseout="this.style.boxShadow='0 20px 25px -5px rgba(0, 0, 0, 0.25)'">
                     <!-- CAPA -->
                     <div class="h-72 bg-gray-100">
 
@@ -188,7 +214,7 @@
                            class="text-sm text-gray-500 mb-4">
 
                             📅
-                            <span th:text="${#dates.format(obra.data,'dd/MM/yyyy')}">
+                            <span th:text="${#temporals.format(obra.data,'dd/MM/yyyy')}">
                             </span>
 
                         </p>

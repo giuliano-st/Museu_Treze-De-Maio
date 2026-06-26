@@ -1,6 +1,6 @@
 package inf.laboratorio.museutreze.dto;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 public record ObraDTOResponse(
@@ -9,7 +9,7 @@ public record ObraDTOResponse(
         String titulo_Principal,
         String capa,
         String local,
-        Date data,
+        LocalDate data,
         String descFisica,
         String nome,
         String numeroChamada,

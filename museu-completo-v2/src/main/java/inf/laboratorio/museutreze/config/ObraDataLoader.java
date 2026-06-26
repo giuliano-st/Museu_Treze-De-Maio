@@ -193,18 +193,7 @@ public class ObraDataLoader {
         if (dto.getData() != null &&
                 !dto.getData().isBlank()) {
 
-            LocalDate localDate =
-                    LocalDate.parse(dto.getData());
-
-            Date data =
-                    Date.from(
-                            localDate
-                                    .atStartOfDay(
-                                            ZoneId.systemDefault()
-                                    )
-                                    .toInstant()
-                    );
-
+            LocalDate data = LocalDate.parse(dto.getData());
             obra.setData(data);
         }
 

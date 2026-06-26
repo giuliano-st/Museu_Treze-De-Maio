@@ -26,7 +26,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -112,6 +114,13 @@ public class PaginaController {
                            @RequestParam(required = false) String dataFim,
                            Model model) {
         List<ObraDTOResponse> obras = obraService.listar();
+        obras.forEach(o -> {
+            if (o.data() != null) {
+                System.out.println("Obra: " + o.titulo_Principal() + " - Ano: " + o.data().getYear());
+            } else {
+                System.out.println("Obra: " + o.titulo_Principal() + " - Sem data");
+            }
+        });
 
         if (termo != null && !termo.isBlank()) {
             String termoLower = termo.toLowerCase();
@@ -126,14 +135,16 @@ public class PaginaController {
         }
 
         if (dataInicio != null && !dataInicio.isBlank()) {
+            int inicio = Integer.parseInt(dataInicio);
             obras = obras.stream()
-                    .filter(o -> o.data() != null && o.data().toString().compareTo(dataInicio) >= 0)
+                    .filter(o -> o.data() != null && o.data().getYear() >= inicio)
                     .toList();
         }
 
         if (dataFim != null && !dataFim.isBlank()) {
+            int fim = Integer.parseInt(dataFim);
             obras = obras.stream()
-                    .filter(o -> o.data() != null && o.data().toString().compareTo(dataFim) <= 0)
+                    .filter(o -> o.data() != null && o.data().getYear() <= fim)
                     .toList();
         }
 
@@ -223,9 +234,12 @@ public class PaginaController {
                     break;
             }
         }
+        LocalDate dataConverida = data.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
 
         ObraDTORequest request = new ObraDTORequest(
-                obra_tipo, titulo_Principal, capa, local, data, descFisica, nome,
+                obra_tipo, titulo_Principal, capa, local, dataConverida, descFisica, nome,
                 numeroChamada, chamadaLocal, tituloUniforme, isbn, serie, edicao,
                 colecao, notasGerais, issn, volume, periodicidade,
                 autorId, editoraId, assuntosIds
