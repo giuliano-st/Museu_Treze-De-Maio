@@ -114,14 +114,6 @@ public class PaginaController {
                            @RequestParam(required = false) String dataFim,
                            Model model) {
         List<ObraDTOResponse> obras = obraService.listar();
-        //Pra conferir erro das datas
-        obras.forEach(o -> {
-            if (o.data() != null) {
-                System.out.println("Obra: " + o.titulo_Principal() + " - Ano: " + o.data().getYear());
-            } else {
-                System.out.println("Obra: " + o.titulo_Principal() + " - Sem data");
-            }
-        });
 
         if (termo != null && !termo.isBlank()) {
             String termoLower = termo.toLowerCase();
