@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -329,7 +328,7 @@ public class PaginaController {
 
         Usuario u = getUsuarioLogado();
 
-        if (u == null || u.getRole() != Role.ADMIN) {
+        if (u == null || u.getRole() != Role.BIBLIOTECARIO) {
             return "redirect:/login";
         }
 
@@ -353,15 +352,9 @@ public class PaginaController {
         registro.setOperacao(operacao);
         registro.setData(LocalDateTime.now());
         registro.setUsuario(usuario);
-        registro.setObra(obra);
+        registro.setNomeObra(obra.getTitulo_Principal());
 
         obraHistoricoRepository.save(registro);
-    }
-
-    @GetMapping("/debug-user")
-    public String debug() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return auth.getName();
     }
 
 }

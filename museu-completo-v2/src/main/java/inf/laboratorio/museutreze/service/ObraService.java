@@ -10,10 +10,7 @@ import inf.laboratorio.museutreze.model.Assunto;
 import inf.laboratorio.museutreze.model.Autor;
 import inf.laboratorio.museutreze.model.Editora;
 import inf.laboratorio.museutreze.model.Obra;
-import inf.laboratorio.museutreze.repository.AssuntoRepository;
-import inf.laboratorio.museutreze.repository.AutorRepository;
-import inf.laboratorio.museutreze.repository.EditoraRepository;
-import inf.laboratorio.museutreze.repository.ObraRepository;
+import inf.laboratorio.museutreze.repository.*;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,14 +23,16 @@ public class ObraService {
     private final AutorRepository autorRepository;
     private final EditoraRepository editoraRepository;
     private final AssuntoRepository assuntoRepository;
+    private final ExemplarRepository exemplarRepository;
     private final ObraMapper obraMapper;
 
     public ObraService(ObraRepository obraRepository, AutorRepository autorRepository,
-                       EditoraRepository editoraRepository, AssuntoRepository assuntoRepository, ObraMapper obraMapper) {
+                       EditoraRepository editoraRepository, AssuntoRepository assuntoRepository, ExemplarRepository exemplarRepository, ObraMapper obraMapper) {
         this.obraRepository = obraRepository;
         this.autorRepository = autorRepository;
         this.editoraRepository = editoraRepository;
         this.assuntoRepository = assuntoRepository;
+        this.exemplarRepository = exemplarRepository;
         this.obraMapper = obraMapper;
     }
 
@@ -126,6 +125,7 @@ public class ObraService {
 
     public void deletar(Long id) {
         Obra obra = obraRepository.findById(id).orElseThrow(() -> new RuntimeException("Obra não encontrada!"));
+        exemplarRepository.deleteAll(exemplarRepository.findByObraId(id));
         obraRepository.delete(obra);
     }
 }

@@ -32,14 +32,14 @@ public class ObraHistoricoService {
     public ObraHistoricoDTOResponse salvar(ObraHistoricoDTORequest obraHistoricoDTO) {
         Usuario usuario = usuarioRepository.findById(obraHistoricoDTO.usuarioId())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
-        Obra obra = obraRepository.findById(obraHistoricoDTO.obraId())
+        Obra obra = obraRepository.findByNome(obraHistoricoDTO.nomeObra())
                 .orElseThrow(() -> new RuntimeException("Obra não encontrada!"));
 
         ObraHistorico obraHistorico = new ObraHistorico();
         obraHistorico.setOperacao(obraHistoricoDTO.operacao());
         obraHistorico.setData(LocalDateTime.now());
         obraHistorico.setUsuario(usuario);
-        obraHistorico.setObra(obra);
+        obraHistorico.setNomeObra(obra.getNome());
 
         obraHistoricoRepository.save(obraHistorico);
 
@@ -49,8 +49,7 @@ public class ObraHistoricoService {
                 obraHistorico.getData(),
                 obraHistorico.getUsuario().getId(),
                 obraHistorico.getUsuario().getNomeUsuario(),
-                obraHistorico.getObra().getId(),
-                obraHistorico.getObra().getTitulo_Principal()
+                obraHistorico.getNomeObra()
         );
     }
 
@@ -72,8 +71,7 @@ public class ObraHistoricoService {
                 obraHistorico.getData(),
                 obraHistorico.getUsuario().getId(),
                 obraHistorico.getUsuario().getNomeUsuario(),
-                obraHistorico.getObra().getId(),
-                obraHistorico.getObra().getTitulo_Principal()
+                obraHistorico.getNomeObra()
         );
     }
 
@@ -85,8 +83,7 @@ public class ObraHistoricoService {
                 obraHistorico.getData(),
                 obraHistorico.getUsuario() != null ? obraHistorico.getUsuario().getId() : null,
                 obraHistorico.getUsuario() != null ? obraHistorico.getUsuario().getNomeUsuario() : "Usuário deletado/desconhecido",
-                obraHistorico.getObra() != null ? obraHistorico.getObra().getId() : null,
-                obraHistorico.getObra() != null ? obraHistorico.getObra().getTitulo_Principal() : "Obra deletada/desconhecida"
+                obraHistorico.getNomeObra()
         )).toList();
     }
 
@@ -96,12 +93,12 @@ public class ObraHistoricoService {
 
         Usuario usuario = usuarioRepository.findById(obraHistoricoDTO.usuarioId())
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
-        Obra obra = obraRepository.findById(obraHistoricoDTO.obraId())
+        Obra obra = obraRepository.findByNome(obraHistoricoDTO.nomeObra())
                 .orElseThrow(() -> new RuntimeException("Obra não encontrada!"));
 
         obraHistorico.setOperacao(obraHistoricoDTO.operacao());
         obraHistorico.setUsuario(usuario);
-        obraHistorico.setObra(obra);
+        obraHistorico.setNomeObra(obra.getNome());
 
         obraHistoricoRepository.save(obraHistorico);
 
@@ -111,8 +108,7 @@ public class ObraHistoricoService {
                 obraHistorico.getData(),
                 obraHistorico.getUsuario().getId(),
                 obraHistorico.getUsuario().getNomeUsuario(),
-                obraHistorico.getObra().getId(),
-                obraHistorico.getObra().getTitulo_Principal()
+                obraHistorico.getNomeObra()
         );
     }
 

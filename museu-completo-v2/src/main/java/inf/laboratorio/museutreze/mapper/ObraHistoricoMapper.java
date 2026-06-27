@@ -2,7 +2,6 @@ package inf.laboratorio.museutreze.mapper;
 
 import inf.laboratorio.museutreze.dto.ObraHistoricoDTORequest;
 import inf.laboratorio.museutreze.dto.ObraHistoricoDTOResponse;
-import inf.laboratorio.museutreze.model.Obra;
 import inf.laboratorio.museutreze.model.ObraHistorico;
 import inf.laboratorio.museutreze.model.Usuario;
 import org.springframework.stereotype.Component;
@@ -10,12 +9,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class ObraHistoricoMapper {
 
-    public ObraHistorico toEntity(ObraHistoricoDTORequest request, Usuario usuario, Obra obra) {
+    public ObraHistorico toEntity(ObraHistoricoDTORequest request, Usuario usuario) {
         if (request == null) return null;
         ObraHistorico historico = new ObraHistorico();
         historico.setOperacao(request.operacao());
         historico.setUsuario(usuario);
-        historico.setObra(obra);
+        historico.setNomeObra(request.nomeObra());
         return historico;
     }
 
@@ -24,9 +23,8 @@ public class ObraHistoricoMapper {
 
         Long usuarioId = historico.getUsuario() != null ? historico.getUsuario().getId() : null;
         String nomeUsuario = historico.getUsuario() != null ? historico.getUsuario().getNomeUsuario() : null;
-
-        Long obraId = historico.getObra() != null ? historico.getObra().getId() : null;
-        String obraTitulo = historico.getObra() != null ? historico.getObra().getTitulo_Principal() : null;
+        String nomeObra = historico.getNomeObra();
+        String obraTitulo = historico.getNomeObra();
 
         return new ObraHistoricoDTOResponse(
                 historico.getId(),
@@ -34,8 +32,7 @@ public class ObraHistoricoMapper {
                 historico.getData(),
                 usuarioId,
                 nomeUsuario,
-                obraId,
-                obraTitulo
+                nomeObra
         );
     }
 }

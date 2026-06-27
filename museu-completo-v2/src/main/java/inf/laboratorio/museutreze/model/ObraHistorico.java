@@ -23,7 +23,6 @@ import java.time.LocalDateTime;
         @JoinColumn(name = "usuario_id", nullable = false)
         private Usuario usuario;
 
-        @ManyToOne
-        @JoinColumn(name = "obra_id", nullable = false)
-        private Obra obra;
+        @Column(name = "nome_obra", nullable = false)
+        private String nomeObra;
     }

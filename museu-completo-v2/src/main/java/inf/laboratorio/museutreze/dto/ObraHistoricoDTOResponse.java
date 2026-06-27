@@ -8,6 +8,5 @@ public record ObraHistoricoDTOResponse(
         LocalDateTime data,
         Long usuarioId,
         String nomeUsuario,
-        Long obraId,
-        String obraTitulo
+        String nomeObra
 ) {}

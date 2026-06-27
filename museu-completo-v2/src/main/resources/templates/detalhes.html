@@ -25,10 +25,45 @@
                class="bg-white text-[#2E5B37] px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors">Editar</a>
             <a th:href="@{/obra/{id}/exemplares(id=${obra.id})}"
                class="bg-white text-[#2E5B37] px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors">Exemplares</a>
-            <form th:action="@{/obra/excluir/{id}(id=${obra.id})}" method="post" class="inline"
-                  onsubmit="return confirm('Excluir esta obra?')">
-                <button type="submit" class="bg-red-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-red-700 transition-colors">Excluir</button>
-            </form>
+            <button type="button"
+                    onclick="document.getElementById('modal-excluir-[[${obra.id}]]').classList.remove('hidden')"
+                    class="bg-red-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-red-700 transition-colors">
+                Excluir
+            </button>
+
+            <div id="modal-excluir-[[${obra.id}]]" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex justify-center items-center p-4">
+
+                <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 text-center">
+
+                    <div class="mx-auto mb-4 flex items-center justify-center h-14 w-14 rounded-full bg-red-50">
+                        <svg class="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                        </svg>
+                    </div>
+
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Excluir Obra</h3>
+                    <p class="text-sm text-gray-500 mb-6">
+                        Tem certeza que deseja excluir esta obra? Esta ação não poderá ser desfeita.
+                    </p>
+
+                    <div class="flex justify-center gap-3 w-full">
+
+                        <button type="button"
+                                onclick="document.getElementById('modal-excluir-[[${obra.id}]]').classList.add('hidden')"
+                                class="w-1/2 px-4 py-2.5 bg-gray-100 text-gray-800 hover:bg-gray-200 rounded-lg font-medium transition-colors">
+                            Cancelar
+                        </button>
+
+                        <form th:action="@{/obra/excluir/{id}(id=${obra.id})}" method="post" class="w-1/2 m-0">
+                            <button type="submit"
+                                    class="w-full h-full px-4 py-2.5 bg-red-600 text-white hover:bg-red-700 rounded-lg font-medium transition-colors">
+                                Confirmar Exclusão
+                            </button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -64,7 +99,7 @@
                         <p class="text-gray-400 text-xs uppercase tracking-wide">Série</p>
                         <p class="font-medium text-gray-800" th:text="${obra.serie}"></p>
                     </div>
-                    <div th:if="${obra.assuntos != null and !obra.assuntos.empty}">
+                    <div th:if="${obra.assuntos != null and !obra.assuntos.isEmpty()}">
                         <p class="text-gray-400 text-xs uppercase tracking-wide mb-1.5">Assuntos</p>
                         <div class="flex flex-wrap gap-1.5">
                             <span th:each="a : ${obra.assuntos}"
@@ -74,7 +109,7 @@
                     </div>
                 </div>
 
-                <div th:if="${exemplares != null and !exemplares.empty}" class="border-t border-gray-100 pt-4 mt-4">
+                <div th:if="${exemplares != null and !exemplares.isEmpty()}" class="border-t border-gray-100 pt-4 mt-4">
                     <p class="text-[#2E5B37] font-semibold mb-3">Exemplares</p>
                     <div class="space-y-2">
                         <div th:each="ex : ${exemplares}" class="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2.5 text-sm">

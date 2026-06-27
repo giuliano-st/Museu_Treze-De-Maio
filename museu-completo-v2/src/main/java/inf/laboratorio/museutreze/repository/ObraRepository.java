@@ -15,4 +15,5 @@ public interface ObraRepository extends JpaRepository<Obra, Long> {
     List<Obra> findByIssn(String issn);
     List<Obra> findByTituloUniforme(String tituloUniforme);
 
+    Optional<Obra> findByNome(String nome);
 }

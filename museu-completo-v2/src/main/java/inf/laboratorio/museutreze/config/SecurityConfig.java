@@ -25,10 +25,10 @@ public class SecurityConfig {
                                 "/imagens/**"
                         ).permitAll()
 
-                        .requestMatchers("/admin/**", "/historico-acesso")
+                        .requestMatchers("/admin/**")
                         .hasRole("ADMIN")
 
-                        .requestMatchers("/bibliotecario/**")
+                        .requestMatchers("/bibliotecario/**","/historico-acesso")
                         .hasAnyRole("ADMIN", "BIBLIOTECARIO")
 
                         .anyRequest().authenticated()
