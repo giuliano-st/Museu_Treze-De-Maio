@@ -18,7 +18,7 @@
         <span class="text-[#2E5B37] font-medium" th:text="${obra.titulo_Principal}"></span>
     </nav>
 
-    <div th:if="${isBibliotecario}" class="bg-[#2E5B37] text-white rounded-xl p-4 mb-6 flex flex-wrap gap-3 justify-between items-center shadow-sm">
+    <div th:if="${isBibliotecario}" class="bg-[#2E5B37] text-white rounded-xl p-4 mb-6 flex flex-wrap gap-3 justify-between items-center shadow-2xl" style="box-shadow: 0 15px 25px 1px rgba(0, 0, 0, 0.30);">
         <span class="font-semibold">Ações do Bibliotecário</span>
         <div class="flex flex-wrap gap-2">
             <a th:href="@{/cadastro/obra(editar=${obra.id})}"
@@ -32,10 +32,10 @@
         </div>
     </div>
 
-    <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-8">
+    <div class="bg-white rounded-xl shadow-2xl p-8" style="box-shadow: 0 15px 25px 1px rgba(0, 0, 0, 0.30);">
         <div class="grid md:grid-cols-2 gap-8">
             <div>
-                <div class="border-2 border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                <div class="rounded-xl overflow-hidden shadow-2xl" style="box-shadow: 0 15px 25px 1px rgba(0, 0, 0, 0.30);">
                     <img th:src="${obra.capa != null and !obra.capa.isEmpty()} ? ${obra.capa} : 'https://via.placeholder.com/400x600?text=Sem+Capa'"
                          th:alt="${obra.titulo_Principal}" class="w-full object-cover"/>
                 </div>
