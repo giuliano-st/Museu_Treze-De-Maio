@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Exemplares — Museu Treze de Maio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+<nav th:replace="~{fragmentos :: navbar}"></nav>
+
+<main class="max-w-3xl mx-auto px-4 py-8 flex-1">
+    <a th:href="@{/obra/{id}(id=${obra.id})}" class="inline-flex items-center gap-2 text-[#2E5B37] hover:underline text-sm mb-6">← Voltar para a obra</a>
+
+    <h1 class="text-2xl font-bold text-[#2E5B37] mb-1">Exemplares</h1>
+    <p class="text-gray-500 text-sm mb-8" th:text="${obra.titulo_Principal}"></p>
+
+    <div class="bg-white rounded-xl overflow-hidden mb-8 shadow-2xl" style="box-shadow: 0 15px 25px 1px rgba(0, 0, 0, 0.30);">
+        <table class="w-full text-sm">
+            <thead class="bg-[#2E5B37] text-white">
+                <tr>
+                    <th class="px-4 py-3 text-left">Nº</th>
+                    <th class="px-4 py-3 text-left">Disponibilidade</th>
+                    <th class="px-4 py-3 text-left"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:if="${exemplares.empty}">
+                    <td colspan="3" class="px-4 py-8 text-center text-gray-400">
+                        <div class="text-3xl mb-2 opacity-40">📋</div>
+                        Nenhum exemplar cadastrado
+                    </td>
+                </tr>
+                <tr th:each="ex : ${exemplares}" class="border-t border-gray-100 hover:bg-gray-50">
+                    <td class="px-4 py-3 font-medium" th:text="${ex.numero}"></td>
+                    <td class="px-4 py-3">
+                        <span th:text="${ex.disponibilidade ? 'Disponível' : 'Indisponível'}"
+                              th:classappend="${ex.disponibilidade} ? 'text-green-700 bg-green-100' : 'text-red-700 bg-red-100'"
+                              class="font-medium text-xs px-2 py-1 rounded-full"></span>
+                    </td>
+                    <td class="px-4 py-3">
+                        <form th:action="@{/exemplar/excluir/{id}(id=${ex.id})}" method="post" class="inline"
+                              onsubmit="return confirm('Excluir exemplar?')">
+                            <input type="hidden" name="obraId" th:value="${obra.id}"/>
+                            <button type="submit" class="text-red-600 hover:underline text-xs">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="bg-white rounded-xl p-6 shadow-2xl" style="box-shadow: 0 15px 25px 1px rgba(0, 0, 0, 0.30);">
+        <h3 class="text-[#2E5B37] font-bold mb-4">Adicionar Exemplar</h3>
+        <form th:action="@{/obra/{id}/exemplares(id=${obra.id})}" method="post" class="flex gap-4 items-end">
+            <div class="flex-1">
+                <label class="block mb-1.5 text-[#2E5B37] font-medium text-sm">Número</label>
+                <input type="number" name="numero" required
+                       class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:border-[#2E5B37] focus:ring-2 focus:ring-[#2E5B37]/20 focus:outline-none text-sm transition-all"/>
+            </div>
+            <div class="flex-1">
+                <label class="block mb-1.5 text-[#2E5B37] font-medium text-sm">Disponibilidade</label>
+                <select name="disponibilidade" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:border-[#2E5B37] focus:ring-2 focus:ring-[#2E5B37]/20 focus:outline-none text-sm bg-white transition-all">
+                    <option value="true">Disponível</option>
+                    <option value="false">Indisponível</option>
+                </select>
+            </div>
+            <button type="submit" class="bg-[#2E5B37] text-white px-6 py-2.5 rounded-lg font-medium hover:bg-[#1f4026] transition-colors shadow-2xl" style="box-shadow: 0 15px 25px 1px rgba(0, 0, 0, 0.30);">Adicionar</button>
+        </form>
+    </div>
+</main>
+
+<footer th:replace="~{fragmentos :: rodape}"></footer>
+</body>
+</html>

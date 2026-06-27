@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <title>Cadastrar Obra — Museu Treze de Maio</title>
+
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-50 min-h-screen flex flex-col">
+
+<nav th:replace="~{fragmentos :: navbar}"></nav>
+
+<main class="max-w-5xl mx-auto px-4 py-8 flex-1">
+
+    <a href="/cadastro"
+       class="inline-flex items-center gap-2 text-[#2E5B37] hover:underline text-sm mb-6">
+        ← Voltar
+    </a>
+
+    <div class="bg-white rounded-2xl shadow-2xl overflow-hidden" style="box-shadow: 0 15px 25px 1px rgba(0, 0, 0, 0.30);">
+
+        <div class="bg-[#2E5B37] text-white p-6">
+            <h1 class="text-2xl font-bold"
+                th:text="${obra != null} ? 'Editar Obra' : 'Cadastrar Nova Obra'">
+            </h1>
+
+            <p class="text-white/80 text-sm mt-1">
+                Preencha os dados bibliográficos da obra.
+            </p>
+        </div>
+
+        <form th:action="@{/cadastro/obra}"
+              method="post"
+              class="p-8 space-y-8">
+
+            <input type="hidden"
+                   name="id"
+                   th:value="${obra != null ? obra.id : null}">
+
+            <!-- ================================================= -->
+            <!-- DADOS GERAIS -->
+            <!-- ================================================= -->
+
+            <section>
+
+                <h2 class="text-lg font-bold text-[#2E5B37] mb-4">
+                    Informações Gerais
+                </h2>
+
+                <div class="grid md:grid-cols-2 gap-5">
+
+                    <div>
+                        <label class="block mb-1 font-medium text-sm">
+                            Tipo *
+                        </label>
+
+                        <select id="obraTipo"
+                                name="obra_tipo"
+                                required
+                                class="w-full border rounded-lg px-4 py-3">
+
+                            <option value="LIVRO"
+                                    th:selected="${obra != null and obra.obra_tipo == 'LIVRO'}">
+                                Livro
+                            </option>
+
+                            <option value="REVISTA"
+                                    th:selected="${obra != null and obra.obra_tipo == 'REVISTA'}">
+                                Revista
+                            </option>
+
+                            <option value="JORNAL"
+                                    th:selected="${obra != null and obra.obra_tipo == 'JORNAL'}">
+                                Jornal
+                            </option>
+
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 font-medium text-sm">
+                            Título *
+                        </label>
+
+                        <input type="text"
+                               required
+                               name="titulo_Principal"
+                               th:value="${obra != null ? obra.titulo_Principal : ''}"
+                               class="w-full border rounded-lg px-4 py-3">
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 font-medium text-sm">
+                            Data de publicação
+                        </label>
+
+                        <input type="date"
+                               name="data"
+                               class="w-full border rounded-lg px-4 py-3">
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 font-medium text-sm">
+                            URL da capa
+                        </label>
+
+                        <input id="campoCapa"
+                               type="text"
+                               name="capa"
+                               th:value="${obra != null ? obra.capa : ''}"
+                               class="w-full border rounded-lg px-4 py-3">
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- Preview -->
+
+            <section>
+
+                <h2 class="text-lg font-bold text-[#2E5B37] mb-4">
+                    Pré-visualização da Capa
+                </h2>
+
+                <div class="flex justify-center">
+
+                    <img id="previewCapa"
+                         src="/imagens/capaLivro.png"
+                         class="w-48 h-72 object-cover rounded-xl shadow-2xl" style="box-shadow: 0 15px 25px 1px rgba(0, 0, 0, 0.30);">
+
+                </div>
+
+            </section>
+
+            <!-- ================================================= -->
+            <!-- LIVRO -->
+            <!-- ================================================= -->
+
+            <section id="camposLivro">
+
+                <h2 class="text-lg font-bold text-[#2E5B37] mb-4">
+                    Dados do Livro
+                </h2>
+
+                <div class="grid md:grid-cols-2 gap-5">
+
+                    <div>
+                        <label class="block mb-1 text-sm">
+                            <span class="font-medium text-[#2E5B37]">Autor</span>
+                            <button type="button" onclick="abrirModalAutor()"
+                                    class="float-right text-xs text-gray-400 hover:text-[#2E5B37] transition">
+                                + Adicionar novo
+                            </button>
+                        </label>
+
+                        <select name="autorId"
+                                id="selectAutor"
+                                class="w-full border rounded-lg px-4 py-3">
+
+                            <option value="">Selecione</option>
+
+                            <option
+                                    th:each="a : ${autores}"
+                                    th:value="${a.id}"
+                                    th:text="${a.nome}">
+                            </option>
+
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 text-sm">
+                            <span class="font-medium text-[#2E5B37]">Editora</span>
+                            <button type="button" onclick="abrirModalEditora()"
+                                    class="float-right text-xs text-gray-400 hover:text-[#2E5B37] transition">
+                                + Adicionar novo
+                            </button>
+                        </label>
+
+                        <select name="editoraId"
+                                id="selectEditora"
+                                class="w-full border rounded-lg px-4 py-3">
+
+                            <option value="">Selecione</option>
+
+                            <option
+                                    th:each="e : ${editoras}"
+                                    th:value="${e.id}"
+                                    th:text="${e.nome}">
+                            </option>
+
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 text-sm">ISBN</label>
+
+                        <input type="text"
+                               name="isbn"
+                               class="w-full border rounded-lg px-4 py-3">
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 text-sm">Edição</label>
+
+                        <input type="text"
+                               name="edicao"
+                               class="w-full border rounded-lg px-4 py-3">
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 text-sm">Coleção</label>
+
+                        <input type="text"
+                               name="colecao"
+                               class="w-full border rounded-lg px-4 py-3">
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 text-sm">Série</label>
+
+                        <input type="text"
+                               name="serie"
+                               class="w-full border rounded-lg px-4 py-3">
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 text-sm">
+                            Número de Chamada
+                        </label>
+
+                        <input type="text"
+                               name="numeroChamada"
+                               class="w-full border rounded-lg px-4 py-3">
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 text-sm">
+                            Chamada Local
+                        </label>
+
+                        <input type="text"
+                               name="chamadaLocal"
+                               class="w-full border rounded-lg px-4 py-3">
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- ================================================= -->
+            <!-- PERIÓDICOS -->
+            <!-- ================================================= -->
+
+            <section id="camposPeriodicos">
+
+                <h2 class="text-lg font-bold text-[#2E5B37] mb-4">
+                    Dados do Periódico
+                </h2>
+
+                <div class="grid md:grid-cols-2 gap-5">
+
+                    <div>
+                        <label class="block mb-1 text-sm">ISSN</label>
+
+                        <input type="text"
+                               name="issn"
+                               class="w-full border rounded-lg px-4 py-3">
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 text-sm">Volume</label>
+
+                        <input type="number"
+                               name="volume"
+                               class="w-full border rounded-lg px-4 py-3">
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 text-sm">
+                            Periodicidade
+                        </label>
+
+                        <input type="text"
+                               name="periodicidade"
+                               class="w-full border rounded-lg px-4 py-3">
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 text-sm">Local</label>
+
+                        <input type="text"
+                               name="local"
+                               class="w-full border rounded-lg px-4 py-3">
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- ================================================= -->
+
+            <section>
+
+                <label class="block mb-1 text-sm">
+                    <span class="font-medium text-[#2E5B37]">Assuntos</span>
+                    <button type="button" onclick="abrirModalAssunto()"
+                            class="float-right text-xs text-gray-400 hover:text-[#2E5B37] transition">
+                        + Adicionar novo
+                    </button>
+                </label>
+
+                <select multiple
+                        name="assuntosIds"
+                        id="selectAssunto"
+                        class="w-full h-40 border rounded-lg p-3">
+
+                    <option
+                            th:each="a : ${assuntos}"
+                            th:value="${a.id}"
+                            th:text="${a.descricao}">
+                    </option>
+
+                </select>
+
+            </section>
+
+            <section>
+
+                <h2 class="text-lg font-bold text-[#2E5B37] mb-4">
+                    Observações
+                </h2>
+
+                <textarea
+                        rows="4"
+                        name="notasGerais"
+                        class="w-full border rounded-lg p-3"></textarea>
+
+            </section>
+
+            <div class="flex gap-4">
+
+                <button type="submit"
+                        class="flex-1 bg-[#2E5B37] text-white py-3 rounded-lg font-bold hover:bg-[#214228] transition">
+                    Salvar Obra
+                </button>
+
+                <a href="/cadastro"
+                   class="px-8 py-3 border rounded-lg text-center hover:bg-gray-50">
+                    Cancelar
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</main>
+
+<!-- MODAIS -->
+
+<!-- Modal Autor -->
+<div id="modalAutor" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full" style="box-shadow: 0 15px 25px 1px rgba(0, 0, 0, 0.30);">
+        <h3 class="text-xl font-bold text-[#2E5B37] mb-4">Adicionar Novo Autor</h3>
+        <div class="space-y-4">
+            <div>
+                <label class="block mb-1 text-sm font-medium">Nome *</label>
+                <input type="text" id="nomeAutor" placeholder="Nome do autor" class="w-full border rounded-lg px-4 py-3">
+            </div>
+            <div>
+                <label class="block mb-1 text-sm font-medium">Nacionalidade</label>
+                <input type="text" id="nacionalidadeAutor" placeholder="Nacionalidade" class="w-full border rounded-lg px-4 py-3">
+            </div>
+            <div class="flex gap-3">
+                <button onclick="salvarAutor()" class="flex-1 bg-[#2E5B37] text-white py-2 rounded-lg font-medium hover:bg-[#214228]">Salvar</button>
+                <button onclick="fecharModalAutor()" class="flex-1 border rounded-lg hover:bg-gray-50">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Editora -->
+<div id="modalEditora" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full" style="box-shadow: 0 15px 25px 1px rgba(0, 0, 0, 0.30);">
+        <h3 class="text-xl font-bold text-[#2E5B37] mb-4">Adicionar Nova Editora</h3>
+        <div class="space-y-4">
+            <div>
+                <label class="block mb-1 text-sm font-medium">Nome *</label>
+                <input type="text" id="nomeEditora" placeholder="Nome da editora" class="w-full border rounded-lg px-4 py-3">
+            </div>
+            <div class="flex gap-3">
+                <button onclick="salvarEditora()" class="flex-1 bg-[#2E5B37] text-white py-2 rounded-lg font-medium hover:bg-[#214228]">Salvar</button>
+                <button onclick="fecharModalEditora()" class="flex-1 border rounded-lg hover:bg-gray-50">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Assunto -->
+<div id="modalAssunto" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full" style="box-shadow: 0 15px 25px 1px rgba(0, 0, 0, 0.30);">
+        <h3 class="text-xl font-bold text-[#2E5B37] mb-4">Adicionar Novo Assunto</h3>
+        <div class="space-y-4">
+            <div>
+                <label class="block mb-1 text-sm font-medium">Descrição *</label>
+                <input type="text" id="descricaoAssunto" placeholder="Descrição do assunto" class="w-full border rounded-lg px-4 py-3">
+            </div>
+            <div class="flex gap-3">
+                <button onclick="salvarAssunto()" class="flex-1 bg-[#2E5B37] text-white py-2 rounded-lg font-medium hover:bg-[#214228]">Salvar</button>
+                <button onclick="fecharModalAssunto()" class="flex-1 border rounded-lg hover:bg-gray-50">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragmentos :: rodape}"></footer>
+
+<script>
+
+    // CSRF
+    function getCsrfHeaders() {
+        const token = document.querySelector('meta[name="_csrf"]').content;
+        const header = document.querySelector('meta[name="_csrf_header"]').content;
+        return { [header]: token };
+    }
+
+    // MODAL AUTOR
+    function abrirModalAutor() {
+        document.getElementById("modalAutor").classList.remove("hidden");
+    }
+
+    function fecharModalAutor() {
+        document.getElementById("modalAutor").classList.add("hidden");
+        document.getElementById("nomeAutor").value = "";
+        document.getElementById("nacionalidadeAutor").value = "";
+    }
+
+    function salvarAutor() {
+        const nome = document.getElementById("nomeAutor").value.trim();
+        if (!nome) {
+            alert("Preencha o nome do autor");
+            return;
+        }
+
+        const nacionalidade = document.getElementById("nacionalidadeAutor").value || "Não informado";
+
+        fetch("/autores", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                ...getCsrfHeaders()
+            },
+            body: JSON.stringify({ nome, nacionalidade })
+        })
+            .then(res => res.json())
+            .then(data => {
+                const select = document.getElementById("selectAutor");
+                const option = document.createElement("option");
+                option.value = data.id;
+                option.text = data.nome;
+                option.selected = true;
+                select.appendChild(option);
+                fecharModalAutor();
+            })
+            .catch(err => alert("Erro ao salvar: " + err));
+    }
+
+    // MODAL EDITORA
+    function abrirModalEditora() {
+        document.getElementById("modalEditora").classList.remove("hidden");
+    }
+
+    function fecharModalEditora() {
+        document.getElementById("modalEditora").classList.add("hidden");
+        document.getElementById("nomeEditora").value = "";
+    }
+
+    function salvarEditora() {
+        const nome = document.getElementById("nomeEditora").value.trim();
+        if (!nome) {
+            alert("Preencha o nome da editora");
+            return;
+        }
+
+        fetch("/editoras", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                ...getCsrfHeaders()
+            },
+            body: JSON.stringify({ nome })
+        })
+            .then(res => res.json())
+            .then(data => {
+                const select = document.getElementById("selectEditora");
+                const option = document.createElement("option");
+                option.value = data.id;
+                option.text = data.nome;
+                option.selected = true;
+                select.appendChild(option);
+                fecharModalEditora();
+            })
+            .catch(err => alert("Erro ao salvar: " + err));
+    }
+
+    // MODAL ASSUNTO
+    function abrirModalAssunto() {
+        document.getElementById("modalAssunto").classList.remove("hidden");
+    }
+
+    function fecharModalAssunto() {
+        document.getElementById("modalAssunto").classList.add("hidden");
+        document.getElementById("descricaoAssunto").value = "";
+    }
+
+    function salvarAssunto() {
+        const descricao = document.getElementById("descricaoAssunto").value.trim();
+        if (!descricao) {
+            alert("Preencha a descrição do assunto");
+            return;
+        }
+
+        fetch("/assuntos", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                ...getCsrfHeaders()
+            },
+            body: JSON.stringify({ descricao })
+        })
+            .then(res => res.json())
+            .then(data => {
+                const select = document.getElementById("selectAssunto");
+                const option = document.createElement("option");
+                option.value = data.id;
+                option.text = data.descricao;
+                option.selected = true;
+                select.appendChild(option);
+                fecharModalAssunto();
+            })
+            .catch(err => alert("Erro ao salvar: " + err));
+    }
+
+    // FECHAR MODAIS AO CLICAR FORA
+    window.onclick = function(event) {
+        const modalAutor = document.getElementById("modalAutor");
+        const modalEditora = document.getElementById("modalEditora");
+        const modalAssunto = document.getElementById("modalAssunto");
+
+        if (event.target == modalAutor) modalAutor.classList.add("hidden");
+        if (event.target == modalEditora) modalEditora.classList.add("hidden");
+        if (event.target == modalAssunto) modalAssunto.classList.add("hidden");
+    }
+
+    function atualizarFormulario() {
+        const tipo = document.getElementById("obraTipo").value;
+        const livro = document.getElementById("camposLivro");
+        const periodicos = document.getElementById("camposPeriodicos");
+
+        if(tipo === "LIVRO") {
+            livro.style.display = "block";
+            periodicos.style.display = "none";
+        } else {
+            livro.style.display = "none";
+            periodicos.style.display = "block";
+        }
+    }
+
+    function atualizarPreview() {
+        const campo = document.getElementById("campoCapa");
+        const preview = document.getElementById("previewCapa");
+
+        if(campo.value.trim() !== "") {
+            preview.src = campo.value;
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        atualizarFormulario();
+        atualizarPreview();
+
+        document
+            .getElementById("obraTipo")
+            .addEventListener("change", atualizarFormulario);
+
+        document
+            .getElementById("campoCapa")
+            .addEventListener("input", atualizarPreview);
+    });
+
+</script>
+
+</body>
+</html>

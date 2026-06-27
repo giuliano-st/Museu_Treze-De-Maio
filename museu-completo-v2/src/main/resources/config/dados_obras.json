@@ -1,0 +1,962 @@
+[
+  {
+    "tipo": "LIVRO",
+    "titulo": "Dom Casmurro",
+    "capa": "/imagens/capaLivro.png",
+    "local": "Brasil",
+    "data": "1951-01-01",
+    "autorPrincipal": "Machado de Assis",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Companhia das Letras",
+    "assuntos": [
+      "Literatura Brasileira"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 2
+  },
+  {
+    "tipo": "LIVRO",
+    "titulo": "Memórias Póstumas de Brás Cubas",
+    "capa": "/imagens/capaLivro.png",
+    "local": "Brasil",
+    "data": "1952-01-01",
+    "autorPrincipal": "Machado de Assis",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Companhia das Letras",
+    "assuntos": [
+      "Literatura Brasileira"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 2
+  },
+  {
+    "tipo": "LIVRO",
+    "titulo": "Quincas Borba",
+    "capa": "/imagens/capaLivro.png",
+    "local": "Brasil",
+    "data": "1953-01-01",
+    "autorPrincipal": "Machado de Assis",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Companhia das Letras",
+    "assuntos": [
+      "Literatura Brasileira"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 2
+  },
+  {
+    "tipo": "LIVRO",
+    "titulo": "Iracema",
+    "capa": "/imagens/capaLivro.png",
+    "local": "Brasil",
+    "data": "1954-01-01",
+    "autorPrincipal": "José de Alencar",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Companhia das Letras",
+    "assuntos": [
+      "Literatura Brasileira"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 2
+  },
+  {
+    "tipo": "LIVRO",
+    "titulo": "O Cortiço",
+    "capa": "/imagens/capaLivro.png",
+    "local": "Brasil",
+    "data": "1955-01-01",
+    "autorPrincipal": "Aluísio Azevedo",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Companhia das Letras",
+    "assuntos": [
+      "Literatura Brasileira"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 2
+  },
+  {
+    "tipo": "LIVRO",
+    "titulo": "Grande Sertão: Veredas",
+    "capa": "/imagens/capaLivro.png",
+    "local": "Brasil",
+    "data": "1956-01-01",
+    "autorPrincipal": "João Guimarães Rosa",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Companhia das Letras",
+    "assuntos": [
+      "Literatura Brasileira"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 2
+  },
+  {
+    "tipo": "LIVRO",
+    "titulo": "Capitães da Areia",
+    "capa": "/imagens/capaLivro.png",
+    "local": "Brasil",
+    "data": "1957-01-01",
+    "autorPrincipal": "Jorge Amado",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Companhia das Letras",
+    "assuntos": [
+      "Literatura Brasileira"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 2
+  },
+  {
+    "tipo": "LIVRO",
+    "titulo": "Vidas Secas",
+    "capa": "/imagens/capaLivro.png",
+    "local": "Brasil",
+    "data": "1958-01-01",
+    "autorPrincipal": "Graciliano Ramos",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Companhia das Letras",
+    "assuntos": [
+      "Literatura Brasileira"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 2
+  },
+  {
+    "tipo": "LIVRO",
+    "titulo": "A Hora da Estrela",
+    "capa": "/imagens/capaLivro.png",
+    "local": "Brasil",
+    "data": "1959-01-01",
+    "autorPrincipal": "Clarice Lispector",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Companhia das Letras",
+    "assuntos": [
+      "Literatura Brasileira"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 2
+  },
+  {
+    "tipo": "LIVRO",
+    "titulo": "Macunaíma",
+    "capa": "/imagens/capaLivro.png",
+    "local": "Brasil",
+    "data": "1960-01-01",
+    "autorPrincipal": "Mário de Andrade",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Companhia das Letras",
+    "assuntos": [
+      "Literatura Brasileira"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 2
+  },
+  {
+    "tipo": "LIVRO",
+    "titulo": "Triste Fim de Policarpo Quaresma",
+    "capa": "/imagens/capaLivro.png",
+    "local": "Brasil",
+    "data": "1961-01-01",
+    "autorPrincipal": "Lima Barreto",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Companhia das Letras",
+    "assuntos": [
+      "Literatura Brasileira"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 2
+  },
+  {
+    "tipo": "LIVRO",
+    "titulo": "O Tempo e o Vento",
+    "capa": "/imagens/capaLivro.png",
+    "local": "Brasil",
+    "data": "1962-01-01",
+    "autorPrincipal": "Érico Veríssimo",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Companhia das Letras",
+    "assuntos": [
+      "Literatura Brasileira"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 2
+  },
+  {
+    "tipo": "LIVRO",
+    "titulo": "Incidente em Antares",
+    "capa": "/imagens/capaLivro.png",
+    "local": "Brasil",
+    "data": "1963-01-01",
+    "autorPrincipal": "Érico Veríssimo",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Companhia das Letras",
+    "assuntos": [
+      "Literatura Brasileira"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 2
+  },
+  {
+    "tipo": "LIVRO",
+    "titulo": "São Bernardo",
+    "capa": "/imagens/capaLivro.png",
+    "local": "Brasil",
+    "data": "1964-01-01",
+    "autorPrincipal": "Graciliano Ramos",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Companhia das Letras",
+    "assuntos": [
+      "Literatura Brasileira"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 2
+  },
+  {
+    "tipo": "LIVRO",
+    "titulo": "Fogo Morto",
+    "capa": "/imagens/capaLivro.png",
+    "local": "Brasil",
+    "data": "1965-01-01",
+    "autorPrincipal": "José Lins do Rego",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Companhia das Letras",
+    "assuntos": [
+      "Literatura Brasileira"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 2
+  },
+  {
+    "tipo": "LIVRO",
+    "titulo": "Os Sertões",
+    "capa": "/imagens/capaLivro.png",
+    "local": "Brasil",
+    "data": "1966-01-01",
+    "autorPrincipal": "Euclides da Cunha",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Companhia das Letras",
+    "assuntos": [
+      "Literatura Brasileira"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 2
+  },
+  {
+    "tipo": "LIVRO",
+    "titulo": "Senhora",
+    "capa": "/imagens/capaLivro.png",
+    "local": "Brasil",
+    "data": "1967-01-01",
+    "autorPrincipal": "José de Alencar",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Companhia das Letras",
+    "assuntos": [
+      "Literatura Brasileira"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 2
+  },
+  {
+    "tipo": "LIVRO",
+    "titulo": "A Moreninha",
+    "capa": "/imagens/capaLivro.png",
+    "local": "Brasil",
+    "data": "1968-01-01",
+    "autorPrincipal": "Joaquim Manuel de Macedo",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Companhia das Letras",
+    "assuntos": [
+      "Literatura Brasileira"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 2
+  },
+  {
+    "tipo": "LIVRO",
+    "titulo": "A Escrava Isaura",
+    "capa": "/imagens/capaLivro.png",
+    "local": "Brasil",
+    "data": "1969-01-01",
+    "autorPrincipal": "Bernardo Guimarães",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Companhia das Letras",
+    "assuntos": [
+      "Literatura Brasileira"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 2
+  },
+  {
+    "tipo": "LIVRO",
+    "titulo": "Lavoura Arcaica",
+    "capa": "/imagens/capaLivro.png",
+    "local": "Brasil",
+    "data": "1970-01-01",
+    "autorPrincipal": "Raduan Nassar",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Companhia das Letras",
+    "assuntos": [
+      "Literatura Brasileira"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 2
+  },
+  {
+    "tipo": "REVISTA",
+    "titulo": "Ciência & Cultura",
+    "capa": "/imagens/capaRevista.png",
+    "local": "São Paulo",
+    "data": "2024-02-01",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Ciência & Cultura",
+    "assuntos": [
+      "Periódicos"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "issn": "10000001",
+    "volume": 1
+  },
+  {
+    "tipo": "REVISTA",
+    "titulo": "Pesquisa FAPESP",
+    "capa": "/imagens/capaRevista.png",
+    "local": "São Paulo",
+    "data": "2024-03-01",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Pesquisa FAPESP",
+    "assuntos": [
+      "Periódicos"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "issn": "10000002",
+    "volume": 2
+  },
+  {
+    "tipo": "REVISTA",
+    "titulo": "Superinteressante",
+    "capa": "/imagens/capaRevista.png",
+    "local": "São Paulo",
+    "data": "2024-04-01",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Superinteressante",
+    "assuntos": [
+      "Periódicos"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "issn": "10000003",
+    "volume": 3
+  },
+  {
+    "tipo": "REVISTA",
+    "titulo": "Veja",
+    "capa": "/imagens/capaRevista.png",
+    "local": "São Paulo",
+    "data": "2024-05-01",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Veja",
+    "assuntos": [
+      "Periódicos"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "issn": "10000004",
+    "volume": 4
+  },
+  {
+    "tipo": "REVISTA",
+    "titulo": "IstoÉ",
+    "capa": "/imagens/capaRevista.png",
+    "local": "São Paulo",
+    "data": "2024-06-01",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "IstoÉ",
+    "assuntos": [
+      "Periódicos"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "issn": "10000005",
+    "volume": 5
+  },
+  {
+    "tipo": "REVISTA",
+    "titulo": "Revista USP",
+    "capa": "/imagens/capaRevista.png",
+    "local": "São Paulo",
+    "data": "2024-07-01",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Revista USP",
+    "assuntos": [
+      "Periódicos"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "issn": "10000006",
+    "volume": 6
+  },
+  {
+    "tipo": "REVISTA",
+    "titulo": "Revista de História",
+    "capa": "/imagens/capaRevista.png",
+    "local": "São Paulo",
+    "data": "2024-08-01",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Revista de História",
+    "assuntos": [
+      "Periódicos"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "issn": "10000007",
+    "volume": 7
+  },
+  {
+    "tipo": "REVISTA",
+    "titulo": "Cult",
+    "capa": "/imagens/capaRevista.png",
+    "local": "São Paulo",
+    "data": "2024-09-01",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Cult",
+    "assuntos": [
+      "Periódicos"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "issn": "10000008",
+    "volume": 8
+  },
+  {
+    "tipo": "REVISTA",
+    "titulo": "CartaCapital",
+    "capa": "/imagens/capaRevista.png",
+    "local": "São Paulo",
+    "data": "2024-10-01",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "CartaCapital",
+    "assuntos": [
+      "Periódicos"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "issn": "10000009",
+    "volume": 9
+  },
+  {
+    "tipo": "REVISTA",
+    "titulo": "Globo Rural",
+    "capa": "/imagens/capaRevista.png",
+    "local": "São Paulo",
+    "data": "2024-11-01",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Globo Rural",
+    "assuntos": [
+      "Periódicos"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "issn": "10000010",
+    "volume": 10
+  },
+  {
+    "tipo": "REVISTA",
+    "titulo": "National Geographic Brasil",
+    "capa": "/imagens/capaRevista.png",
+    "local": "São Paulo",
+    "data": "2024-12-01",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "National Geographic Brasil",
+    "assuntos": [
+      "Periódicos"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "issn": "10000011",
+    "volume": 11
+  },
+  {
+    "tipo": "REVISTA",
+    "titulo": "Quatro Rodas",
+    "capa": "/imagens/capaRevista.png",
+    "local": "São Paulo",
+    "data": "2024-01-01",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Quatro Rodas",
+    "assuntos": [
+      "Periódicos"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "issn": "10000012",
+    "volume": 12
+  },
+  {
+    "tipo": "REVISTA",
+    "titulo": "Exame",
+    "capa": "/imagens/capaRevista.png",
+    "local": "São Paulo",
+    "data": "2024-02-01",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Exame",
+    "assuntos": [
+      "Periódicos"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "issn": "10000013",
+    "volume": 13
+  },
+  {
+    "tipo": "REVISTA",
+    "titulo": "Você S/A",
+    "capa": "/imagens/capaRevista.png",
+    "local": "São Paulo",
+    "data": "2024-03-01",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Você S/A",
+    "assuntos": [
+      "Periódicos"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "issn": "10000014",
+    "volume": 14
+  },
+  {
+    "tipo": "REVISTA",
+    "titulo": "Galileu",
+    "capa": "/imagens/capaRevista.png",
+    "local": "São Paulo",
+    "data": "2024-04-01",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Galileu",
+    "assuntos": [
+      "Periódicos"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "issn": "10000015",
+    "volume": 15
+  },
+  {
+    "tipo": "REVISTA",
+    "titulo": "Terra da Gente",
+    "capa": "/imagens/capaRevista.png",
+    "local": "São Paulo",
+    "data": "2024-05-01",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Terra da Gente",
+    "assuntos": [
+      "Periódicos"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "issn": "10000016",
+    "volume": 16
+  },
+  {
+    "tipo": "REVISTA",
+    "titulo": "Revista Brasileira de Educação",
+    "capa": "/imagens/capaRevista.png",
+    "local": "São Paulo",
+    "data": "2024-06-01",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Revista Brasileira de Educação",
+    "assuntos": [
+      "Periódicos"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "issn": "10000017",
+    "volume": 17
+  },
+  {
+    "tipo": "REVISTA",
+    "titulo": "Piauí",
+    "capa": "/imagens/capaRevista.png",
+    "local": "São Paulo",
+    "data": "2024-07-01",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Piauí",
+    "assuntos": [
+      "Periódicos"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "issn": "10000018",
+    "volume": 18
+  },
+  {
+    "tipo": "REVISTA",
+    "titulo": "Mundo Estranho",
+    "capa": "/imagens/capaRevista.png",
+    "local": "São Paulo",
+    "data": "2024-08-01",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Mundo Estranho",
+    "assuntos": [
+      "Periódicos"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "issn": "10000019",
+    "volume": 19
+  },
+  {
+    "tipo": "REVISTA",
+    "titulo": "Placar",
+    "capa": "/imagens/capaRevista.png",
+    "local": "São Paulo",
+    "data": "2024-09-01",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Placar",
+    "assuntos": [
+      "Periódicos"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "issn": "10000020",
+    "volume": 20
+  },
+  {
+    "tipo": "JORNAL",
+    "titulo": "Folha de S.Paulo",
+    "capa": "/imagens/capaJornal.png",
+    "local": "Brasil",
+    "data": "2025-02-15",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Folha de S.Paulo",
+    "assuntos": [
+      "Notícias"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "periodicidade": "Diária"
+  },
+  {
+    "tipo": "JORNAL",
+    "titulo": "O Estado de S. Paulo",
+    "capa": "/imagens/capaJornal.png",
+    "local": "Brasil",
+    "data": "2025-03-15",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "O Estado de S. Paulo",
+    "assuntos": [
+      "Notícias"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "periodicidade": "Diária"
+  },
+  {
+    "tipo": "JORNAL",
+    "titulo": "O Globo",
+    "capa": "/imagens/capaJornal.png",
+    "local": "Brasil",
+    "data": "2025-04-15",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "O Globo",
+    "assuntos": [
+      "Notícias"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "periodicidade": "Diária"
+  },
+  {
+    "tipo": "JORNAL",
+    "titulo": "Zero Hora",
+    "capa": "/imagens/capaJornal.png",
+    "local": "Brasil",
+    "data": "2025-05-15",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Zero Hora",
+    "assuntos": [
+      "Notícias"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "periodicidade": "Diária"
+  },
+  {
+    "tipo": "JORNAL",
+    "titulo": "Correio do Povo",
+    "capa": "/imagens/capaJornal.png",
+    "local": "Brasil",
+    "data": "2025-06-15",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Correio do Povo",
+    "assuntos": [
+      "Notícias"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "periodicidade": "Diária"
+  },
+  {
+    "tipo": "JORNAL",
+    "titulo": "Jornal do Brasil",
+    "capa": "/imagens/capaJornal.png",
+    "local": "Brasil",
+    "data": "2025-07-15",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Jornal do Brasil",
+    "assuntos": [
+      "Notícias"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "periodicidade": "Diária"
+  },
+  {
+    "tipo": "JORNAL",
+    "titulo": "Valor Econômico",
+    "capa": "/imagens/capaJornal.png",
+    "local": "Brasil",
+    "data": "2025-08-15",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Valor Econômico",
+    "assuntos": [
+      "Notícias"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "periodicidade": "Diária"
+  },
+  {
+    "tipo": "JORNAL",
+    "titulo": "Gazeta do Povo",
+    "capa": "/imagens/capaJornal.png",
+    "local": "Brasil",
+    "data": "2025-09-15",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Gazeta do Povo",
+    "assuntos": [
+      "Notícias"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "periodicidade": "Diária"
+  },
+  {
+    "tipo": "JORNAL",
+    "titulo": "Estado de Minas",
+    "capa": "/imagens/capaJornal.png",
+    "local": "Brasil",
+    "data": "2025-10-15",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Estado de Minas",
+    "assuntos": [
+      "Notícias"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "periodicidade": "Diária"
+  },
+  {
+    "tipo": "JORNAL",
+    "titulo": "Diário Catarinense",
+    "capa": "/imagens/capaJornal.png",
+    "local": "Brasil",
+    "data": "2025-11-15",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Diário Catarinense",
+    "assuntos": [
+      "Notícias"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "periodicidade": "Diária"
+  },
+  {
+    "tipo": "JORNAL",
+    "titulo": "A Notícia",
+    "capa": "/imagens/capaJornal.png",
+    "local": "Brasil",
+    "data": "2025-12-15",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "A Notícia",
+    "assuntos": [
+      "Notícias"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "periodicidade": "Diária"
+  },
+  {
+    "tipo": "JORNAL",
+    "titulo": "Jornal do Commercio",
+    "capa": "/imagens/capaJornal.png",
+    "local": "Brasil",
+    "data": "2025-01-15",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Jornal do Commercio",
+    "assuntos": [
+      "Notícias"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "periodicidade": "Diária"
+  },
+  {
+    "tipo": "JORNAL",
+    "titulo": "Correio Braziliense",
+    "capa": "/imagens/capaJornal.png",
+    "local": "Brasil",
+    "data": "2025-02-15",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Correio Braziliense",
+    "assuntos": [
+      "Notícias"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "periodicidade": "Diária"
+  },
+  {
+    "tipo": "JORNAL",
+    "titulo": "Brasil de Fato",
+    "capa": "/imagens/capaJornal.png",
+    "local": "Brasil",
+    "data": "2025-03-15",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Brasil de Fato",
+    "assuntos": [
+      "Notícias"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "periodicidade": "Diária"
+  },
+  {
+    "tipo": "JORNAL",
+    "titulo": "Extra",
+    "capa": "/imagens/capaJornal.png",
+    "local": "Brasil",
+    "data": "2025-04-15",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Extra",
+    "assuntos": [
+      "Notícias"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "periodicidade": "Diária"
+  },
+  {
+    "tipo": "JORNAL",
+    "titulo": "Meia Hora",
+    "capa": "/imagens/capaJornal.png",
+    "local": "Brasil",
+    "data": "2025-05-15",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Meia Hora",
+    "assuntos": [
+      "Notícias"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "periodicidade": "Diária"
+  },
+  {
+    "tipo": "JORNAL",
+    "titulo": "Diário Gaúcho",
+    "capa": "/imagens/capaJornal.png",
+    "local": "Brasil",
+    "data": "2025-06-15",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Diário Gaúcho",
+    "assuntos": [
+      "Notícias"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "periodicidade": "Diária"
+  },
+  {
+    "tipo": "JORNAL",
+    "titulo": "Tribuna do Norte",
+    "capa": "/imagens/capaJornal.png",
+    "local": "Brasil",
+    "data": "2025-07-15",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "Tribuna do Norte",
+    "assuntos": [
+      "Notícias"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "periodicidade": "Diária"
+  },
+  {
+    "tipo": "JORNAL",
+    "titulo": "A Tarde",
+    "capa": "/imagens/capaJornal.png",
+    "local": "Brasil",
+    "data": "2025-08-15",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "A Tarde",
+    "assuntos": [
+      "Notícias"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "periodicidade": "Diária"
+  },
+  {
+    "tipo": "JORNAL",
+    "titulo": "O Liberal",
+    "capa": "/imagens/capaJornal.png",
+    "local": "Brasil",
+    "data": "2025-09-15",
+    "autorPrincipal": "Redação",
+    "nacionalidadeAutor": "Brasileira",
+    "editora": "O Liberal",
+    "assuntos": [
+      "Notícias"
+    ],
+    "autoresSecundarios": [],
+    "quantidadeExemplares": 1,
+    "periodicidade": "Diária"
+  }
+]
