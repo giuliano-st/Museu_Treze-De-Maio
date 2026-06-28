@@ -6,6 +6,7 @@ import inf.laboratorio.museutreze.model.Autor;
 import inf.laboratorio.museutreze.model.Obra;
 import inf.laboratorio.museutreze.repository.AutorRepository;
 import inf.laboratorio.museutreze.repository.ObraRepository;
+import inf.laboratorio.museutreze.repository.SecundarioRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,10 +20,12 @@ public class AutorService {
 
     private final AutorRepository autorRepository;
     private final ObraRepository obraRepository;
+    private final SecundarioRepository secundarioRepository;
 
-    public AutorService(AutorRepository autorRepository, ObraRepository obraRepository) {
+    public AutorService(AutorRepository autorRepository, ObraRepository obraRepository, SecundarioRepository secundarioRepository) {
         this.autorRepository = autorRepository;
         this.obraRepository = obraRepository;
+        this.secundarioRepository = secundarioRepository;
     }
 
     public AutorDTOResponse salvar(AutorDTORequest autorDTO){
@@ -75,6 +78,11 @@ public class AutorService {
      * automaticamente para o autor genérico "Autor desconhecido" (fallback,
      * mesmo princípio usado para capa padrão quando não há imagem).
      */
+    // Mudei o deletar(): adicionei a remoção dos registros de Secundario vinculados a este
+    // autor ANTES de deletar o autor. Mesmo motivo do ObraService: a tabela secundario tem
+    // FK pra autores (autor_id), e o banco rejeita o delete enquanto existir um secundario
+    // apontando pra esse autor. Fiz isso pra resolver esse erro.
+    // Ass: Mribas
     public void deletar(Long id){
         Autor autor = autorRepository.findById(id).orElseThrow(() -> new RuntimeException("Autor inexistente!"));
 
@@ -87,6 +95,8 @@ public class AutorService {
             }
             obraRepository.saveAll(obrasDoAutor);
         }
+
+        secundarioRepository.deleteAll(secundarioRepository.findAllByAutorId(autor));
 
         autorRepository.delete(autor);
     }

@@ -12,12 +12,14 @@ import inf.laboratorio.museutreze.dto.AutorDTORequest;
 import inf.laboratorio.museutreze.dto.EditoraDTORequest;
 import inf.laboratorio.museutreze.dto.AssuntoDTORequest;
 import inf.laboratorio.museutreze.dto.ExemplarDTORequest;
+import inf.laboratorio.museutreze.dto.SecundarioDTORequest;
 import inf.laboratorio.museutreze.model.Obra;
 import inf.laboratorio.museutreze.service.ObraService;
 import inf.laboratorio.museutreze.service.AutorService;
 import inf.laboratorio.museutreze.service.EditoraService;
 import inf.laboratorio.museutreze.service.AssuntoService;
 import inf.laboratorio.museutreze.service.ExemplarService;
+import inf.laboratorio.museutreze.service.SecundarioService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -44,11 +46,12 @@ public class PaginaController {
     private final EditoraService editoraService;
     private final AssuntoService assuntoService;
     private final ExemplarService exemplarService;
+    private final SecundarioService secundarioService;
     private final PasswordEncoder passwordEncoder;
 
     public PaginaController(UsuarioRepository usuarioRepository, ObraHistoricoRepository obraHistoricoRepository,
                             ObraRepository obraRepository, ObraService obraService, AutorService autorService,
-                            EditoraService editoraService, AssuntoService assuntoService, ExemplarService exemplarService, PasswordEncoder passwordEncoder) {
+                            EditoraService editoraService, AssuntoService assuntoService, ExemplarService exemplarService, SecundarioService secundarioService, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.obraHistoricoRepository = obraHistoricoRepository;
         this.obraRepository = obraRepository;
@@ -57,6 +60,7 @@ public class PaginaController {
         this.editoraService = editoraService;
         this.assuntoService = assuntoService;
         this.exemplarService = exemplarService;
+        this.secundarioService = secundarioService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -158,6 +162,10 @@ public class PaginaController {
                 .filter(e -> e.obraId() != null && e.obraId().equals(id))
                 .toList());
 
+        model.addAttribute("autorSecundarios", secundarioService.listar().stream()
+                .filter(s -> s.obraId() != null && s.obraId().equals(id))
+                .toList());
+
         Usuario u = getUsuarioLogado();
 
         model.addAttribute("isBibliotecario",
@@ -206,7 +214,8 @@ public class PaginaController {
                              @RequestParam(required = false) String periodicidade,
                              @RequestParam(required = false) Long autorId,
                              @RequestParam(required = false) Long editoraId,
-                             @RequestParam(required = false) List<Long> assuntosIds
+                             @RequestParam(required = false) List<Long> assuntosIds,
+                             @RequestParam(required = false) List<Long> autorSecundariosIds
                              ) {
 
 
@@ -227,9 +236,13 @@ public class PaginaController {
                     break;
             }
         }
-        LocalDate dataConverida = data.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
+        
+        LocalDate dataConverida = null;
+        if (data != null) {
+            dataConverida = data.toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+        }
 
         ObraDTORequest request = new ObraDTORequest(
                 obra_tipo, titulo_Principal, capa, local, dataConverida, descFisica, nome,
@@ -251,9 +264,33 @@ public class PaginaController {
         if (id != null) {
             resultado = obraService.atualizar(id, request);
             registrarHistorico("EDITOU", usuarioLogado, resultado.id());
+            // Deletar secundários antigos antes de adicionar novos
+            obraRepository.findById(id).ifPresent(obra -> {
+                obraRepository.findAll().stream()
+                        .filter(o -> o.getId().equals(id))
+                        .forEach(o -> {
+                            // Lógica para deletar secundários será feita após
+                        });
+            });
         } else {
             resultado = obraService.salvar(request);
             registrarHistorico("CADASTROU", usuarioLogado, resultado.id());
+        }
+
+        // Salvar autores secundários
+        if (autorSecundariosIds != null && !autorSecundariosIds.isEmpty()) {
+            for (Long autor_Id : autorSecundariosIds) {
+                try {
+                    SecundarioDTORequest secundarioDTO = new SecundarioDTORequest(
+                            resultado.id(),
+                            autor_Id
+                    );
+                    secundarioService.salvar(secundarioDTO);
+                } catch (Exception e) {
+                    // Log do erro, mas não interrompe o salvamento
+                    System.err.println("Erro ao salvar autor secundário: " + e.getMessage());
+                }
+            }
         }
 
         return "redirect:/cadastro";

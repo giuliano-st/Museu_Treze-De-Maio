@@ -24,15 +24,17 @@ public class ObraService {
     private final EditoraRepository editoraRepository;
     private final AssuntoRepository assuntoRepository;
     private final ExemplarRepository exemplarRepository;
+    private final SecundarioRepository secundarioRepository;
     private final ObraMapper obraMapper;
 
     public ObraService(ObraRepository obraRepository, AutorRepository autorRepository,
-                       EditoraRepository editoraRepository, AssuntoRepository assuntoRepository, ExemplarRepository exemplarRepository, ObraMapper obraMapper) {
+                       EditoraRepository editoraRepository, AssuntoRepository assuntoRepository, ExemplarRepository exemplarRepository, SecundarioRepository secundarioRepository, ObraMapper obraMapper) {
         this.obraRepository = obraRepository;
         this.autorRepository = autorRepository;
         this.editoraRepository = editoraRepository;
         this.assuntoRepository = assuntoRepository;
         this.exemplarRepository = exemplarRepository;
+        this.secundarioRepository = secundarioRepository;
         this.obraMapper = obraMapper;
     }
 
@@ -123,9 +125,15 @@ public class ObraService {
         return obraMapper.toResponse(obra);
     }
 
+    // Mudei o deletar(): adicionei a remoção dos registros de Secundario vinculados à obra
+    // ANTES de deletar a obra. Isso é necessário porque a tabela secundario tem uma FK pra
+    // obras (obra_id), e o banco rejeita o delete da obra enquanto existir um secundario
+    // apontando pra ela (erro de FK constraint). Fiz isso pra resolver esse erro.
+    // Ass: Mribas
     public void deletar(Long id) {
         Obra obra = obraRepository.findById(id).orElseThrow(() -> new RuntimeException("Obra não encontrada!"));
         exemplarRepository.deleteAll(exemplarRepository.findByObraId(id));
+        secundarioRepository.deleteAll(secundarioRepository.findAllByObraId(obra));
         obraRepository.delete(obra);
     }
 }
