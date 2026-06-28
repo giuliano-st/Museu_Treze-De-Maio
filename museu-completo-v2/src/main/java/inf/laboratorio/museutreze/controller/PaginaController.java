@@ -319,7 +319,7 @@ public class PaginaController {
 
     @GetMapping("/dados/gerenciar")
     public String gerenciarDados() {
-        return "dados-gerenciar";
+        return "gerenciar-dados";
     }
 
     @PostMapping("/dados/autor")
