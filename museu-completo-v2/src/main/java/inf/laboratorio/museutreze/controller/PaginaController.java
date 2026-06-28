@@ -19,6 +19,7 @@ import inf.laboratorio.museutreze.service.EditoraService;
 import inf.laboratorio.museutreze.service.AssuntoService;
 import inf.laboratorio.museutreze.service.ExemplarService;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -279,11 +280,29 @@ public class PaginaController {
         return "dados";
     }
 
+    @GetMapping("/dados/gerenciar")
+    public String gerenciarDados() {
+        return "dados-gerenciar";
+    }
+
     @PostMapping("/dados/autor")
-    public String salvarAutor(@RequestParam String nome, @RequestParam(required = false) String nacionalidade
-                              ) {
+    public String salvarAutor(@RequestParam String nome, @RequestParam(required = false) String nacionalidade) {
         autorService.salvar(new AutorDTORequest(nome, nacionalidade));
         return "redirect:/dados";
+    }
+
+    @PutMapping("/dados/autor/{id}")
+    public ResponseEntity<Void> atualizarAutor(@PathVariable Long id,
+                                               @RequestParam String nome,
+                                               @RequestParam(required = false) String nacionalidade) {
+        autorService.atualizar(id, new AutorDTORequest(nome, nacionalidade));
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/dados/autor/{id}")
+    public ResponseEntity<Void> deletarAutor(@PathVariable Long id) {
+        autorService.deletar(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/dados/editora")
@@ -292,10 +311,36 @@ public class PaginaController {
         return "redirect:/dados";
     }
 
+    @PutMapping("/dados/editora/{id}")
+    public ResponseEntity<Void> atualizarEditora(@PathVariable Long id,
+                                                 @RequestParam String nome) {
+        editoraService.atualizar(id, new EditoraDTORequest(nome));
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/dados/editora/{id}")
+    public ResponseEntity<Void> deletarEditora(@PathVariable Long id) {
+        editoraService.deletar(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping("/dados/assunto")
     public String salvarAssunto(@RequestParam String descricao) {
         assuntoService.salvar(new AssuntoDTORequest(descricao));
         return "redirect:/dados";
+    }
+
+    @PutMapping("/dados/assunto/{id}")
+    public ResponseEntity<Void> atualizarAssunto(@PathVariable Long id,
+                                                 @RequestParam String descricao) {
+        assuntoService.atualizar(id, new AssuntoDTORequest(descricao));
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/dados/assunto/{id}")
+    public ResponseEntity<Void> deletarAssunto(@PathVariable Long id) {
+        assuntoService.deletar(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/obra/{obraId}/exemplares")
@@ -355,6 +400,22 @@ public class PaginaController {
         registro.setNomeObra(obra.getTitulo_Principal());
 
         obraHistoricoRepository.save(registro);
+    }
+
+    private boolean temObraComAutor(Long autorId) {
+        return obraRepository.findAll().stream()
+                .anyMatch(obra -> obra.getAutor() != null && obra.getAutor().getId().equals(autorId));
+    }
+
+    private boolean temObraComEditora(Long editoraId) {
+        return obraRepository.findAll().stream()
+                .anyMatch(obra -> obra.getEditora() != null && obra.getEditora().getId().equals(editoraId));
+    }
+
+    private boolean temObraComAssunto(Long assuntoId) {
+        return obraRepository.findAll().stream()
+                .anyMatch(obra -> obra.getAssuntos() != null && obra.getAssuntos().stream()
+                        .anyMatch(assunto -> assunto.getId().equals(assuntoId)));
     }
 
 }
