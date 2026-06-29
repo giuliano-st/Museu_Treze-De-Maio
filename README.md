@@ -45,7 +45,7 @@ Os diagramas do projeto estão disponíveis em: [Diagramas](documentacao/Diagram
 
 ## Tecnologias Utilizadas
 
-- **Linguagem:** Java 17
+- **Linguagem:** Java 17+
 - **Framework:** Spring Boot 4.0.6
 - **Persistência:** Spring Data JPA + MySQL
 - **Segurança:** Spring Security
@@ -108,7 +108,7 @@ Além disso, o sistema carrega obras iniciais a partir do arquivo JSON configura
 
 ## Requisitos para execução
 
-- Java 17
+- Java 17 ou versões superiores 
 - Maven 3.9+ ou Maven Wrapper (`mvnw` / `mvnw.cmd`)
 - MySQL 8.0+
 - Git
@@ -175,6 +175,58 @@ http://localhost:8080
 
 ## Vídeo Demonstrativo
 Aqui o link do vídeo de demonstração do projeto : https://youtu.be/qZ4Z1Z6A0Iw.
+
+Melhorias Futuras
+
+Lista de melhorias identificadas para desenvolvimento em versões futuras do sistema.
+
+🐛 Bugs Conhecidos
+
+
+Formulário de edição não pré-preenche os campos: ao editar uma obra, a maioria dos campos chega vazia (data, ISBN, edição, coleção, série, número de chamada, notas gerais, ISSN, volume, periodicidade, etc.). A causa é a falta de bindings th:value e th:selected no template cadastro-obra.html para esses campos. Os selects de autor, editora e assuntos também não vêm pré-selecionados.
+Edição permite salvar campos obrigatórios em branco: não há validação server-side (Bean Validation). O formulário permite submissão com título e tipo vazios.
+Autores secundários não são limpos na edição: ao editar uma obra, os autores secundários antigos não são removidos antes de salvar os novos — a lógica está comentada/incompleta no controller.
+Campos numeroChamada e chamadaLocal duplicados no formulário: aparecem tanto na seção de livro quanto na seção de periódicos com o mesmo atributo name, podendo causar conflitos na submissão.
+
+
+🔒 Segurança
+
+
+Restringir endpoint de registro: qualquer pessoa pode se cadastrar como BIBLIOTECARIO via /register. Idealmente, apenas administradores deveriam poder atribuir esse perfil.
+Externalizar credenciais do banco: a senha do MySQL está hardcoded em application.properties. Migrar para variáveis de ambiente ou Spring Profiles.
+Sanitização de entrada no JavaScript: os template literals do frontend inserem dados diretamente via onclick (ex: nomes de autores), sem escape, o que pode causar XSS.
+Adicionar confirmação de senha no cadastro de usuário.
+CSRF nos endpoints REST: os endpoints REST (/autores, /editoras, etc.) recebem JSON mas o CSRF é validado; revisar a consistência da proteção.
+
+
+✅ Validação e Tratamento de Erros
+
+
+Adicionar Bean Validation (@Valid, @NotBlank, @Size) nos DTOs e controllers.
+Criar um GlobalExceptionHandler (@ControllerAdvice) para tratamento centralizado de erros, em vez de lançar RuntimeException sem tratamento.
+Exibir mensagens de erro de validação no formulário para o usuário.
+
+
+📄 Funcionalidades
+
+
+Paginação na listagem e pesquisa de obras (atualmente carrega tudo de uma vez).
+Busca/filtro na tela de gerenciamento de dados (autores, editoras, assuntos).
+Upload de imagem de capa em vez de aceitar apenas URL.
+Perfil de usuário com possibilidade de alterar senha e dados pessoais.
+Ordenação dos resultados de pesquisa (por título, data, autor).
+Exportação do acervo em CSV ou PDF.
+Relatórios de quantidade de obras por tipo, autor, período, etc.
+
+
+🎨 Frontend / UX
+
+
+Melhorar a responsividade mobile em todas as telas.
+Adicionar feedback visual de loading nas operações assíncronas (fetch).
+Implementar pré-visualização dinâmica da capa ao editar (atualmente só funciona no cadastro).
+Adicionar breadcrumbs consistentes em todas as páginas.
+Melhorar a acessibilidade (labels, aria-attributes, contraste).
 
 ## Informações Adicionais
 - Projeto extensionista da [UFN](https://site.ufn.edu.br/).
