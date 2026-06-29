@@ -15,33 +15,33 @@ public class Obra {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "obraId")
-    private Long id;
+    private Long id; // CHECK 1
 
     @Column(nullable = false)
-    private String obra_tipo;
+    private String obra_tipo; // CHECK 1
 
     @Column(nullable = false)
-    private String titulo_Principal;
+    private String titulo_Principal; // CHECK 1
 
-    private String capa;
+    private String capa; // CHECK 1
     private String local;
 
     @DateTimeFormat(pattern = "dd/MM/yyyy")
-    private LocalDate data;
+    private LocalDate data; // CHECK 1
 
     private String descFisica;
     private String nome;
-    private String numeroChamada;
-    private String chamadaLocal;
+    private String numeroChamada; // CHECK 1
+    private String chamadaLocal; // CHECK 1
     private String tituloUniforme;
-    private String isbn;
-    private String serie;
-    private String edicao;
-    private String colecao;
-    private String notasGerais;
-    private String issn;
-    private Integer volume;
-    private String periodicidade;
+    private String isbn; // CHECK 1
+    private String serie; // CHECK 1
+    private String edicao; // CHECK 1
+    private String colecao; // CHECK 1
+    private String notasGerais; // CHECK 1
+    private String issn; // CHECK 1
+    private Integer volume; // CHECK 1
+    private String periodicidade; // CHECK 1
 
     @ManyToOne
     @JoinColumn(name = "autor_id")

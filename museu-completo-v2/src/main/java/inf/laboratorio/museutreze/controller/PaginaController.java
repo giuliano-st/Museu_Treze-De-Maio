@@ -12,13 +12,16 @@ import inf.laboratorio.museutreze.dto.AutorDTORequest;
 import inf.laboratorio.museutreze.dto.EditoraDTORequest;
 import inf.laboratorio.museutreze.dto.AssuntoDTORequest;
 import inf.laboratorio.museutreze.dto.ExemplarDTORequest;
+import inf.laboratorio.museutreze.dto.SecundarioDTORequest;
 import inf.laboratorio.museutreze.model.Obra;
 import inf.laboratorio.museutreze.service.ObraService;
 import inf.laboratorio.museutreze.service.AutorService;
 import inf.laboratorio.museutreze.service.EditoraService;
 import inf.laboratorio.museutreze.service.AssuntoService;
 import inf.laboratorio.museutreze.service.ExemplarService;
+import inf.laboratorio.museutreze.service.SecundarioService;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -43,11 +46,12 @@ public class PaginaController {
     private final EditoraService editoraService;
     private final AssuntoService assuntoService;
     private final ExemplarService exemplarService;
+    private final SecundarioService secundarioService;
     private final PasswordEncoder passwordEncoder;
 
     public PaginaController(UsuarioRepository usuarioRepository, ObraHistoricoRepository obraHistoricoRepository,
                             ObraRepository obraRepository, ObraService obraService, AutorService autorService,
-                            EditoraService editoraService, AssuntoService assuntoService, ExemplarService exemplarService, PasswordEncoder passwordEncoder) {
+                            EditoraService editoraService, AssuntoService assuntoService, ExemplarService exemplarService, SecundarioService secundarioService, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.obraHistoricoRepository = obraHistoricoRepository;
         this.obraRepository = obraRepository;
@@ -56,6 +60,7 @@ public class PaginaController {
         this.editoraService = editoraService;
         this.assuntoService = assuntoService;
         this.exemplarService = exemplarService;
+        this.secundarioService = secundarioService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -111,6 +116,7 @@ public class PaginaController {
                            @RequestParam(required = false) String tipo,
                            @RequestParam(required = false) String dataInicio,
                            @RequestParam(required = false) String dataFim,
+                           @RequestParam(required = false) Boolean sucesso,
                            Model model) {
         List<ObraDTOResponse> obras = obraService.listar();
 
@@ -145,6 +151,7 @@ public class PaginaController {
         model.addAttribute("tipo", tipo);
         model.addAttribute("dataInicio", dataInicio);
         model.addAttribute("dataFim", dataFim);
+        model.addAttribute("sucesso", sucesso != null && sucesso);
         return "pesquisa";
     }
 
@@ -155,6 +162,10 @@ public class PaginaController {
 
         model.addAttribute("exemplares", exemplarService.listar().stream()
                 .filter(e -> e.obraId() != null && e.obraId().equals(id))
+                .toList());
+
+        model.addAttribute("autorSecundarios", secundarioService.listar().stream()
+                .filter(s -> s.obraId() != null && s.obraId().equals(id))
                 .toList());
 
         Usuario u = getUsuarioLogado();
@@ -171,12 +182,15 @@ public class PaginaController {
     }
 
     @GetMapping("/cadastro/obra")
-    public String obraForm(@RequestParam(required = false) Long editar, Model model) {
+    public String obraForm(@RequestParam(required = false) Long editar,
+                           @RequestParam(required = false) Boolean sucesso,
+                           Model model) {
 
         model.addAttribute("autores", autorService.listar());
         model.addAttribute("editoras", editoraService.listar());
         model.addAttribute("assuntos", assuntoService.listar());
         model.addAttribute("obra", editar != null ? obraService.buscarPorId(editar) : null);
+        model.addAttribute("sucesso", sucesso != null && sucesso);
 
         return "cadastro-obra";
     }
@@ -186,8 +200,8 @@ public class PaginaController {
                              @RequestParam String obra_tipo,
                              @RequestParam String titulo_Principal,
                              @RequestParam(required = false)
-                                 @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                 Date data,
+                             @DateTimeFormat(pattern = "yyyy-MM-dd")
+                             Date data,
                              @RequestParam(required = false) String capa,
                              @RequestParam(required = false) String local,
                              @RequestParam(required = false) String descFisica,
@@ -205,8 +219,9 @@ public class PaginaController {
                              @RequestParam(required = false) String periodicidade,
                              @RequestParam(required = false) Long autorId,
                              @RequestParam(required = false) Long editoraId,
-                             @RequestParam(required = false) List<Long> assuntosIds
-                             ) {
+                             @RequestParam(required = false) List<Long> assuntosIds,
+                             @RequestParam(required = false) List<Long> autorSecundariosIds
+    ) {
 
 
         if (capa == null || capa.isBlank()) {
@@ -226,9 +241,13 @@ public class PaginaController {
                     break;
             }
         }
-        LocalDate dataConverida = data.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
+
+        LocalDate dataConverida = null;
+        if (data != null) {
+            dataConverida = data.toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+        }
 
         ObraDTORequest request = new ObraDTORequest(
                 obra_tipo, titulo_Principal, capa, local, dataConverida, descFisica, nome,
@@ -250,15 +269,39 @@ public class PaginaController {
         if (id != null) {
             resultado = obraService.atualizar(id, request);
             registrarHistorico("EDITOU", usuarioLogado, resultado.id());
+            // Deletar secundários antigos antes de adicionar novos
+            obraRepository.findById(id).ifPresent(obra -> {
+                obraRepository.findAll().stream()
+                        .filter(o -> o.getId().equals(id))
+                        .forEach(o -> {
+                            // Lógica para deletar secundários será feita após
+                        });
+            });
         } else {
             resultado = obraService.salvar(request);
             registrarHistorico("CADASTROU", usuarioLogado, resultado.id());
         }
 
-        return "redirect:/cadastro";
-    }
+        // Salvar autores secundários
+        if (autorSecundariosIds != null && !autorSecundariosIds.isEmpty()) {
+            for (Long autor_Id : autorSecundariosIds) {
+                try {
+                    SecundarioDTORequest secundarioDTO = new SecundarioDTORequest(
+                            resultado.id(),
+                            autor_Id
+                    );
+                    secundarioService.salvar(secundarioDTO);
+                } catch (Exception e) {
+                    // Log do erro, mas não interrompe o salvamento
+                    System.err.println("Erro ao salvar autor secundário: " + e.getMessage());
+                }
+            }
+        }
 
+        return "redirect:/cadastro/obra?sucesso=true";
+    }
     @PostMapping("/obra/excluir/{id}")
+    // Mudei o excluirObra(): troquei "redirect:/pesquisa" por "redirect:/pesquisa?sucesso=true".
     public String excluirObra(@PathVariable Long id) {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
@@ -266,36 +309,89 @@ public class PaginaController {
         Usuario usuarioLogado = usuarioRepository
                 .findByEmail(authentication.getName())
                 .orElse(null);
+        /* O delete acontece na tela de detalhes, mas o navegador SEMPRE troca de página depois
+        Então quem vai aparecer na tela depois é a pesquisa, e ela que precisa saber que a exclusão deu certo pra mostrar o popup.
+        Por isso mandei esse "aviso" (?sucesso=true) junto no redirect, e fiz o pesquisa()
+        (GET) ler esse parâmetro e jogar no model, pra a página poder fazer th:if="${sucesso}".
+        Sem isso, o pesquisa.html nunca saberia que veio de uma exclusão.
+        Ass: Mribas
+         */
+
         registrarHistorico("EXCLUIU", usuarioLogado, id);
         obraService.deletar(id);
-        return "redirect:/pesquisa";
+        return "redirect:/pesquisa?sucesso=true";
     }
 
     @GetMapping("/dados")
-    public String dados(Model model) {
+    public String dados(@RequestParam(required = false) Boolean sucesso, Model model) {
         model.addAttribute("autores", autorService.listar());
         model.addAttribute("editoras", editoraService.listar());
         model.addAttribute("assuntos", assuntoService.listar());
+        model.addAttribute("sucesso", sucesso != null && sucesso);
         return "dados";
     }
 
+    @GetMapping("/dados/gerenciar")
+    public String gerenciarDados() {
+        return "gerenciar-dados";
+    }
+
     @PostMapping("/dados/autor")
-    public String salvarAutor(@RequestParam String nome, @RequestParam(required = false) String nacionalidade
-                              ) {
+    public String salvarAutor(@RequestParam String nome, @RequestParam(required = false) String nacionalidade) {
         autorService.salvar(new AutorDTORequest(nome, nacionalidade));
-        return "redirect:/dados";
+        return "redirect:/dados?sucesso=true";
+    }
+
+    @PutMapping("/dados/autor/{id}")
+    public ResponseEntity<Void> atualizarAutor(@PathVariable Long id,
+                                               @RequestParam String nome,
+                                               @RequestParam(required = false) String nacionalidade) {
+        autorService.atualizar(id, new AutorDTORequest(nome, nacionalidade));
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/dados/autor/{id}")
+    public ResponseEntity<Void> deletarAutor(@PathVariable Long id) {
+        autorService.deletar(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/dados/editora")
     public String salvarEditora(@RequestParam String nome) {
         editoraService.salvar(new EditoraDTORequest(nome));
-        return "redirect:/dados";
+        return "redirect:/dados?sucesso=true";
+    }
+
+    @PutMapping("/dados/editora/{id}")
+    public ResponseEntity<Void> atualizarEditora(@PathVariable Long id,
+                                                 @RequestParam String nome) {
+        editoraService.atualizar(id, new EditoraDTORequest(nome));
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/dados/editora/{id}")
+    public ResponseEntity<Void> deletarEditora(@PathVariable Long id) {
+        editoraService.deletar(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/dados/assunto")
     public String salvarAssunto(@RequestParam String descricao) {
         assuntoService.salvar(new AssuntoDTORequest(descricao));
-        return "redirect:/dados";
+        return "redirect:/dados?sucesso=true";
+    }
+
+    @PutMapping("/dados/assunto/{id}")
+    public ResponseEntity<Void> atualizarAssunto(@PathVariable Long id,
+                                                 @RequestParam String descricao) {
+        assuntoService.atualizar(id, new AssuntoDTORequest(descricao));
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/dados/assunto/{id}")
+    public ResponseEntity<Void> deletarAssunto(@PathVariable Long id) {
+        assuntoService.deletar(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/obra/{obraId}/exemplares")
@@ -310,7 +406,7 @@ public class PaginaController {
     @PostMapping("/obra/{obraId}/exemplares")
     public String salvarExemplar(@PathVariable Long obraId, @RequestParam Integer numero,
                                  @RequestParam(required = false) Boolean disponibilidade
-                                 ) {
+    ) {
         exemplarService.salvar(new ExemplarDTORequest(
                 disponibilidade != null ? disponibilidade : true, numero, obraId
         ));
@@ -355,6 +451,22 @@ public class PaginaController {
         registro.setNomeObra(obra.getTitulo_Principal());
 
         obraHistoricoRepository.save(registro);
+    }
+
+    private boolean temObraComAutor(Long autorId) {
+        return obraRepository.findAll().stream()
+                .anyMatch(obra -> obra.getAutor() != null && obra.getAutor().getId().equals(autorId));
+    }
+
+    private boolean temObraComEditora(Long editoraId) {
+        return obraRepository.findAll().stream()
+                .anyMatch(obra -> obra.getEditora() != null && obra.getEditora().getId().equals(editoraId));
+    }
+
+    private boolean temObraComAssunto(Long assuntoId) {
+        return obraRepository.findAll().stream()
+                .anyMatch(obra -> obra.getAssuntos() != null && obra.getAssuntos().stream()
+                        .anyMatch(assunto -> assunto.getId().equals(assuntoId)));
     }
 
 }

@@ -84,21 +84,67 @@
 
                 <div class="space-y-3 text-sm">
                     <div th:if="${obra.autor != null}">
-                        <p class="text-gray-400 text-xs uppercase tracking-wide">Autor</p>
+                        <p class="text-gray-400 text-xs uppercase tracking-wide">Autor Principal</p>
                         <p class="font-medium text-gray-800" th:text="${obra.autor.nome}"></p>
                     </div>
-                    <div th:if="${obra.editora != null}">
-                        <p class="text-gray-400 text-xs uppercase tracking-wide">Editora</p>
-                        <p class="font-medium text-gray-800" th:text="${obra.editora.nome}"></p>
-                    </div>
-                    <div th:if="${obra.isbn}">
-                        <p class="text-gray-400 text-xs uppercase tracking-wide">ISBN</p>
-                        <p class="font-medium text-gray-800" th:text="${obra.isbn}"></p>
-                    </div>
-                    <div th:if="${obra.serie}">
-                        <p class="text-gray-400 text-xs uppercase tracking-wide">Série</p>
-                        <p class="font-medium text-gray-800" th:text="${obra.serie}"></p>
-                    </div>
+
+                    <!-- CAMPOS APENAS DE LIVRO -->
+                    <th:block th:if="${obra.obra_tipo == 'LIVRO'}">
+                        <div th:if="${obra.nome}" class="text-gray-600 italic text-sm">
+                            <p class="text-gray-400 text-xs uppercase tracking-wide mb-1">Título Secundário</p>
+                            <p th:text="${obra.nome}"></p>
+                        </div>
+                        <div th:if="${autorSecundarios != null and !autorSecundarios.isEmpty()}">
+                            <p class="text-gray-400 text-xs uppercase tracking-wide mb-1.5">Autores Secundários</p>
+                            <div class="flex flex-wrap gap-1.5">
+                                <span th:each="sec : ${autorSecundarios}"
+                                      class="bg-blue-100 text-blue-700 px-2.5 py-1 rounded-full text-xs font-medium"
+                                      th:text="${sec.autorNome}"></span>
+                            </div>
+                        </div>
+                        <div th:if="${obra.editora != null}">
+                            <p class="text-gray-400 text-xs uppercase tracking-wide">Editora</p>
+                            <p class="font-medium text-gray-800" th:text="${obra.editora.nome}"></p>
+                        </div>
+                        <div th:if="${obra.isbn}">
+                            <p class="text-gray-400 text-xs uppercase tracking-wide">ISBN</p>
+                            <p class="font-medium text-gray-800" th:text="${obra.isbn}"></p>
+                        </div>
+                        <div th:if="${obra.serie}">
+                            <p class="text-gray-400 text-xs uppercase tracking-wide">Série</p>
+                            <p class="font-medium text-gray-800" th:text="${obra.serie}"></p>
+                        </div>
+                        <div th:if="${obra.descFisica}">
+                            <p class="text-gray-400 text-xs uppercase tracking-wide">Número de Páginas</p>
+                            <p class="font-medium text-gray-800" th:text="${obra.descFisica}"></p>
+                        </div>
+                    </th:block>
+
+                    <!-- CAMPOS APENAS DE PERIÓDICOS (REVISTA/JORNAL) -->
+                    <th:block th:if="${obra.obra_tipo != 'LIVRO'}">
+                        <div th:if="${obra.editora != null}">
+                            <p class="text-gray-400 text-xs uppercase tracking-wide">Editora</p>
+                            <p class="font-medium text-gray-800" th:text="${obra.editora.nome}"></p>
+                        </div>
+                        <div th:if="${obra.issn}">
+                            <p class="text-gray-400 text-xs uppercase tracking-wide">ISSN</p>
+                            <p class="font-medium text-gray-800" th:text="${obra.issn}"></p>
+                        </div>
+                        <div th:if="${obra.volume}">
+                            <p class="text-gray-400 text-xs uppercase tracking-wide">Volume</p>
+                            <p class="font-medium text-gray-800" th:text="${obra.volume}"></p>
+                        </div>
+                        <div th:if="${obra.periodicidade}">
+                            <p class="text-gray-400 text-xs uppercase tracking-wide">Periodicidade</p>
+                            <p class="font-medium text-gray-800" th:text="${obra.periodicidade}"></p>
+                        </div>
+                        <div th:if="${obra.local}">
+                            <p class="text-gray-400 text-xs uppercase tracking-wide">Local de Publicação</p>
+                            <p class="font-medium text-gray-800" th:text="${obra.local}"></p>
+                        </div>
+                    </th:block>
+
+                    <!-- ASSUNTOS (APARECE PARA TODOS) -->
                     <div th:if="${obra.assuntos != null and !obra.assuntos.isEmpty()}">
                         <p class="text-gray-400 text-xs uppercase tracking-wide mb-1.5">Assuntos</p>
                         <div class="flex flex-wrap gap-1.5">

@@ -23,6 +23,12 @@
         ← Voltar
     </a>
 
+    <div th:if="${sucesso}" class="mb-6">
+        <div class="p-4 rounded-lg text-sm font-medium bg-green-100 text-green-800 border border-green-300">
+            Obra salva com sucesso!
+        </div>
+    </div>
+
     <div class="bg-white rounded-2xl shadow-2xl overflow-hidden" style="box-shadow: 0 15px 25px 1px rgba(0, 0, 0, 0.30);">
 
         <div class="bg-[#2E5B37] text-white p-6">
@@ -42,6 +48,15 @@
             <input type="hidden"
                    name="id"
                    th:value="${obra != null ? obra.id : null}">
+
+            <input type="hidden"
+                   id="hiddenAutoresSecundarios"
+                   name="autorSecundariosIds"
+                   value="">
+
+            <input type="hidden"
+                   id="isAutorSecundario"
+                   value="false">
 
             <!-- ================================================= -->
             <!-- DADOS GERAIS -->
@@ -153,7 +168,7 @@
 
                     <div>
                         <label class="block mb-1 text-sm">
-                            <span class="font-medium text-[#2E5B37]">Autor</span>
+                            <span class="font-medium text-[#2E5B37]">Autor Principal</span>
                             <button type="button" onclick="abrirModalAutor()"
                                     class="float-right text-xs text-gray-400 hover:text-[#2E5B37] transition">
                                 + Adicionar novo
@@ -173,6 +188,42 @@
                             </option>
 
                         </select>
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 text-sm">
+                            <span class="font-medium text-[#2E5B37]">Autores Secundários</span>
+                            <button type="button" onclick="abrirModalAutorSecundario()"
+                                    class="float-right text-xs text-gray-400 hover:text-[#2E5B37] transition">
+                                + Adicionar novo
+                            </button>
+                        </label>
+
+                        <select id="selectAutoresSecundarios"
+                                class="w-full border rounded-lg px-4 py-3">
+
+                            <option value="">Selecione</option>
+
+                            <option
+                                    th:each="a : ${autores}"
+                                    th:value="${a.id}"
+                                    th:text="${a.nome}">
+                            </option>
+
+                        </select>
+
+                        <div id="containerAutoresSecundarios" class="mt-3 flex flex-wrap gap-2">
+                            <!-- Tags dos autores selecionados irão aqui -->
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 text-sm">Título/Nome Secundário</label>
+
+                        <input type="text"
+                               name="nome"
+                               th:value="${obra != null ? obra.nome : ''}"
+                               class="w-full border rounded-lg px-4 py-3">
                     </div>
 
                     <div>
@@ -220,6 +271,14 @@
 
                         <input type="text"
                                name="colecao"
+                               class="w-full border rounded-lg px-4 py-3">
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 text-sm">Número de Páginas</label>
+
+                        <input type="text"
+                               name="descFisica"
                                class="w-full border rounded-lg px-4 py-3">
                     </div>
 
@@ -444,36 +503,6 @@
         document.getElementById("nacionalidadeAutor").value = "";
     }
 
-    function salvarAutor() {
-        const nome = document.getElementById("nomeAutor").value.trim();
-        if (!nome) {
-            alert("Preencha o nome do autor");
-            return;
-        }
-
-        const nacionalidade = document.getElementById("nacionalidadeAutor").value || "Não informado";
-
-        fetch("/autores", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                ...getCsrfHeaders()
-            },
-            body: JSON.stringify({ nome, nacionalidade })
-        })
-            .then(res => res.json())
-            .then(data => {
-                const select = document.getElementById("selectAutor");
-                const option = document.createElement("option");
-                option.value = data.id;
-                option.text = data.nome;
-                option.selected = true;
-                select.appendChild(option);
-                fecharModalAutor();
-            })
-            .catch(err => alert("Erro ao salvar: " + err));
-    }
-
     // MODAL EDITORA
     function abrirModalEditora() {
         document.getElementById("modalEditora").classList.remove("hidden");
@@ -595,7 +624,116 @@
         document
             .getElementById("campoCapa")
             .addEventListener("input", atualizarPreview);
+
+        // Event listener para select de autores secundários
+        const selectSecundarios = document.getElementById("selectAutoresSecundarios");
+        if (selectSecundarios) {
+            selectSecundarios.addEventListener("change", atualizarTagsAutoresSecundarios);
+        }
+
+        // Antes de submeter o form, atualizar hidden input
+        const form = document.querySelector("form");
+        if (form) {
+            form.addEventListener("submit", (e) => {
+                atualizarHiddenAutoresSecundarios();
+            });
+        }
     });
+
+    function atualizarTagsAutoresSecundarios() {
+        const select = document.getElementById("selectAutoresSecundarios");
+        const container = document.getElementById("containerAutoresSecundarios");
+        const hiddenInput = document.getElementById("hiddenAutoresSecundarios");
+
+        const selectedOption = select.selectedOptions[0];
+
+        if (selectedOption && selectedOption.value) {
+            const autorId = selectedOption.value;
+            const autorNome = selectedOption.text;
+
+            // Verifica se já não existe
+            if (!document.querySelector(`[data-autor-id="${autorId}"]`)) {
+                const tag = document.createElement("div");
+                tag.className = "bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2";
+                tag.setAttribute("data-autor-id", autorId);
+                tag.innerHTML = `
+                    ${autorNome}
+                    <button type="button" onclick="removerAutorSecundario(this)" class="hover:text-blue-900 font-bold">✕</button>
+                `;
+                container.appendChild(tag);
+            }
+
+            // Reseta o select
+            select.value = "";
+            atualizarHiddenAutoresSecundarios();
+        }
+    }
+
+    function removerAutorSecundario(button) {
+        button.parentElement.remove();
+        atualizarHiddenAutoresSecundarios();
+    }
+
+    function atualizarHiddenAutoresSecundarios() {
+        const container = document.getElementById("containerAutoresSecundarios");
+        const tags = container.querySelectorAll("[data-autor-id]");
+        const ids = Array.from(tags).map(tag => tag.getAttribute("data-autor-id"));
+
+        // Se vazio, envia array vazio. Se tiver IDs, envia separado por vírgula
+        const valor = ids.length > 0 ? ids.join(",") : "";
+        document.getElementById("hiddenAutoresSecundarios").value = valor;
+    }
+
+    function abrirModalAutorSecundario() {
+        document.getElementById("modalAutor").classList.remove("hidden");
+        document.getElementById("isAutorSecundario").value = "true";
+    }
+
+    function fecharModalAutor() {
+        document.getElementById("modalAutor").classList.add("hidden");
+        document.getElementById("nomeAutor").value = "";
+        document.getElementById("nacionalidadeAutor").value = "";
+        document.getElementById("isAutorSecundario").value = "false";
+    }
+
+    function salvarAutor() {
+        const nome = document.getElementById("nomeAutor").value.trim();
+        if (!nome) {
+            alert("Preencha o nome do autor");
+            return;
+        }
+
+        const nacionalidade = document.getElementById("nacionalidadeAutor").value || "Não informado";
+        const isAutorSecundario = document.getElementById("isAutorSecundario").value === "true";
+
+        fetch("/autores", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                ...getCsrfHeaders()
+            },
+            body: JSON.stringify({ nome, nacionalidade })
+        })
+            .then(res => res.json())
+            .then(data => {
+                // Adiciona ao select correto
+                const selectId = isAutorSecundario ? "selectAutoresSecundarios" : "selectAutor";
+                const select = document.getElementById(selectId);
+                const option = document.createElement("option");
+                option.value = data.id;
+                option.text = data.nome;
+                option.selected = true;
+                select.appendChild(option);
+
+                // Se for secundário, já adiciona a tag
+                if (isAutorSecundario) {
+                    atualizarTagsAutoresSecundarios();
+                }
+
+                fecharModalAutor();
+            })
+            .catch(err => alert("Erro ao salvar: " + err));
+    }
 
 </script>
 

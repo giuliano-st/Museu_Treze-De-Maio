@@ -4,9 +4,9 @@ O projeto Museu Treze de Maio é um sistema web de gestão de acervo histórico 
 ## Descrição do Problema e Solução Proposta
 Muitos museus sofrem com acervos físicos não catalogados, com informações acessíveis apenas localmente. O problema abordado é a dificuldade de gerenciar e consultar registros de obras, documentos e livros do museu, bem como de controlar empréstimos, de forma manual. A solução proposta é um sistema integrado onde:
 
- - Livros, jornais e revistas são cadastrados digitalmente.
- - Interfaces gráficas facilitam a navegação e filtros de busca tornam consultas públicas intuitivas.
- - O controle de obras é facilitado para a equipe do museu.
+- Livros, jornais e revistas são cadastrados digitalmente.
+- Interfaces gráficas facilitam a navegação e filtros de busca tornam consultas públicas intuitivas.
+- O controle de obras é facilitado para a equipe do museu.
 
 ## Objetivos do projeto
 
@@ -20,21 +20,25 @@ Com isso, é possível:
 - registrar histórico de ações realizadas por usuários autorizados;
 - disponibilizar busca pública para consulta do acervo.
 
+## Protótipo de interface
+O protótipo de interface do sistema foi desenvolvido utilizando a ferramenta Figma Make e está disponível em:
+[Protótipo de Interface](https://paper-bell-55152035.figma.site/).
+
 ## Diagramas
-Os diagramas do projeto estão disponíveis em: [Diagramas](Diagramas), organizados da seguinte forma:
+Os diagramas do projeto estão disponíveis em: [Diagramas](documentacao/Diagramas), organizados da seguinte forma:
 
 #### Engenharia de Requisitos
- - Diagrama de Caso de Uso.
- - Descrição dos Casos de Uso.
+- Diagrama de Caso de Uso.
+- Descrição dos Casos de Uso.
 
 #### Modelagem do Domínio
- - Diagrama de Domínio.
+- Diagrama de Domínio.
 
 #### Projeto de Software
- - Diagrama de Classes representando a arquitetura e as classes envolvidas no desenvolvimento do sistema;
+- Diagrama de Classes representando a arquitetura e as classes envolvidas no desenvolvimento do sistema;
 
 #### Diagramas de Sequência
- - Para a entidade obra, o diagrama representa adequadamente a interação entre interface, controladores, serviços, persistência e banco de dados.
+- Para a entidade obra, o diagrama representa adequadamente a interação entre interface, controladores, serviços, persistência e banco de dados.
 
 
 * OBS: Todos os diagramas foram desenvolvidos utilizando a ferramenta Astah UML.
@@ -55,16 +59,16 @@ Os diagramas do projeto estão disponíveis em: [Diagramas](Diagramas), organiza
 - **Autenticação e autorização** com Spring Security.
 - **Cadastro de usuários** com perfis de acesso.
 - **Perfis de acesso**:
-  - `ADMIN`
-  - `BIBLIOTECARIO`
+    - `ADMIN`
+    - `BIBLIOTECARIO`
 - **Busca pública de obras** por termo, tipo e período.
 - **Visualização de detalhes da obra**.
 - **Cadastro e edição de obras** do tipo livro, jornal e revista.
 - **Gestão de exemplares** associados às obras.
 - **Cadastro, edição e exclusão** de:
-  - autores;
-  - editoras;
-  - assuntos.
+    - autores;
+    - editoras;
+    - assuntos.
 - **Histórico de acesso/alterações** para rastrear operações sobre obras.
 - **Carga inicial de dados** a partir de `src/main/resources/config/dados_obras.json`.
 - **Usuários padrão criados automaticamente** na primeira execução.
@@ -91,14 +95,14 @@ Fluxo simplificado:
 Na inicialização da aplicação, o projeto tenta criar automaticamente os seguintes usuários:
 
 - **Administrador**
-  - e-mail: `admin@museu.com`
-  - senha: `admin123`
-  - perfil: `ADMIN`
+    - e-mail: `admin@museu.com`
+    - senha: `admin123`
+    - perfil: `ADMIN`
 
 - **Bibliotecário**
-  - e-mail: `bibliotecario@museu.com`
-  - senha: `biblio123`
-  - perfil: `BIBLIOTECARIO`
+    - e-mail: `bibliotecario@museu.com`
+    - senha: `biblio123`
+    - perfil: `BIBLIOTECARIO`
 
 Além disso, o sistema carrega obras iniciais a partir do arquivo JSON configurado em `src/main/resources/config/dados_obras.json`.
 
@@ -163,11 +167,11 @@ http://localhost:8080
 - O pacote `src/main/java/inf/laboratorio/museutreze/config/` concentra boa parte do comportamento inicial da aplicação, incluindo segurança, senha e seed de dados.
 
 ## Equipe de Desenvolvimento
-- Fares 
-- Gustavo
-- Igor
-- Igor
-- Giuliano
+- Fares Mahmud -> [GitHub](https://github.com/FaresMahmud).
+- Gustavo Anibele -> [GitHub](https://github.com/anibele).
+- Igor Gabiatti -> [GitHub](https://github.com/IgorGabiatti).
+- Igor Ribas -> [GitHub](https://github.com/iguirote).
+- Giuliano -> [GitHub](https://github.com/iguirote).
 
 ## Vídeo Demonstrativo
 Aqui o link do vídeo de demonstração do projeto: [link](www.youtube.com).
@@ -176,9 +180,3 @@ Aqui o link do vídeo de demonstração do projeto: [link](www.youtube.com).
 - Projeto extensionista da [UFN](https://site.ufn.edu.br/).
 - Curso: [Sistemas de Informação](https://site.ufn.edu.br/pagina/sistemas-de-informacao).
 - Professor responsável: [Herysson Rodrigues Figueiredo](https://github.com/Herysson).
-
-
-
-
-
-
