@@ -1,77 +1,182 @@
-# Museu Treze de Maio - Sistema de Acervo
+## MUSEU TREZE DE MAIO
+O projeto Museu Treze de Maio é um sistema web de gestão de acervo histórico e bibliográfico para o Museu Treze de Maio (Santa Maria/RS). Desenvolvido em Java com arquitetura MVC, o sistema permite cadastrar materiais bibliográficos do acervo histórico físico, além de controlar exemplares no acervo e disponibilizar consultas públicas aos dados. O objetivo é digitalizar, organizar e democratizar o acesso ao patrimônio histórico-cultural afro-brasileiro do museu, auxiliando a equipe técnica do museu, pesquisadores e estudantes. O desenvolvimento foi realizado como projeto extensionista na UFN, integrando disciplinas de Projeto de Software e Banco de Dados.
 
-Repositorio do sistema web de gerenciamento de acervo do Museu Treze de Maio.
+## Descrição do Problema e Solução Proposta
+Muitos museus sofrem com acervos físicos não catalogados, com informações acessíveis apenas localmente. O problema abordado é a dificuldade de gerenciar e consultar registros de obras, documentos e livros do museu, bem como de controlar empréstimos, de forma manual. A solução proposta é um sistema integrado onde:
 
-## Estrutura do repositorio
+- Livros, jornais e revistas são cadastrados digitalmente.
+- Interfaces gráficas facilitam a navegação e filtros de busca tornam consultas públicas intuitivas.
+- O controle de obras é facilitado para a equipe do museu.
 
-```text
-acervo-museu/
-  pom.xml                         # Projeto Spring Boot
-  src/main/java/                  # Backend Java
-  src/main/resources/             # Configuracoes e arquivos estaticos
-  frontend/                       # Frontend principal em React + Vite
+## Objetivos do projeto
 
-Protótipo_Figma_Maker/            # Prototipo visual exportado do Figma Maker
-Diagramas/                        # Diagramas do projeto
-```
+O sistema tem como objetivo digitalizar, organizar e facilitar o acesso ao patrimônio histórico-cultural do museu, reduzindo o uso de controles manuais e centralizando as informações do acervo em uma única aplicação.
 
-## Frontend principal
+Com isso, é possível:
 
-O frontend que deve ser alterado para evoluir o sistema fica em:
+- cadastrar e consultar obras do acervo bibliográfico/histórico;
+- controlar exemplares vinculados a cada obra;
+- manter dados de apoio como autores, editoras e assuntos;
+- registrar histórico de ações realizadas por usuários autorizados;
+- disponibilizar busca pública para consulta do acervo.
 
-```text
-acervo-museu/frontend/
-```
+## Protótipo de interface
+O protótipo de interface do sistema foi desenvolvido utilizando a ferramenta Figma Make e está disponível em:
+[Protótipo de Interface](https://paper-bell-55152035.figma.site/).
 
-Dentro dele, os principais pontos sao:
+## Diagramas
+Os diagramas do projeto estão disponíveis em: [Diagramas](documentacao/Diagramas), organizados da seguinte forma:
 
-- `src/main.tsx`: entrada do React.
-- `src/app/App.tsx`: componente principal.
-- `src/app/routes.tsx`: rotas da aplicacao.
-- `src/app/components/`: telas e componentes.
-- `src/app/contexts/`: estados compartilhados, como autenticacao.
-- `src/app/services/`: comunicacao com o backend.
-- `src/styles/`: estilos globais.
+#### Engenharia de Requisitos
+- Diagrama de Caso de Uso.
+- Descrição dos Casos de Uso.
 
-Mais detalhes estao em `acervo-museu/frontend/README.md`.
+#### Modelagem do Domínio
+- Diagrama de Domínio.
 
-## Prototipo
+#### Projeto de Software
+- Diagrama de Classes representando a arquitetura e as classes envolvidas no desenvolvimento do sistema;
 
-O prototipo visual fica em:
+#### Diagramas de Sequência
+- Para a entidade obra, o diagrama representa adequadamente a interação entre interface, controladores, serviços, persistência e banco de dados.
 
-```text
-Protótipo_Figma_Maker/
-```
 
-Ele serve como referencia visual e nao deve ser confundido com o frontend principal.
+* OBS: Todos os diagramas foram desenvolvidos utilizando a ferramenta Astah UML.
 
-## Configuracao do backend
+## Tecnologias Utilizadas
 
-Copie o arquivo de exemplo:
+- **Linguagem:** Java 17
+- **Framework:** Spring Boot 4.0.6
+- **Persistência:** Spring Data JPA + MySQL
+- **Segurança:** Spring Security
+- **Template engine:** Thymeleaf
+- **Build e dependências:** Maven
+- **Bibliotecas de apoio:** Lombok, Jackson
+- **Ambiente opcional:** Docker e Docker Compose
 
-```text
-acervo-museu/src/main/resources/application.example.properties
-```
+## Principais funcionalidades
 
-para:
+- **Autenticação e autorização** com Spring Security.
+- **Cadastro de usuários** com perfis de acesso.
+- **Perfis de acesso**:
+    - `ADMIN`
+    - `BIBLIOTECARIO`
+- **Busca pública de obras** por termo, tipo e período.
+- **Visualização de detalhes da obra**.
+- **Cadastro e edição de obras** do tipo livro, jornal e revista.
+- **Gestão de exemplares** associados às obras.
+- **Cadastro, edição e exclusão** de:
+    - autores;
+    - editoras;
+    - assuntos.
+- **Histórico de acesso/alterações** para rastrear operações sobre obras.
+- **Carga inicial de dados** a partir de `src/main/resources/config/dados_obras.json`.
+- **Usuários padrão criados automaticamente** na primeira execução.
 
-```text
-acervo-museu/src/main/resources/application.properties
-```
+## Arquitetura adotada
 
-Depois ajuste usuario, senha e banco de dados local.
+O projeto segue uma organização inspirada em **MVC**, separando responsabilidades em camadas:
 
-## Como rodar o frontend principal
+- **Model**: entidades do domínio (`Obra`, `Exemplar`, `Autor`, `Editora`, `Assunto`, `Usuario`, `ObraHistorico`, etc.)
+- **DTO**: objetos de entrada e saída para transporte de dados
+- **Mapper**: conversão entre entidade e DTO
+- **Repository**: acesso aos dados com JPA
+- **Service**: regras de negócio
+- **Controller**: rotas, telas e respostas HTTP
+- **Config**: configuração de segurança, encoder e carregamento inicial de dados
+- **View**: páginas Thymeleaf em `src/main/resources/templates`
+
+Fluxo simplificado:
+
+`View -> Controller -> Service -> Repository -> Banco de Dados`.
+
+## Dados iniciais e usuários padrão
+
+Na inicialização da aplicação, o projeto tenta criar automaticamente os seguintes usuários:
+
+- **Administrador**
+    - e-mail: `admin@museu.com`
+    - senha: `admin123`
+    - perfil: `ADMIN`
+
+- **Bibliotecário**
+    - e-mail: `bibliotecario@museu.com`
+    - senha: `biblio123`
+    - perfil: `BIBLIOTECARIO`
+
+Além disso, o sistema carrega obras iniciais a partir do arquivo JSON configurado em `src/main/resources/config/dados_obras.json`.
+
+## Requisitos para execução
+
+- Java 17
+- Maven 3.9+ ou Maven Wrapper (`mvnw` / `mvnw.cmd`)
+- MySQL 8.0+
+- Git
+- Opcional: Docker e Docker Compose
+
+## Configuração do banco de dados
+
+A configuração local atual está em `src/main/resources/application.properties` e usa, por padrão:
+
+- banco: `MuseuTreze`
+- usuário: `root`
+- senha: `laboratorio`
+- URL: `jdbc:mysql://localhost:3306/MuseuTreze?createDatabaseIfNotExist=true`
+
+Se o seu MySQL usar outra senha/usuário, ajuste esse arquivo antes de executar.
+
+## Instruções de instalação e execução do sistema
+### 1. Clonar o repositório
 
 ```bash
-cd acervo-museu/frontend
-npm install
-npm run dev
+git clone <URL_DO_REPOSITORIO>
+cd museu-completo-v2
 ```
 
-## Como rodar o backend
+### 2. Configurar o banco de dados
 
-```bash
-cd acervo-museu
-mvn spring-boot:run
+Verifique se o MySQL está em execução e se as credenciais em `src/main/resources/application.properties` estão corretas.
+
+### 3. Executar a aplicação
+
+No Windows, use o Maven Wrapper:
+
+```powershell
+.\mvnw.cmd spring-boot:run
 ```
+
+Ou, se preferir, execute o JAR após o build:
+
+```powershell
+.\mvnw.cmd clean package
+java -jar target\MuseuTreze-0.0.1-SNAPSHOT.jar
+```
+
+### 4. Acessar no navegador
+
+```text
+http://localhost:8080
+```
+
+## Observações importantes
+
+- O projeto usa **Thymeleaf** para renderização das páginas no servidor.
+- O carregamento de obras iniciais acontece apenas quando ainda não existem registros no banco.
+- O histórico de operações registra ações como cadastro, edição e exclusão de obras.
+- Algumas rotas de alteração usam `PUT` e `DELETE`; se o front-end for chamado via formulário HTML puro, pode ser necessário tratar isso com JavaScript ou com a configuração adequada de método HTTP.
+- O pacote `src/main/java/inf/laboratorio/museutreze/config/` concentra boa parte do comportamento inicial da aplicação, incluindo segurança, senha e seed de dados.
+
+## Equipe de Desenvolvimento
+- Fares Mahmud -> [GitHub](https://github.com/FaresMahmud).
+- Gustavo Anibele -> [GitHub](https://github.com/anibele).
+- Igor Gabiatti -> [GitHub](https://github.com/IgorGabiatti).
+- Igor Ribas -> [GitHub](https://github.com/iguirote).
+- Giuliano -> [GitHub](https://github.com/iguirote).
+
+## Vídeo Demonstrativo
+Aqui o link do vídeo de demonstração do projeto: [link](www.youtube.com).
+
+## Informações Adicionais
+- Projeto extensionista da [UFN](https://site.ufn.edu.br/).
+- Curso: [Sistemas de Informação](https://site.ufn.edu.br/pagina/sistemas-de-informacao).
+- Professor responsável: [Herysson Rodrigues Figueiredo](https://github.com/Herysson).
