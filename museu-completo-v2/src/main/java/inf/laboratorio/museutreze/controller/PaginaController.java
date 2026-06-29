@@ -116,6 +116,7 @@ public class PaginaController {
                            @RequestParam(required = false) String tipo,
                            @RequestParam(required = false) String dataInicio,
                            @RequestParam(required = false) String dataFim,
+                           @RequestParam(required = false) Boolean sucesso,
                            Model model) {
         List<ObraDTOResponse> obras = obraService.listar();
 
@@ -150,6 +151,7 @@ public class PaginaController {
         model.addAttribute("tipo", tipo);
         model.addAttribute("dataInicio", dataInicio);
         model.addAttribute("dataFim", dataFim);
+        model.addAttribute("sucesso", sucesso != null && sucesso);
         return "pesquisa";
     }
 
@@ -180,12 +182,15 @@ public class PaginaController {
     }
 
     @GetMapping("/cadastro/obra")
-    public String obraForm(@RequestParam(required = false) Long editar, Model model) {
+    public String obraForm(@RequestParam(required = false) Long editar,
+                           @RequestParam(required = false) Boolean sucesso,
+                           Model model) {
 
         model.addAttribute("autores", autorService.listar());
         model.addAttribute("editoras", editoraService.listar());
         model.addAttribute("assuntos", assuntoService.listar());
         model.addAttribute("obra", editar != null ? obraService.buscarPorId(editar) : null);
+        model.addAttribute("sucesso", sucesso != null && sucesso);
 
         return "cadastro-obra";
     }
@@ -195,8 +200,8 @@ public class PaginaController {
                              @RequestParam String obra_tipo,
                              @RequestParam String titulo_Principal,
                              @RequestParam(required = false)
-                                 @DateTimeFormat(pattern = "yyyy-MM-dd")
-                                 Date data,
+                             @DateTimeFormat(pattern = "yyyy-MM-dd")
+                             Date data,
                              @RequestParam(required = false) String capa,
                              @RequestParam(required = false) String local,
                              @RequestParam(required = false) String descFisica,
@@ -216,7 +221,7 @@ public class PaginaController {
                              @RequestParam(required = false) Long editoraId,
                              @RequestParam(required = false) List<Long> assuntosIds,
                              @RequestParam(required = false) List<Long> autorSecundariosIds
-                             ) {
+    ) {
 
 
         if (capa == null || capa.isBlank()) {
@@ -236,7 +241,7 @@ public class PaginaController {
                     break;
             }
         }
-        
+
         LocalDate dataConverida = null;
         if (data != null) {
             dataConverida = data.toInstant()
@@ -293,10 +298,10 @@ public class PaginaController {
             }
         }
 
-        return "redirect:/cadastro";
+        return "redirect:/cadastro/obra?sucesso=true";
     }
-
     @PostMapping("/obra/excluir/{id}")
+    // Mudei o excluirObra(): troquei "redirect:/pesquisa" por "redirect:/pesquisa?sucesso=true".
     public String excluirObra(@PathVariable Long id) {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
@@ -304,16 +309,25 @@ public class PaginaController {
         Usuario usuarioLogado = usuarioRepository
                 .findByEmail(authentication.getName())
                 .orElse(null);
+        /* O delete acontece na tela de detalhes, mas o navegador SEMPRE troca de página depois
+        Então quem vai aparecer na tela depois é a pesquisa, e ela que precisa saber que a exclusão deu certo pra mostrar o popup.
+        Por isso mandei esse "aviso" (?sucesso=true) junto no redirect, e fiz o pesquisa()
+        (GET) ler esse parâmetro e jogar no model, pra a página poder fazer th:if="${sucesso}".
+        Sem isso, o pesquisa.html nunca saberia que veio de uma exclusão.
+        Ass: Mribas
+         */
+
         registrarHistorico("EXCLUIU", usuarioLogado, id);
         obraService.deletar(id);
-        return "redirect:/pesquisa";
+        return "redirect:/pesquisa?sucesso=true";
     }
 
     @GetMapping("/dados")
-    public String dados(Model model) {
+    public String dados(@RequestParam(required = false) Boolean sucesso, Model model) {
         model.addAttribute("autores", autorService.listar());
         model.addAttribute("editoras", editoraService.listar());
         model.addAttribute("assuntos", assuntoService.listar());
+        model.addAttribute("sucesso", sucesso != null && sucesso);
         return "dados";
     }
 
@@ -325,7 +339,7 @@ public class PaginaController {
     @PostMapping("/dados/autor")
     public String salvarAutor(@RequestParam String nome, @RequestParam(required = false) String nacionalidade) {
         autorService.salvar(new AutorDTORequest(nome, nacionalidade));
-        return "redirect:/dados";
+        return "redirect:/dados?sucesso=true";
     }
 
     @PutMapping("/dados/autor/{id}")
@@ -345,7 +359,7 @@ public class PaginaController {
     @PostMapping("/dados/editora")
     public String salvarEditora(@RequestParam String nome) {
         editoraService.salvar(new EditoraDTORequest(nome));
-        return "redirect:/dados";
+        return "redirect:/dados?sucesso=true";
     }
 
     @PutMapping("/dados/editora/{id}")
@@ -364,7 +378,7 @@ public class PaginaController {
     @PostMapping("/dados/assunto")
     public String salvarAssunto(@RequestParam String descricao) {
         assuntoService.salvar(new AssuntoDTORequest(descricao));
-        return "redirect:/dados";
+        return "redirect:/dados?sucesso=true";
     }
 
     @PutMapping("/dados/assunto/{id}")
@@ -392,7 +406,7 @@ public class PaginaController {
     @PostMapping("/obra/{obraId}/exemplares")
     public String salvarExemplar(@PathVariable Long obraId, @RequestParam Integer numero,
                                  @RequestParam(required = false) Boolean disponibilidade
-                                 ) {
+    ) {
         exemplarService.salvar(new ExemplarDTORequest(
                 disponibilidade != null ? disponibilidade : true, numero, obraId
         ));

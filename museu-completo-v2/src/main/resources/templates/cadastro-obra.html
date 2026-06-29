@@ -23,6 +23,12 @@
         ← Voltar
     </a>
 
+    <div th:if="${sucesso}" class="mb-6">
+        <div class="p-4 rounded-lg text-sm font-medium bg-green-100 text-green-800 border border-green-300">
+            Obra salva com sucesso!
+        </div>
+    </div>
+
     <div class="bg-white rounded-2xl shadow-2xl overflow-hidden" style="box-shadow: 0 15px 25px 1px rgba(0, 0, 0, 0.30);">
 
         <div class="bg-[#2E5B37] text-white p-6">
@@ -630,7 +636,6 @@
         if (form) {
             form.addEventListener("submit", (e) => {
                 atualizarHiddenAutoresSecundarios();
-                console.log("Autores Secundários enviando:", document.getElementById("hiddenAutoresSecundarios").value);
             });
         }
     });
