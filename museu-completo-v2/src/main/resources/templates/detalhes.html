@@ -169,6 +169,25 @@
             </div>
         </div>
     </div>
+
+    <!-- INFORMAÇÕES DO BIBLIOTECÁRIO -->
+    <div th:if="${isBibliotecario}" class="bg-white rounded-xl shadow-2xl p-8 mt-8" style="box-shadow: 0 15px 25px 1px rgba(0, 0, 0, 0.30);">
+        <h2 class="text-[#2E5B37] text-xl font-bold mb-4">Informações do Bibliotecário</h2>
+        <div class="space-y-3 text-sm">
+            <div th:if="${obra.numeroChamada}">
+                <p class="text-gray-400 text-xs uppercase tracking-wide">Número de Chamada</p>
+                <p class="font-medium text-gray-800" th:text="${obra.numeroChamada}"></p>
+            </div>
+            <div th:if="${obra.chamadaLocal}">
+                <p class="text-gray-400 text-xs uppercase tracking-wide">Chamada Local</p>
+                <p class="font-medium text-gray-800" th:text="${obra.chamadaLocal}"></p>
+            </div>
+            <div th:if="${obra.notasGerais}">
+                <p class="text-gray-400 text-xs uppercase tracking-wide">Observações</p>
+                <p class="font-medium text-gray-800" th:text="${obra.notasGerais}"></p>
+            </div>
+        </div>
+    </div>
 </main>
 
 <footer th:replace="~{fragmentos :: rodape}"></footer>

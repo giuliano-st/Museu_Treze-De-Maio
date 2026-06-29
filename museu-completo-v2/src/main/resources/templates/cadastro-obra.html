@@ -360,6 +360,22 @@
                                class="w-full border rounded-lg px-4 py-3">
                     </div>
 
+                    <div>
+                        <label class="block mb-1 text-sm">Número de Chamada</label>
+
+                        <input type="text"
+                               name="numeroChamada"
+                               class="w-full border rounded-lg px-4 py-3">
+                    </div>
+
+                    <div>
+                        <label class="block mb-1 text-sm">Chamada Local</label>
+
+                        <input type="text"
+                               name="chamadaLocal"
+                               class="w-full border rounded-lg px-4 py-3">
+                    </div>
+
                 </div>
 
             </section>
@@ -376,10 +392,10 @@
                     </button>
                 </label>
 
-                <select multiple
-                        name="assuntosIds"
-                        id="selectAssunto"
-                        class="w-full h-40 border rounded-lg p-3">
+                <select id="selectAssunto"
+                        class="w-full border rounded-lg px-4 py-3">
+
+                    <option value="">Selecione</option>
 
                     <option
                             th:each="a : ${assuntos}"
@@ -388,6 +404,12 @@
                     </option>
 
                 </select>
+
+                <div id="containerAssuntos" class="mt-3 flex flex-wrap gap-2">
+                    <!-- Tags dos assuntos selecionados irão aqui -->
+                </div>
+
+                <input type="hidden" id="hiddenAssuntos" name="assuntosIds">
 
             </section>
 
@@ -574,6 +596,7 @@
                 option.text = data.descricao;
                 option.selected = true;
                 select.appendChild(option);
+                atualizarTagsAssuntos();
                 fecharModalAssunto();
             })
             .catch(err => alert("Erro ao salvar: " + err));
@@ -631,11 +654,18 @@
             selectSecundarios.addEventListener("change", atualizarTagsAutoresSecundarios);
         }
 
+        // Event listener para select de assuntos
+        const selectAssunto = document.getElementById("selectAssunto");
+        if (selectAssunto) {
+            selectAssunto.addEventListener("change", atualizarTagsAssuntos);
+        }
+
         // Antes de submeter o form, atualizar hidden input
         const form = document.querySelector("form");
         if (form) {
             form.addEventListener("submit", (e) => {
                 atualizarHiddenAutoresSecundarios();
+                atualizarHiddenAssuntos();
             });
         }
     });
@@ -682,6 +712,48 @@
         // Se vazio, envia array vazio. Se tiver IDs, envia separado por vírgula
         const valor = ids.length > 0 ? ids.join(",") : "";
         document.getElementById("hiddenAutoresSecundarios").value = valor;
+    }
+
+    function atualizarTagsAssuntos() {
+        const select = document.getElementById("selectAssunto");
+        const container = document.getElementById("containerAssuntos");
+
+        const selectedOption = select.selectedOptions[0];
+
+        if (selectedOption && selectedOption.value) {
+            const assuntoId = selectedOption.value;
+            const assuntoDescricao = selectedOption.text;
+
+            // Verifica se já não existe
+            if (!document.querySelector(`[data-assunto-id="${assuntoId}"]`)) {
+                const tag = document.createElement("div");
+                tag.className = "bg-[#2E5B37]/10 text-[#2E5B37] px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2";
+                tag.setAttribute("data-assunto-id", assuntoId);
+                tag.innerHTML = `
+                    ${assuntoDescricao}
+                    <button type="button" onclick="removerAssunto(this)" class="hover:text-[#1f4026] font-bold">✕</button>
+                `;
+                container.appendChild(tag);
+            }
+
+            // Reseta o select
+            select.value = "";
+            atualizarHiddenAssuntos();
+        }
+    }
+
+    function removerAssunto(button) {
+        button.parentElement.remove();
+        atualizarHiddenAssuntos();
+    }
+
+    function atualizarHiddenAssuntos() {
+        const container = document.getElementById("containerAssuntos");
+        const tags = container.querySelectorAll("[data-assunto-id]");
+        const ids = Array.from(tags).map(tag => tag.getAttribute("data-assunto-id"));
+
+        const valor = ids.length > 0 ? ids.join(",") : "";
+        document.getElementById("hiddenAssuntos").value = valor;
     }
 
     function abrirModalAutorSecundario() {
