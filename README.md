@@ -174,7 +174,7 @@ http://localhost:8080
 - Giuliano -> [GitHub](https://github.com/iguirote).
 
 ## Vídeo Demonstrativo
-Aqui o link do vídeo de demonstração do projeto: [link]([www.youtube.com](https://youtu.be/qZ4Z1Z6A0Iw)).
+Aqui o link do vídeo de demonstração do projeto: https://youtu.be/qZ4Z1Z6A0Iw.
 
 ## Informações Adicionais
 - Projeto extensionista da [UFN](https://site.ufn.edu.br/).
